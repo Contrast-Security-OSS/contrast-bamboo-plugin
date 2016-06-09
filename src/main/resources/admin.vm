@@ -1,30 +1,31 @@
 <html>
   <head>
-    <title>MyServlet Admin</title>
+    <title>$i18n.getText("contrast-plugin.admin.label")</title>
     <meta name="decorator" content="atl.admin">
+    $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
   </head>
   <body>
   	<h1>Teamserver Connection Test</h1>
   
     <form id="admin" class="aui" method="POST">
         <div class="field-group">
-             <label for="username">Username:</label>
+             <label for="username">$i18n.getText("contrast-plugin.admin.username.label")</label>
              <input type="text" id="username" name="username" class="text">
         </div>
         <div class="field-group">
-             <label for="apiKey">API Key:</label>
+             <label for="apiKey">$i18n.getText("contrast-plugin.admin.apiKey.label")</label>
              <input type="text" id="apiKey" name="apiKey" class="text">
         </div>
         <div class="field-group">
-             <label for="serviceKey">Service Key:</label>
+             <label for="serviceKey">$i18n.getText("contrast-plugin.admin.servicekey.label")</label>
              <input type="text" id="serviceKey" name="serviceKey" class="text">
         </div>
         <div class="field-group">
-             <label for="url">Teamserver Url:</label>
+             <label for="url">$i18n.getText("contrast-plugin.admin.url.label"):</label>
              <input type="text" id="url" name="url" class="text">
         </div>
         <div class="field-group">
-            <input type="submit" value="Save" class="button">
+            <input type="submit" value="$i18n.getText("contrast-plugin.admin.submit.label")" class="button">
         </div>
     </form>
   </body>
