@@ -21,4 +21,8 @@
         <context>contrast-bamboo-plugin</context>
     </web-resource>
     
+   	<servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserverConnect">
+  		<url-pattern>/teamserverConnect</url-pattern>
+	</servlet>
+    
 </atlassian-plugin>
