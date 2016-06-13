@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Teamserver Configuration</title>
+    <meta name="decorator" content="atl.admin">
+    $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
+  </head>
+  <body>
+  	<h1>Teamserver Connection Setup</h1>
+  
+    <form id="admin" class="aui" method="POST">
+        <div class="field-group">
+             <label for="username">Username: </label>
+             <input type="text" id="username" name="username" class="text">
+        </div>
+        <div class="field-group">
+             <label for="apiKey">API Key: </label>
+             <input type="text" id="apiKey" name="apiKey" class="text">
+        </div>
+        <div class="field-group">
+             <label for="serviceKey">Service Key: </label>
+             <input type="text" id="serviceKey" name="serviceKey" class="text">
+        </div>
+        <div class="field-group">
+             <label for="url">Teamserver URL: </label>
+             <input type="text" id="url" name="url" class="text">
+        </div>
+        <div class="field-group">
+            <input type="submit" value="Save Changes" class="button">
+        </div>
+    </form>
+  </body>
+</html>

@@ -86,7 +86,6 @@ public class ConnectionServlet extends HttpServlet
 	pluginSettings.put(PLUGIN_STORAGE_KEY + ".servicekey", req.getParameter("serviceKey"));
 	pluginSettings.put(PLUGIN_STORAGE_KEY + ".url", req.getParameter("url"));
 	
-	
 	response.sendRedirect("teamserverConnect");
 	}
 
