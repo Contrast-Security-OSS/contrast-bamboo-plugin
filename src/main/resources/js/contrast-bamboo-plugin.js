@@ -1,10 +1,10 @@
 AJS.toInit(function() {
   var baseUrl = AJS.$("meta[name='application-base-url']").attr("content");
-    
   function populateForm() {
+  	
     AJS.$.ajax({
-      url: baseUrl + "/rest/xproduct-admin/1.0/",
-      dataType: "json",
+      url: baseUrl + "/rest/teamserver-admin/1.0/",
+      dataType: "application/json",
       success: function(config) {
         $("#username").val(config.username);
         $("#apikey").val(config.apikey);
@@ -14,12 +14,13 @@ AJS.toInit(function() {
     });
   }
   function updateConfig() {
+    alert("this is an alert");
   	var user = AJS.$("#username").attr("value");
   	var api = AJS.$("#apikey").attr("value");
   	var service = AJS.$("#servicekey").attr("value");
   	var url = AJS.$("#url").attr("value");
     AJS.$.ajax({
-      url: baseUrl + "/rest/xproduct-admin/1.0/",
+      url: baseUrl + "/rest/teamserver-config/1.0/",
       type: "PUT",
       contentType: "application/json",
       data:{ 

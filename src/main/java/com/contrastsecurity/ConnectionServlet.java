@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URI;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
+import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -28,25 +29,26 @@ public class ConnectionServlet extends HttpServlet
 	private final LoginUriProvider loginUriProvider;
 	@ComponentImport
 	private final TemplateRenderer templateRenderer;
-	@ComponentImport
-	private final PluginSettingsFactory pluginSettingsFactory;
+	//@ComponentImport
+	//private final PluginSettingsFactory pluginSettingsFactory;
 
 	@Inject
-	public ConnectionServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer templateRenderer, PluginSettingsFactory pluginSettingsFactory) {
+	public ConnectionServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer templateRenderer){//, PluginSettingsFactory pluginSettingsFactory) {
 		this.userManager = userManager;
 		this.loginUriProvider = loginUriProvider;
 		this.templateRenderer = templateRenderer;
-		this.pluginSettingsFactory = pluginSettingsFactory;
+		//this.pluginSettingsFactory = pluginSettingsFactory;
 	}
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
 	{
-		String username = userManager.getRemoteUsername(request);
-		if (username == null || !userManager.isSystemAdmin(username))
+		UserProfile username = userManager.getRemoteUser(request);
+		if (username == null || !userManager.isSystemAdmin(username.getUserKey()))
 		{
 			redirectToLogin(request, response);
 			return;
 		}
+		/*
 		Map<String, Object> context = Maps.newHashMap();
 
 		PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
@@ -67,16 +69,16 @@ public class ConnectionServlet extends HttpServlet
 			String noURL = "Enter an Teamserver Url key.";
 			pluginSettings.put(PLUGIN_STORAGE_KEY + ".url", noURL);
 		}
-
+		
 		context.put("username", pluginSettings.get(PLUGIN_STORAGE_KEY + ".username"));
 		context.put("apikey", pluginSettings.get(PLUGIN_STORAGE_KEY + ".apikey"));
 		context.put("servicekey", pluginSettings.get(PLUGIN_STORAGE_KEY + ".servicekey"));
 		context.put("url", pluginSettings.get(PLUGIN_STORAGE_KEY + ".url"));
-		
+		*/
 		response.setContentType("text/html;charset=utf-8");
 		templateRenderer.render("admin.vm", response.getWriter());
 	}
-
+	/*
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse response)
 		throws ServletException, IOException {
@@ -88,7 +90,7 @@ public class ConnectionServlet extends HttpServlet
 	
 	response.sendRedirect("teamserverConnect");
 	}
-
+	 */
 	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
 		response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
@@ -103,7 +105,5 @@ public class ConnectionServlet extends HttpServlet
 		}
 		return URI.create(builder.toString());
 	}
-
-	// This is what your MyPluginServlet.java should look like in its final stages.
 
 }

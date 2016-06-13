@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}"
 	plugins-version="2">
 	<plugin-info>
@@ -8,22 +7,21 @@
 		<vendor name="${project.organization.name}" url="${project.organization.url}" />
 		<param name="plugin-icon">images/pluginIcon.png</param>
 		<param name="plugin-logo">images/pluginLogo.png</param>
+		<param name="configure.url">plugins/servlet/teamserverConnect</param>
 	</plugin-info>
+	
 	<!-- add our i18n resource -->
-	<resource type="i18n" name="i18n" location="contrast-bamboo-plugin" />
+	<resource type="i18n" name="i18n" location="com.contrastsecurity.contrast-bamboo-plugin.i18n" />
+	
 	<!-- add our web resources -->
-	<web-resource key="contrast-bamboo-plugin-resources" name="contrast-bamboo-plugin Web Resources">
+	<web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">
 		<dependency>com.atlassian.auiplugin:ajs</dependency>
-		<resource type="download" name="contrast-bamboo-plugin.css"
-			location="/css/contrast-bamboo-plugin.css" />
-		<resource type="download" name="contrast-bamboo-plugin.js"
-			location="/js/contrast-bamboo-plugin.js" />
-		<resource type="download" name="images/" location="/images" />
-		<context>contrast-bamboo-plugin</context>
-	</web-resource>
-	<web-resource name="Admin Web Resources" key="resources">
-		<dependency>com.atlassian.auiplugin:ajs</dependency>
-		<resource type="download" name="contrast-bamboo.js" location="contrast-bamboo.js" />
+		<resource type="download"
+			name="contrast-bamboo-plugin.js"
+			location="js/contrast-bamboo-plugin.js">
+			<param name = "content-type" value= "application/javascript"></param>
+		</resource>
+		<context>atl.admin</context>
 	</web-resource>
 	<servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet"
 		key="teamserverConnect">
