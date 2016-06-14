@@ -9,19 +9,21 @@
 		<param name="plugin-logo">images/pluginLogo.png</param>
 		<param name="configure.url">plugins/servlet/teamserverConnect</param>
 	</plugin-info>
-	
+
 	<!-- add our i18n resource -->
-	<resource type="i18n" name="i18n" location="com.contrastsecurity.contrast-bamboo-plugin.i18n" />
-	
+	<resource type="i18n" name="i18n"
+		location="com.contrastsecurity.contrast-bamboo-plugin.i18n" />
+
 	<!-- add our web resources -->
-	<web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">
+	<web-resource key="configuration.js"
+		name="contrast-bamboo-plugin Configuration javascript">
 		<dependency>com.atlassian.auiplugin:ajs</dependency>
-		<resource type="download"
-			name="contrast-bamboo-plugin.js"
+		<resource type="download" name="contrast-bamboo-plugin.js"
 			location="js/contrast-bamboo-plugin.js">
-			<param name = "content-type" value= "application/javascript"></param>
+			<param name="content-type" value="application/javascript"></param>
 		</resource>
 		<context>atl.admin</context>
+		<context>atl.general</context>
 	</web-resource>
 	<servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet"
 		key="teamserverConnect">
@@ -29,7 +31,8 @@
 	</servlet>
 	<web-item key="conf-menu-item" name="Contrast Admin"
 		section="system.admin/configuration" weight="10">
-		<description>Link to Contrast Teamserver Configuration page.</description>
+		<description>Link to Contrast Teamserver Configuration page.
+		</description>
 		<label key="xproduct.admin.label" />
 		<link linkId="xproduct-admin-link">/plugins/servlet/xproduct/admin</link>
 	</web-item>

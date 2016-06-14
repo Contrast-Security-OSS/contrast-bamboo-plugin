@@ -22,7 +22,11 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 @Named("myPlugin")
 public class ConnectionServlet extends HttpServlet
 {
-	private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	//private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
 	@ComponentImport
 	private final UserManager userManager;
 	@ComponentImport
