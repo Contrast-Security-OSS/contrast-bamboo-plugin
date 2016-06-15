@@ -20,15 +20,24 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserManager;
-import com.atlassian.sal.api.user.UserProfile;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+
+@Named("configuration")
 @Path("/")
 public class ConfigResource
 {
+	@ComponentImport
 	private final UserManager userManager;
+	@ComponentImport
 	private final PluginSettingsFactory pluginSettingsFactory;
+	@ComponentImport
 	private final TransactionTemplate transactionTemplate;
-
+	
+	@Inject
 	public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory, 
 			TransactionTemplate transactionTemplate)
 	{
@@ -36,13 +45,13 @@ public class ConfigResource
 		this.pluginSettingsFactory = pluginSettingsFactory;
 		this.transactionTemplate = transactionTemplate;
 	}
-	@SuppressWarnings({ "rawtypes", "unchecked"})
+	
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
 	public Response get(@Context HttpServletRequest request)
 	{
-		UserProfile username = userManager.getRemoteUser(request);
-		if (username == null || !userManager.isSystemAdmin(username.getUserKey()))
+		String username = userManager.getRemoteUsername(request);
+		if (username == null || !userManager.isSystemAdmin(username))
 		{
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
@@ -62,13 +71,13 @@ public class ConfigResource
 			}
 		})).build();
 	}
-	@SuppressWarnings("unchecked")
+	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response put(final Config config, @Context HttpServletRequest request)
 	{
-		UserProfile username = userManager.getRemoteUser(request);
-		if (username == null || !userManager.isSystemAdmin(username.getUserKey()))
+		String username = userManager.getRemoteUsername(request);
+		if (username == null || !userManager.isSystemAdmin(username))
 		{
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
@@ -96,7 +105,7 @@ public class ConfigResource
 		@XmlElement private String apikey;
 		@XmlElement private String servicekey;
 		@XmlElement private String url;
-
+		
 		public String getUsername()
 		{
 			return username;

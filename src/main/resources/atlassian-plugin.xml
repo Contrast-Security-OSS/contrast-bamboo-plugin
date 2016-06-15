@@ -1,53 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}"
-	plugins-version="2">
-	<plugin-info>
-		<description>${project.description}</description>
-		<version>${project.version}</version>
-		<vendor name="${project.organization.name}" url="${project.organization.url}" />
-		<param name="plugin-icon">images/pluginIcon.png</param>
-		<param name="plugin-logo">images/pluginLogo.png</param>
-		<param name="configure.url">plugins/servlet/teamserverConnect</param>
-	</plugin-info>
 
-	<!-- add our i18n resource -->
-	<resource type="i18n" name="i18n"
-		location="com.contrastsecurity.contrast-bamboo-plugin.i18n" />
-
-	<!-- add our web resources -->
-	<web-resource key="configuration.js"
-		name="contrast-bamboo-plugin Configuration javascript">
-		<dependency>com.atlassian.auiplugin:ajs</dependency>
-		<resource type="download" name="contrast-bamboo-plugin.js"
-			location="js/contrast-bamboo-plugin.js">
-			<param name="content-type" value="application/javascript"></param>
-		</resource>
-		<context>atl.admin</context>
-	</web-resource>
-
-	<servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet"
-		key="teamserver-config">
-		<url-pattern>/teamserverConnect</url-pattern>
-	</servlet>
-	<servlet key="teamserver-config-rest" class="com.contrastsecurity.ConfigResource">
-		<url-pattern>/teamserverConnect/admin</url-pattern>
-	</servlet>
-
-	<web-item key="conf-menu-item" name="Contrast Admin"
-		section="system.admin/configuration" weight="10">
-		<description>Link to Contrast Teamserver Configuration page.
-		</description>
-		<label key="teamserver.admin.label" />
-		<link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
-	</web-item>
-	
-	<rest key="rest" path="teamserver-admin" version="1.0">
-		<description>Provides REST resources for the Configuration UI.
-		</description>
-	</rest>
-	
-	<template-context-item key="applicationPropertiesContextItem"
-		component-ref="applicationProperties" context-key="applicationProperties"
-		name="Application Properties Context Item" />
-
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+    <param name="configure.url">plugins/servlet/teamserverConnect</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
+  <!-- add our web resources -->
+  <web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="contrast-bamboo-plugin.js" location="js/contrast-bamboo-plugin.js">
+      <param name="content-type" value="application/javascript"/>
+    </resource>
+    <context>atl.admin</context>
+  </web-resource>
+  
+  <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
+    <url-pattern>/teamserverConnect</url-pattern>
+  </servlet>
+  
+  <web-item key="conf-menu-item" name="Contrast Admin" section="system.admin/configuration" weight="10">
+    <description>Link to Contrast Teamserver Configuration page.</description>
+    <label key="teamserver.admin.label"/>
+    <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
+  </web-item>
+  
+  <rest name="Teamserver REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
+    <description>Provides REST resources for the Configuration UI.</description>
+  </rest>
+  
+  <rest name="contrastconfig" i18n-name-key="contrastconfig.name" key="contrastconfig" path="/contrastconfig" version="1.0">
+    <description key="contrastconfig.description">The contrastconfig Plugin</description>
+  </rest>
 </atlassian-plugin>

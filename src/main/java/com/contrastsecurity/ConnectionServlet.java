@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.net.URI;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
-import com.atlassian.sal.api.user.UserProfile;
+//import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.templaterenderer.TemplateRenderer;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
-import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.google.common.collect.Maps;
-import java.util.Map;
+//import com.atlassian.sal.api.pluginsettings.PluginSettings;
+//import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+//import com.google.common.collect.Maps;
+//import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,8 +46,8 @@ public class ConnectionServlet extends HttpServlet
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
 	{
-		UserProfile username = userManager.getRemoteUser(request);
-		if (username == null || !userManager.isSystemAdmin(username.getUserKey()))
+		String username = userManager.getRemoteUsername(request);
+		if (username == null || !userManager.isSystemAdmin(username))
 		{
 			redirectToLogin(request, response);
 			return;
