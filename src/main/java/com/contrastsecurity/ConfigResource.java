@@ -30,13 +30,16 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 @Path("/")
 public class ConfigResource
 {
+	private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
+
+
 	@ComponentImport
 	private final UserManager userManager;
 	@ComponentImport
 	private final PluginSettingsFactory pluginSettingsFactory;
 	@ComponentImport
 	private final TransactionTemplate transactionTemplate;
-	
+
 	@Inject
 	public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory, 
 			TransactionTemplate transactionTemplate)
@@ -45,9 +48,9 @@ public class ConfigResource
 		this.pluginSettingsFactory = pluginSettingsFactory;
 		this.transactionTemplate = transactionTemplate;
 	}
-	
+
 	@GET
-    @Produces({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
 	public Response get(@Context HttpServletRequest request)
 	{
 		String username = userManager.getRemoteUsername(request);
@@ -56,22 +59,26 @@ public class ConfigResource
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 
-		return Response.ok(transactionTemplate.execute(new TransactionCallback()
+		return Response.ok(transactionTemplate.execute(new TransactionCallback<Object>()
 		{
 			public Object doInTransaction()
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 				Config config = new Config();
-				config.setUsername((String) settings.get(Config.class.getName() + ".username"));
-				config.setApikey((String) settings.get(Config.class.getName() + ".apikey"));
-				config.setServicekey((String) settings.get(Config.class.getName() + ".servicekey"));
-				config.setUrl((String) settings.get(Config.class.getName() + ".url"));
-
+				/*config.setUsername((String) settings.get(PLUGIN_STORAGE_KEY + ".username"));				
+				config.setApikey((String) settings.get(PLUGIN_STORAGE_KEY + ".apikey"));
+				config.setServicekey((String) settings.get(PLUGIN_STORAGE_KEY + ".servicekey"));
+				config.setUrl((String) settings.get(PLUGIN_STORAGE_KEY + ".url"));
+				 */
+				config.setUsername("configUsername");		
+				config.setApikey("configApi");
+				config.setServicekey("configServ");
+				config.setUrl("configURL");
 				return config;
 			}
 		})).build();
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response put(final Config config, @Context HttpServletRequest request)
@@ -82,15 +89,16 @@ public class ConfigResource
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 
-		transactionTemplate.execute(new TransactionCallback()
+		transactionTemplate.execute(new TransactionCallback<Object>()
 		{
 			public Object doInTransaction()
 			{
 				PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
-				pluginSettings.put(Config.class.getName() + ".username", config.getUsername());
-				pluginSettings.put(Config.class.getName()  +".apikey", config.getApikey());
-				pluginSettings.put(Config.class.getName()  +".servicekey", config.getServicekey());
-				pluginSettings.put(Config.class.getName()  +".url", config.getUrl());
+
+				pluginSettings.put(PLUGIN_STORAGE_KEY + ".username", config.getUsername());
+				pluginSettings.put(PLUGIN_STORAGE_KEY  +".apikey", config.getApikey());
+				pluginSettings.put(PLUGIN_STORAGE_KEY  +".servicekey", config.getServicekey());
+				pluginSettings.put(PLUGIN_STORAGE_KEY  +".url", config.getUrl());
 				return null;
 			}
 		});
@@ -105,7 +113,7 @@ public class ConfigResource
 		@XmlElement private String apikey;
 		@XmlElement private String servicekey;
 		@XmlElement private String url;
-		
+
 		public String getUsername()
 		{
 			return username;

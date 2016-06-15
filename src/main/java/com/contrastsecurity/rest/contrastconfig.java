@@ -15,9 +15,6 @@ import javax.ws.rs.core.Response;
  */
 @Path("/message")
 public class contrastconfig {
-
-	@ComponentImport
-	private final PluginSettingsFactory pluginSettingsFactory;
 	
     @GET
     @AnonymousAllowed
