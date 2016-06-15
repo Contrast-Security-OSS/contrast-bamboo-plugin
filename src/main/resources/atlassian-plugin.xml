@@ -17,27 +17,37 @@
 	<!-- add our web resources -->
 	<web-resource key="configuration.js"
 		name="contrast-bamboo-plugin Configuration javascript">
-    	<dependency>com.atlassian.auiplugin:ajs</dependency>
+		<dependency>com.atlassian.auiplugin:ajs</dependency>
 		<resource type="download" name="contrast-bamboo-plugin.js"
 			location="js/contrast-bamboo-plugin.js">
 			<param name="content-type" value="application/javascript"></param>
 		</resource>
 		<context>atl.admin</context>
-		<context>atl.general</context>
 	</web-resource>
+
 	<servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet"
-		key="teamserverConnect">
+		key="teamserver-config">
 		<url-pattern>/teamserverConnect</url-pattern>
 	</servlet>
+	<servlet key="teamserver-config-rest" class="com.contrastsecurity.ConfigResource">
+		<url-pattern>/teamserverConnect/admin</url-pattern>
+	</servlet>
+
 	<web-item key="conf-menu-item" name="Contrast Admin"
 		section="system.admin/configuration" weight="10">
 		<description>Link to Contrast Teamserver Configuration page.
 		</description>
-		<label key="xproduct.admin.label" />
-		<link linkId="xproduct-admin-link">/plugins/servlet/xproduct/admin</link>
+		<label key="teamserver.admin.label" />
+		<link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
 	</web-item>
-	<rest key="rest" path="/teamserver-config" version="1.0">
+	
+	<rest key="rest" path="teamserver-admin" version="1.0">
 		<description>Provides REST resources for the Configuration UI.
 		</description>
 	</rest>
+	
+	<template-context-item key="applicationPropertiesContextItem"
+		component-ref="applicationProperties" context-key="applicationProperties"
+		name="Application Properties Context Item" />
+
 </atlassian-plugin>

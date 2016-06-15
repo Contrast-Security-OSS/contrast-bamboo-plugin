@@ -1,7 +1,6 @@
 window.onload  = function() {
-	var baseUrl = AJS.$("meta[name='application-base-url']").attr("content");
+	var baseUrl = "/bamboo";
 	function populateForm() {
-		alert("populating form");
 		AJS.$.ajax({
 			url: baseUrl + "/rest/teamserver-admin/1.0/",
 			dataType: "application/json",
