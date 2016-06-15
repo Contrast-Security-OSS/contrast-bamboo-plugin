@@ -1,4 +1,4 @@
-function f() {
+window.onload  = function() {
 	var baseUrl = AJS.$("meta[name='application-base-url']").attr("content");
 	function populateForm() {
 		alert("populating form");
@@ -37,5 +37,4 @@ function f() {
 		e.preventDefault();
 		updateConfig();
 	});
-}
-AJS.toInit(f);
+};

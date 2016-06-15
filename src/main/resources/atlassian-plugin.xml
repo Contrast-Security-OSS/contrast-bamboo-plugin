@@ -17,7 +17,7 @@
 	<!-- add our web resources -->
 	<web-resource key="configuration.js"
 		name="contrast-bamboo-plugin Configuration javascript">
-		<dependency>com.atlassian.auiplugin:ajs</dependency>
+    	<dependency>com.atlassian.auiplugin:ajs</dependency>
 		<resource type="download" name="contrast-bamboo-plugin.js"
 			location="js/contrast-bamboo-plugin.js">
 			<param name="content-type" value="application/javascript"></param>
