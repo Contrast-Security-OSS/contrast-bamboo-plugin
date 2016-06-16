@@ -25,7 +25,7 @@
              <input type="text" id="url" name="url" class="text">
         </div>
         <div class="field-group">
-            <input type="submit" value="Save Changes" class="button">
+            <input id="admin-submit" type="submit" value="Save Changes" class="button">
         </div>
     </form>
   </body>
