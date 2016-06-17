@@ -1,32 +1,66 @@
 <html>
-  <head>
-    <title>Teamserver Configuration</title>
-    <meta name="decorator" content="atl.admin">
-    $webResourceManager.requireResource("com.contrastsecurity.contrast-bamboo-plugin:contrast-bamboo-plugin-resources")
-    <meta name="application-base-url" content=$baseUrl>
-  </head>
-  <body>
-  	<h1>Teamserver Connection Setup</h1>
+    <head>
+        <title>Teamserver Configuration</title>
+        <meta name="decorator" content="atl.admin">
+        $webResourceManager.requireResource("com.contrastsecurity.contrast-bamboo-plugin:contrast-bamboo-plugin-resources")
+        <meta name="application-base-url" content=$baseUrl>
+    </head>
+    <body>
+    	<h1>Teamserver Profile Setup</h1>
     <form id="admin" class="aui">
         <div class="field-group">
-             <label for="username">Username: </label>
-             <input type="text" id="username" name="username" class="text">
+            <label for="tsprofile">Teamserver Profile: </label>
+            <input type="text" id="tsprofile" name="tsprofile" class="text">
+        </div>
+        <table class = "aui">
+            <thead>
+                <th>Configure Connection</th>
+            </thead>
+            <tr>
+                <td>
+                    <div class="field-group">
+                    <label for="username">Username: </label>
+                    <input type="text" id="username" name="username" class="text">
+                    </div>
+                </td>
+                <td>
+                    <div class="field-group">
+                    <label for="apiKey">API Key: </label>
+                    <input type="text" id="apiKey" name="apiKey" class="text">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="field-group">
+                        <label for="serviceKey">Service Key: </label>
+                        <input type="text" id="serviceKey" name="serviceKey" class="text">
+                    </div>
+                </td>
+                <td>
+                    <div class="field-group">
+                        <label for="url">Teamserver URL: </label>
+                        <input type="text" id="url" name="url" class="text">
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="field-group">
+            <label for="servername">Servername: </label>
+            <input type="text" id="servername" name="servername" class="text">
         </div>
         <div class="field-group">
-             <label for="apiKey">API Key: </label>
-             <input type="text" id="apiKey" name="apiKey" class="text">
+            <label for="uuid">Organization UUID: </label>
+            <input type="text" id="uuid" name="uuid" class="text">
         </div>
-        <div class="field-group">
-             <label for="serviceKey">Service Key: </label>
-             <input type="text" id="serviceKey" name="serviceKey" class="text">
-        </div>
-        <div class="field-group">
-             <label for="url">Teamserver URL: </label>
-             <input type="text" id="url" name="url" class="text">
-        </div>
-        <div class="field-group">
-            <input id="admin-submit" type="submit" value="Save Changes" class="button">
-        </div>
-    </form>
-  </body>
+            <p class="aui-buttons">
+                <div class="field-group">
+                    <input id="test-connection" type="submit" value="Test Connection" class="aui-button">
+                </div>
+                <div class="field-group">
+                    <input id="admin-submit" type="submit" value="Save Changes" class="aui-button aui-button-primary">
+                </div>
+            </p>
+        </form>
+    </body>
 </html>

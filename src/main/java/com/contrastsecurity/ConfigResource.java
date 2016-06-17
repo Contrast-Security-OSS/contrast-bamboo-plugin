@@ -64,10 +64,15 @@ public class ConfigResource
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 				TeamserverProfile config = new TeamserverProfile();
+				
+				config.setProfilename((String) settings.get(PLUGIN_STORAGE_KEY + ".profilename"));				
 				config.setUsername((String) settings.get(PLUGIN_STORAGE_KEY + ".username"));				
 				config.setApikey((String) settings.get(PLUGIN_STORAGE_KEY + ".apikey"));
 				config.setServicekey((String) settings.get(PLUGIN_STORAGE_KEY + ".servicekey"));
 				config.setUrl((String) settings.get(PLUGIN_STORAGE_KEY + ".url"));
+				config.setServername((String) settings.get(PLUGIN_STORAGE_KEY + ".servername"));
+				config.setUuid((String) settings.get(PLUGIN_STORAGE_KEY + ".uuid"));
+
 				return config;
 			}
 		})).build();
@@ -91,10 +96,14 @@ public class ConfigResource
 			{
 				PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
 
+				pluginSettings.put(PLUGIN_STORAGE_KEY + ".profilename", config.getProfilename());
 				pluginSettings.put(PLUGIN_STORAGE_KEY + ".username", config.getUsername());
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".apikey", config.getApikey());
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".servicekey", config.getServicekey());
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".url", config.getUrl());
+				pluginSettings.put(PLUGIN_STORAGE_KEY  +".servername", config.getServername());
+				pluginSettings.put(PLUGIN_STORAGE_KEY  +".uuid", config.getUuid());
+				
 				return null;
 			}
 		});
