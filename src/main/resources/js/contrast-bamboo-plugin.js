@@ -21,20 +21,23 @@ window.onload  = function() {
 		var user = AJS.$("#username").attr("value");
 		var api = AJS.$("#apiKey").attr("value");
 		var service = AJS.$("#serviceKey").attr("value");
-		var url = AJS.$("#url").attr("value");
-		AJS.$.ajax({
-			"url": baseUrl + "/rest/teamserver-admin/1.0/",
-			"type": "POST",
-			"contentType": "application/json",
-			"data":{
+		var TSurl = AJS.$("#url").attr("value");
+		var JSONPayload = {
 				"username": user,
 				"apikey": api,
 				"servicekey": service,
-				"url": url
-			},
-			"processData": false
+				"url": TSurl
+			};
+		var stringPayload = JSON.stringify(JSONPayload);
+		AJS.$.ajax({
+			url: baseUrl + "/rest/teamserver-admin/1.0/",
+			type: "POST",
+			contentType: "application/json",
+			dataType:"json",
+			data:stringPayload,
+			processData: false
 		});
-	}  
+	}
 	AJS.$("#admin-submit").removeAttr('onsubmit').submit(function(event){
         event.preventDefault();
     });

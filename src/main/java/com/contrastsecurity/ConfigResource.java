@@ -10,17 +10,16 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserManager;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,63 +47,9 @@ public class ConfigResource
 		this.pluginSettingsFactory = pluginSettingsFactory;
 		this.transactionTemplate = transactionTemplate;
 	}
-	
-//	@XmlRootElement
-//	@XmlAccessorType(XmlAccessType.FIELD)
-	public static final class Config
-	{
-		@JsonProperty("username") 
-		public String username;
-		@JsonProperty("apikey")
-		public String apikey;
-		@JsonProperty("servicekey")
-		public String servicekey;
-		@JsonProperty("url") 
-		public String url;
 
-		public Config(String username, String apikey, String servicekey, String url){
-			this.username = username;
-			this.apikey = apikey;
-			this.servicekey = servicekey;
-			this.url = url;
-		}
-		public Config(){};
-
-		public String getUsername()
-		{
-			return username;
-		}
-
-		public void setUsername(String username)
-		{
-			this.username = username;
-		}
-
-		public String getApikey() {
-			return apikey;
-		}
-
-		public void setApikey(String apikey) {
-			this.apikey = apikey;
-		}
-
-		public String getServicekey() {
-			return servicekey;
-		}
-
-		public void setServicekey(String servicekey) {
-			this.servicekey = servicekey;
-		}
-
-		public String getUrl() {
-			return url;
-		}
-
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
-	}
+	//	@XmlRootElement
+	//	@XmlAccessorType(XmlAccessType.FIELD)
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
@@ -121,7 +66,7 @@ public class ConfigResource
 			public Object doInTransaction()
 			{
 				//PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-				Config config = new Config();
+				TeamserverProfile config = new TeamserverProfile();
 				/*config.setUsername((String) settings.get(PLUGIN_STORAGE_KEY + ".username"));				
 				config.setApikey((String) settings.get(PLUGIN_STORAGE_KEY + ".apikey"));
 				config.setServicekey((String) settings.get(PLUGIN_STORAGE_KEY + ".servicekey"));
@@ -135,18 +80,35 @@ public class ConfigResource
 			}
 		})).build();
 	}
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(final Config config, @Context HttpServletRequest request)
+	public Response post(final String config, @Context HttpServletRequest request)
 	{
-		System.out.println(request.toString());
+		System.out.println(config);
+		System.out.println(request);
+
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			System.out.println(paramName);
+
+			String[] paramValues = request.getParameterValues(paramName);
+
+			for (int i = 0; i < paramValues.length; i++) {
+				String paramValue = paramValues[i];
+
+				System.out.println("\t" + paramValue);
+			}
+		}
+
 		String username = userManager.getRemoteUsername(request);
 		if (username == null || !userManager.isSystemAdmin(username))
 		{
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 
-		transactionTemplate.execute(new TransactionCallback<Object>()
+		/*transactionTemplate.execute(new TransactionCallback<Object>()
 		{
 			public Object doInTransaction()
 			{
@@ -158,7 +120,7 @@ public class ConfigResource
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".url", config.getUrl());
 				return null;
 			}
-		});
+		});*/
 		return Response.noContent().build();
 	}
 
