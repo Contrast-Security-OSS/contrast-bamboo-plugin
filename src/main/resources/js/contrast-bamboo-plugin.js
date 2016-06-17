@@ -23,16 +23,16 @@ window.onload  = function() {
 		var service = AJS.$("#serviceKey").attr("value");
 		var url = AJS.$("#url").attr("value");
 		AJS.$.ajax({
-			url: baseUrl + "/rest/teamserver-config/1.0/",
-			type: "PUT",
-			contentType: "json",
-			data:{ 
-			"username": user,
-			"apikey": api,
-			"servicekey": url,
-			"url": url
-		},
-		processData: false
+			"url": baseUrl + "/rest/teamserver-admin/1.0/",
+			"type": "POST",
+			"contentType": "application/json",
+			"data":{
+				"username": user,
+				"apikey": api,
+				"servicekey": service,
+				"url": url
+			},
+			"processData": false
 		});
 	}  
 	AJS.$("#admin-submit").removeAttr('onsubmit').submit(function(event){
@@ -40,7 +40,6 @@ window.onload  = function() {
     });
 	populateForm();
     AJS.$('#admin-submit').click(function(){
-		alert(0);
 		updateConfig();
 		return false;
 	});
