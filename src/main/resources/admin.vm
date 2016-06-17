@@ -10,7 +10,7 @@
     <form id="admin" class="aui">
         <div class="field-group">
             <label for="tsprofile">Teamserver Profile: </label>
-            <input type="text" id="tsprofile" name="tsprofile" class="text">
+            <input type="text" id="profilename" name="profilename" class="text">
         </div>
         <table class = "aui">
             <thead>
@@ -62,5 +62,6 @@
                 </div>
             </p>
         </form>
+        <div id="aui-message-bar"></div>
     </body>
 </html>

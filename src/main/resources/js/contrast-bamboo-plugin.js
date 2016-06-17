@@ -45,7 +45,13 @@ window.onload  = function() {
 			contentType: "application/json",
 			dataType:"json",
 			data:stringPayload,
-			processData: false
+			processData: false,
+			success: function() {
+				AJS.messages.success({
+				    title: "Success!",
+				    body: "You have updated you Teamserver Configuration!"
+				});
+			}
 		});
 	}
 	AJS.$("#admin-submit").removeAttr('onsubmit').submit(function(event){
