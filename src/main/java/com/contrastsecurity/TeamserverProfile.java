@@ -17,7 +17,7 @@ public class TeamserverProfile {
 	public String servername;
 	@JsonProperty("uuid") 
 	public String uuid;
-
+	
 	public String getUsername()
 	{
 		return username;

@@ -11,6 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -28,6 +30,7 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 public class ConfigResource
 {
 	private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
+	private static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
 
 	@ComponentImport
 	private final UserManager userManager;
@@ -45,9 +48,6 @@ public class ConfigResource
 		this.transactionTemplate = transactionTemplate;
 	}
 
-	//	@XmlRootElement
-	//	@XmlAccessorType(XmlAccessType.FIELD)
-
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response get(@Context HttpServletRequest request)
@@ -63,8 +63,19 @@ public class ConfigResource
 			public Object doInTransaction()
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-				TeamserverProfile config = new TeamserverProfile();
+				//TeamserverProfile config = new TeamserverProfile();
 				
+				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				if(profiles == null){
+					profiles = new TreeMap<String, TeamserverProfile>();
+					TeamserverProfile profile = new TeamserverProfile(); 
+					profile.setProfilename("Default");
+					profiles.put(profile.getProfilename(), profile);
+					settings.put(PLUGIN_STORAGE_KEY + ".profiles", profiles);
+				}
+				return profiles;
+				
+				/* Old Code
 				config.setProfilename((String) settings.get(PLUGIN_STORAGE_KEY + ".profilename"));				
 				config.setUsername((String) settings.get(PLUGIN_STORAGE_KEY + ".username"));				
 				config.setApikey((String) settings.get(PLUGIN_STORAGE_KEY + ".apikey"));
@@ -74,16 +85,15 @@ public class ConfigResource
 				config.setUuid((String) settings.get(PLUGIN_STORAGE_KEY + ".uuid"));
 
 				return config;
+				*/
 			}
 		})).build();
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(final TeamserverProfile config, @Context HttpServletRequest request)
+	public Response post(final TeamserverProfile profile, @Context HttpServletRequest request)
 	{
-		System.out.println(config);
-
 		String username = userManager.getRemoteUsername(request);
 		if (username == null || !userManager.isSystemAdmin(username))
 		{
@@ -94,8 +104,18 @@ public class ConfigResource
 		{
 			public Object doInTransaction()
 			{
-				PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
+				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 
+				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				if(profiles == null){
+					profiles = new TreeMap<String, TeamserverProfile>();
+					System.out.println("profiles was null in post method");
+				}
+				profiles.put(profile.getProfilename(), profile);
+				
+				settings.put(PLUGIN_PROFILES_KEY, profiles);
+				
+				/*
 				pluginSettings.put(PLUGIN_STORAGE_KEY + ".profilename", config.getProfilename());
 				pluginSettings.put(PLUGIN_STORAGE_KEY + ".username", config.getUsername());
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".apikey", config.getApikey());
@@ -103,11 +123,10 @@ public class ConfigResource
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".url", config.getUrl());
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".servername", config.getServername());
 				pluginSettings.put(PLUGIN_STORAGE_KEY  +".uuid", config.getUuid());
-				
+				*/
 				return null;
 			}
 		});
 		return Response.noContent().build();
 	}
-
 }

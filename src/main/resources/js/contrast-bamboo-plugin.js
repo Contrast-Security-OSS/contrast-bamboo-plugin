@@ -1,10 +1,13 @@
+var profiles;
 window.onload  = function() {
 	var baseUrl = "/bamboo";
 	function populateForm() {
 		AJS.$.ajax({
 			url: baseUrl + "/rest/teamserver-admin/1.0/",
 			dataType: "json",
-			success: function(config) {
+			success: function(configs) {
+				profiles = configs;
+				config = profiles["Default"];
 				AJS.$("#username").val(config.username);
 				AJS.$("#apiKey").val(config.apikey);
 				AJS.$("#serviceKey").val(config.servicekey);
@@ -28,7 +31,7 @@ window.onload  = function() {
 		var servername = AJS.$("#servername").attr("value");
 		var uuid = AJS.$("#uuid").attr("value");
 		var profilename = AJS.$("#profilename").attr("value");
-		
+
 		var JSONPayload = {
 				"profilename":profilename,
 				"username": user,

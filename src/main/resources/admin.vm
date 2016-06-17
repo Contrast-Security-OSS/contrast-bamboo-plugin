@@ -14,7 +14,12 @@
         </div>
         <table class = "aui">
             <thead>
-                <th>Configure Connection</th>
+                <th><h2>Configure Connection</h2></th>
+                <th>
+                    <div class="field-group">
+                        <input id="test-connection" type="submit" value="Test Connection" class="aui-button">
+                    </div>
+                </th>
             </thead>
             <tr>
                 <td>
@@ -45,6 +50,7 @@
                 </td>
             </tr>
         </table>
+        <br>
         <div class="field-group">
             <label for="servername">Servername: </label>
             <input type="text" id="servername" name="servername" class="text">
@@ -54,9 +60,6 @@
             <input type="text" id="uuid" name="uuid" class="text">
         </div>
             <p class="aui-buttons">
-                <div class="field-group">
-                    <input id="test-connection" type="submit" value="Test Connection" class="aui-button">
-                </div>
                 <div class="field-group">
                     <input id="admin-submit" type="submit" value="Save Changes" class="aui-button aui-button-primary">
                 </div>
