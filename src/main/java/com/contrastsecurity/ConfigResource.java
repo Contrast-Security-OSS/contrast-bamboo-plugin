@@ -25,6 +25,8 @@ import javax.inject.Named;
 
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
+import com.contrastsecurity.sdk.ContrastSDK;
+
 @Named("configuration")
 @Path("/")
 public class ConfigResource
@@ -90,9 +92,27 @@ public class ConfigResource
 		})).build();
 	}
 	
+	@Path("/verifyconnection")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(final TeamserverProfile profile, @Context HttpServletRequest request)
+	public Response testConnection(final TeamserverProfile profile, @Context HttpServletRequest request)
+	{
+		String username = userManager.getRemoteUsername(request);
+		if (username == null || !userManager.isSystemAdmin(username))
+		{
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+		
+		ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(),profile.getApikey(), profile.getServicekey());
+		
+		//TEST CONNECTION here
+		
+		return Response.ok().build();
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updateConfig(final TeamserverProfile profile, @Context HttpServletRequest request)
 	{
 		String username = userManager.getRemoteUsername(request);
 		if (username == null || !userManager.isSystemAdmin(username))

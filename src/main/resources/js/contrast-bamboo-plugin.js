@@ -1,28 +1,36 @@
 var profiles;
 window.onload  = function() {
 	var baseUrl = "/bamboo";
-	function populateForm() {
+	function getProfiles() {
 		AJS.$.ajax({
 			url: baseUrl + "/rest/teamserver-admin/1.0/",
 			dataType: "json",
 			success: function(configs) {
 				profiles = configs;
-				config = profiles["Default"];
-				AJS.$("#username").val(config.username);
-				AJS.$("#apiKey").val(config.apikey);
-				AJS.$("#serviceKey").val(config.servicekey);
-				AJS.$("#url").val(config.url);
-				AJS.$("#servername").val(config.servername);
-				AJS.$("#uuid").val(config.uuid);
-				AJS.$("#profilename").val(config.profilename);
+				populateForm("Default");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);
 				console.log(textStatus);
 				console.log(errorThrown);
+				AJS.messages.warning({
+				    title: "Unable to retrieve Teamserver Profiles!",
+				    body: "Check your internet connection and try again."
+				});
 			}
 		});
 	}
+	function populateForm(profilename) {
+		var config = profiles[profilename];
+		AJS.$("#username").val(config.username);
+		AJS.$("#apiKey").val(config.apikey);
+		AJS.$("#serviceKey").val(config.servicekey);
+		AJS.$("#url").val(config.url);
+		AJS.$("#servername").val(config.servername);
+		AJS.$("#uuid").val(config.uuid);
+		AJS.$("#profilename").val(config.profilename);
+	}
+
 	function updateConfig() {
 		var user = AJS.$("#username").attr("value");
 		var api = AJS.$("#apiKey").attr("value");
@@ -60,9 +68,9 @@ window.onload  = function() {
 	AJS.$("#admin-submit").removeAttr('onsubmit').submit(function(event){
         event.preventDefault();
     });
-	populateForm();
     AJS.$('#admin-submit').click(function(){
 		updateConfig();
 		return false;
 	});
+	getProfiles();
 };
