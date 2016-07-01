@@ -7,7 +7,7 @@ window.onload  = function() {
 			dataType: "json",
 			success: function(configs) {
 				profiles = configs;
-				populateForm("Default");
+				populateForm("");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);
@@ -21,16 +21,20 @@ window.onload  = function() {
 		});
 	}
 	function populateForm(profilename) {
-		var config = profiles[profilename];
-		AJS.$("#username").val(config.username);
-		AJS.$("#apiKey").val(config.apikey);
-		AJS.$("#serviceKey").val(config.servicekey);
-		AJS.$("#url").val(config.url);
-		AJS.$("#servername").val(config.servername);
-		AJS.$("#uuid").val(config.uuid);
-		AJS.$("#profilename").val(config.profilename);
+        var config = profiles[profilename];
+        if (config != undefined){
+            AJS.$("#username").val(config.username);
+            AJS.$("#apiKey").val(config.apikey);
+            AJS.$("#serviceKey").val(config.servicekey);
+            AJS.$("#url").val(config.url);
+            AJS.$("#servername").val(config.servername);
+            AJS.$("#uuid").val(config.uuid);
+            AJS.$("#profilename").val(config.profilename);
+		}
 	}
-
+	function createNewProfile(){
+        AJS.$("#admin").show();
+    }
 	function updateConfig() {
 		var user = AJS.$("#username").attr("value");
 		var api = AJS.$("#apiKey").attr("value");
@@ -65,6 +69,20 @@ window.onload  = function() {
 			}
 		});
 	}
+	function clearForm(){
+		AJS.$("#username").val("");
+		AJS.$("#apiKey").val("");
+		AJS.$("#serviceKey").val("");
+		AJS.$("#url").val("");
+		AJS.$("#servername").val("");
+		AJS.$("#uuid").val("");
+		AJS.$("#profilename").val("");
+	}
+	function createNewProfile(){
+		console.log("creating new profile");
+		AJS.$("#admin").show();
+		clearForm();
+	}
 	AJS.$("#admin-submit").removeAttr('onsubmit').submit(function(event){
         event.preventDefault();
     });
@@ -72,5 +90,6 @@ window.onload  = function() {
 		updateConfig();
 		return false;
 	});
+	AJS.$("#admin-form").onclick=function(){createNewProfile();};
 	getProfiles();
 };

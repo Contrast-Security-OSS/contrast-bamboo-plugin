@@ -6,59 +6,85 @@
         <meta name="application-base-url" content=$baseUrl>
     </head>
     <body>
-    	<h1>Teamserver Profile Setup</h1>
-    <form id="admin" class="aui">
-        <div class="field-group">
-            <label for="tsprofile">Teamserver Profile: </label>
-            <input type="text" id="profilename" name="profilename" class="text">
+        <div class="aui-page-panel">
+            <div class="aui-page-panel-inner">
+                <section class="aui-page-panel-content">
+                    <h1>Teamserver Profile Setup</h1>
+                    <h5>Configure Teamserver Profiles for use in testing.</h5>
+                </section>
+            </div>
         </div>
-        <table class = "aui">
-            <thead>
-                <th><h2>Configure Connection</h2></th>
-                <th>
-                    <div class="field-group">
-                        <input id="test-connection" type="submit" value="Test Connection" class="aui-button">
-                    </div>
-                </th>
-            </thead>
-            <tr>
-                <td>
-                    <div class="field-group">
-                    <label for="username">Username: </label>
-                    <input type="text" id="username" name="username" class="text">
-                    </div>
-                </td>
-                <td>
-                    <div class="field-group">
-                    <label for="apiKey">API Key: </label>
-                    <input type="text" id="apiKey" name="apiKey" class="text">
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="field-group">
-                        <label for="serviceKey">Service Key: </label>
-                        <input type="text" id="serviceKey" name="serviceKey" class="text">
-                    </div>
-                </td>
-                <td>
-                    <div class="field-group">
-                        <label for="url">Teamserver URL: </label>
-                        <input type="text" id="url" name="url" class="text">
-                    </div>
-                </td>
-            </tr>
-        </table>
         <br>
         <div class="field-group">
-            <label for="servername">Servername: </label>
-            <input type="text" id="servername" name="servername" class="text">
+            <label for="tsprofile">Teamserver Profile: </label>
+            <button aria-owns="dropdown2-all-in" aria-haspopup="true" class="aui-button aui-dropdown2-trigger">Teamserver Profiles</button>
+            <div id="dropdown2-all-in" class="aui-dropdown2 aui-style-default">
+               <div class="aui-dropdown2-section">
+                   <strong>Profiles</strong>
+                   <ul>
+                        <li><a>New Profile</a></li>
+                   </ul>
+                 </div>
+            </div>
         </div>
-        <div class="field-group">
-            <label for="uuid">Organization UUID: </label>
-            <input type="text" id="uuid" name="uuid" class="text">
-        </div>
+        <form id="admin-form" class="aui" style="display:none">
+            <table class = "aui">
+                <thead>
+                    <th><h2>Configure Connection</h2></th>
+                    <th>
+                        <div class="field-group">
+                            <input id="test-connection" type="submit" value="Test Connection" class="aui-button">
+                        </div>
+                    </th>
+                </thead>
+                <tr>
+                    <td>
+                        <div class="field-group">
+                        <label for="profilename">Profile Name: </label>
+                        <input type="text" id="profilename" name="profilename" class="text">
+                        </div>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="field-group">
+                        <label for="username">Username: </label>
+                        <input type="text" id="username" name="username" class="text">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field-group">
+                        <label for="apiKey">API Key: </label>
+                        <input type="text" id="apiKey" name="apiKey" class="text">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="field-group">
+                            <label for="serviceKey">Service Key: </label>
+                            <input type="text" id="serviceKey" name="serviceKey" class="text">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field-group">
+                            <label for="url">Teamserver URL: </label>
+                            <input type="text" id="url" name="url" class="text">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <div class="field-group">
+                <label for="servername">Servername: </label>
+                <input type="text" id="servername" name="servername" class="text">
+            </div>
+            <div class="field-group">
+                <label for="uuid">Organization UUID: </label>
+                <input type="text" id="uuid" name="uuid" class="text">
+            </div>
             <p class="aui-buttons">
                 <div class="field-group">
                     <input id="admin-submit" type="submit" value="Save Changes" class="aui-button aui-button-primary">

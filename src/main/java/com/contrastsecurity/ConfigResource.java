@@ -76,18 +76,6 @@ public class ConfigResource
 					settings.put(PLUGIN_STORAGE_KEY + ".profiles", profiles);
 				}
 				return profiles;
-				
-				/* Old Code
-				config.setProfilename((String) settings.get(PLUGIN_STORAGE_KEY + ".profilename"));				
-				config.setUsername((String) settings.get(PLUGIN_STORAGE_KEY + ".username"));				
-				config.setApikey((String) settings.get(PLUGIN_STORAGE_KEY + ".apikey"));
-				config.setServicekey((String) settings.get(PLUGIN_STORAGE_KEY + ".servicekey"));
-				config.setUrl((String) settings.get(PLUGIN_STORAGE_KEY + ".url"));
-				config.setServername((String) settings.get(PLUGIN_STORAGE_KEY + ".servername"));
-				config.setUuid((String) settings.get(PLUGIN_STORAGE_KEY + ".uuid"));
-
-				return config;
-				*/
 			}
 		})).build();
 	}
