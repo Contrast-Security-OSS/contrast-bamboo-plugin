@@ -24,9 +24,13 @@
     <url-pattern>/teamserverConnect</url-pattern>
   </servlet>
   
-  <web-item key="conf-menu-item" name="Contrast Admin" section="system.admin/configuration" weight="10">
+  <web-item key="bamboo-menu-item"
+            name="Contrast Admin Page"
+            section="system.admin/plugins"
+            weight="10"
+            application="bamboo">
     <description>Link to Contrast Teamserver Configuration page.</description>
-    <label key="teamserver.admin.label"/>
+    <label key="Teamserver Profiles"/>
     <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
   </web-item>
   
