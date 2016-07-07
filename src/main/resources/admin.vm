@@ -21,8 +21,8 @@
             <div id="dropdown2-all-in" class="aui-dropdown2 aui-style-default">
                <div class="aui-dropdown2-section">
                    <strong>Profiles</strong>
-                   <ul>
-                        <li><a>New Profile</a></li>
+                   <ul id="profile-list">
+                        <li><a id="new-profile-dropdown-button">New Profile</a></li>
                    </ul>
                  </div>
             </div>

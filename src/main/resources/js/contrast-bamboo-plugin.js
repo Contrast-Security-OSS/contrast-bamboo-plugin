@@ -7,7 +7,7 @@ window.onload  = function() {
 			dataType: "json",
 			success: function(configs) {
 				profiles = configs;
-				populateForm("");
+				initDropDown(configs);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);
@@ -17,24 +17,10 @@ window.onload  = function() {
 				    title: "Unable to retrieve Teamserver Profiles!",
 				    body: "Check your internet connection and try again."
 				});
+				return null;
 			}
 		});
 	}
-	function populateForm(profilename) {
-        var config = profiles[profilename];
-        if (config != undefined){
-            AJS.$("#username").val(config.username);
-            AJS.$("#apiKey").val(config.apikey);
-            AJS.$("#serviceKey").val(config.servicekey);
-            AJS.$("#url").val(config.url);
-            AJS.$("#servername").val(config.servername);
-            AJS.$("#uuid").val(config.uuid);
-            AJS.$("#profilename").val(config.profilename);
-		}
-	}
-	function createNewProfile(){
-        AJS.$("#admin").show();
-    }
 	function updateConfig() {
 		var user = AJS.$("#username").attr("value");
 		var api = AJS.$("#apiKey").attr("value");
@@ -46,10 +32,10 @@ window.onload  = function() {
 
 		var JSONPayload = {
 				"profilename":profilename,
-				"username": user,
-				"apikey": api,
-				"servicekey": service,
-				"url": TSurl,
+				"username":user,
+				"apikey":api,
+				"servicekey":service,
+				"url":TSurl,
 				"servername":servername,
 				"uuid":uuid
 			};
@@ -69,6 +55,20 @@ window.onload  = function() {
 			}
 		});
 	}
+	function populateForm(profilename) {
+		clearForm();
+        var config = profiles[profilename];
+        if (config != undefined){
+            AJS.$("#username").val(config.username);
+            AJS.$("#apiKey").val(config.apikey);
+            AJS.$("#serviceKey").val(config.servicekey);
+            AJS.$("#url").val(config.url);
+            AJS.$("#servername").val(config.servername);
+            AJS.$("#uuid").val(config.uuid);
+            AJS.$("#profilename").val(config.profilename);
+		}
+		AJS.$("#admin-form").show();
+	}
 	function clearForm(){
 		AJS.$("#username").val("");
 		AJS.$("#apiKey").val("");
@@ -78,18 +78,25 @@ window.onload  = function() {
 		AJS.$("#uuid").val("");
 		AJS.$("#profilename").val("");
 	}
-	function createNewProfile(){
-		console.log("creating new profile");
-		AJS.$("#admin").show();
-		clearForm();
+	function initDropDown(profs){
+		AJS.$("#new-profile-dropdown-button").click(newProfile);
+		for(var profileName in profs){
+			AJS.$("#profile-list").append("<li><a id='profile-item-"+profileName+"'>"+profileName+"</a></li>")
+			AJS.$("#profile-item-"+profileName).click(function(){
+				populateForm(profileName)
+			});
+		}
 	}
-	AJS.$("#admin-submit").removeAttr('onsubmit').submit(function(event){
+	function newProfile(){
+		clearForm();
+        AJS.$("#admin-form").show();
+    }
+	AJS.$("#admin-submit").removeAttr("onsubmit").submit(function(event){
         event.preventDefault();
     });
-    AJS.$('#admin-submit').click(function(){
+    AJS.$("#admin-submit").click(function(){
 		updateConfig();
 		return false;
 	});
-	AJS.$("#admin-form").onclick=function(){createNewProfile();};
 	getProfiles();
 };
