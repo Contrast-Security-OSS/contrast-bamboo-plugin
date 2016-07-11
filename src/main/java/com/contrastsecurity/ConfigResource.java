@@ -87,12 +87,12 @@ public class ConfigResource
 			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey());
 			int response = contrastsdk.makeConnection(profile.url+"/api/ng/profile", "GET").getResponseCode();
 			if(response != 200){
-				return Response.serverError().build();
+				return Response.status(404).build();
 			}
 		} catch (IllegalArgumentException e){
-			return Response.serverError().build();
+			return Response.status(404).build();
 		} catch (IOException e) {
-			return Response.serverError().build();
+			return Response.status(404).build();
 		}
 
 		return Response.ok().build();
