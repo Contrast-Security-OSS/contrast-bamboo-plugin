@@ -80,13 +80,21 @@ window.onload  = function() {
 	}
 	function initDropDown(profs){
 		AJS.$("#new-profile-dropdown-button").click(newProfile);
-		for(var profileName in profs){
-			AJS.$("#profile-list").append("<li><a id='profile-item-"+profileName+"'>"+profileName+"</a></li>")
-			AJS.$("#profile-item-"+profileName).click(function(){
-				var name = profileName
+		AJS.$.each(profs, function(name, profile) {
+			AJS.$("#profile-list").append("<li><a id='profile-item-"+name+"'>"+name+"</a></li>");
+			AJS.$("#profile-item-"+name).click(function(){
 				populateForm(name);
 			});
-		}
+		});
+		/*for(var profileName in profs){
+			AJS.$("#profile-list").append("<li><a id='profile-item-"+profileName+"'>"+profileName+"</a></li>");
+			console.log("adding profile li " + profileName);
+			function populate(){
+				console.log("within populate" + profileName);
+				populateForm(profileName);
+			};
+			AJS.$("#profile-item-"+profileName).click(populate);
+		}*/
 	}
 	function newProfile(){
 		clearForm();
