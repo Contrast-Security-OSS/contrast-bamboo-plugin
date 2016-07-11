@@ -78,6 +78,46 @@ window.onload  = function() {
 		AJS.$("#uuid").val("");
 		AJS.$("#profilename").val("");
 	}
+	function testConnection(){
+		var user = AJS.$("#username").attr("value");
+		var api = AJS.$("#apiKey").attr("value");
+		var service = AJS.$("#serviceKey").attr("value");
+		var TSurl = AJS.$("#url").attr("value");
+		var servername = AJS.$("#servername").attr("value");
+		var uuid = AJS.$("#uuid").attr("value");
+		var profilename = AJS.$("#profilename").attr("value");
+
+		var JSONPayload = {
+			"profilename":profilename,
+			"username":user,
+			"apikey":api,
+			"servicekey":service,
+			"url":TSurl,
+			"servername":servername,
+			"uuid":uuid
+		};
+		var stringPayload = JSON.stringify(JSONPayload);
+		AJS.$.ajax({
+			url: baseUrl + "/rest/teamserver-admin/1.0/verifyconnection",
+			type: "POST",
+			contentType: "application/json",
+			dataType:"json",
+			data:stringPayload,
+			processData: false,
+			success: function() {
+				AJS.messages.success({
+					title: "Success!",
+					body: "A connection has been established!"
+				});
+			},
+			error: function() {
+				AJS.messages.warning({
+					title:"Error.",
+					body:"Unable to establish a connection. Please check your settings and try again"
+				});
+			}
+		});
+	}
 	function initDropDown(profs){
 		AJS.$("#new-profile-dropdown-button").click(newProfile);
 		AJS.$.each(profs, function(name, profile) {
@@ -86,15 +126,6 @@ window.onload  = function() {
 				populateForm(name);
 			});
 		});
-		/*for(var profileName in profs){
-			AJS.$("#profile-list").append("<li><a id='profile-item-"+profileName+"'>"+profileName+"</a></li>");
-			console.log("adding profile li " + profileName);
-			function populate(){
-				console.log("within populate" + profileName);
-				populateForm(profileName);
-			};
-			AJS.$("#profile-item-"+profileName).click(populate);
-		}*/
 	}
 	function newProfile(){
 		clearForm();
@@ -103,8 +134,15 @@ window.onload  = function() {
 	AJS.$("#admin-submit").removeAttr("onsubmit").submit(function(event){
         event.preventDefault();
     });
+	AJS.$("#test-connection").removeAttr("onsubmit").submit(function(event){
+        event.preventDefault();
+    });
     AJS.$("#admin-submit").click(function(){
 		updateConfig();
+		return false;
+	});
+	AJS.$("#test-connection").click(function(){
+		testConnection();
 		return false;
 	});
 	getProfiles();
