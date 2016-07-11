@@ -83,7 +83,8 @@ window.onload  = function() {
 		for(var profileName in profs){
 			AJS.$("#profile-list").append("<li><a id='profile-item-"+profileName+"'>"+profileName+"</a></li>")
 			AJS.$("#profile-item-"+profileName).click(function(){
-				populateForm(profileName)
+				var name = profileName
+				populateForm(name);
 			});
 		}
 	}

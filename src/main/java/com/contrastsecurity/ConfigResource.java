@@ -65,16 +65,7 @@ public class ConfigResource
 			public Object doInTransaction()
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-				//TeamserverProfile config = new TeamserverProfile();
-				
 				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
-				if(profiles == null){
-					profiles = new TreeMap<String, TeamserverProfile>();
-					TeamserverProfile profile = new TeamserverProfile(); 
-					profile.setProfilename("Default");
-					profiles.put(profile.getProfilename(), profile);
-					settings.put(PLUGIN_STORAGE_KEY + ".profiles", profiles);
-				}
 				return profiles;
 			}
 		})).build();
