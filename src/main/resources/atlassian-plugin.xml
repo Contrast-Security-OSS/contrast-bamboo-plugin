@@ -9,9 +9,7 @@
     <param name="plugin-logo">images/pluginLogo.png</param>
     <param name="configure.url">plugins/servlet/teamserverConnect</param>
   </plugin-info>
-  <!-- add our i18n resource -->
-  <resource type="i18n" name="i18n" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
-  <!-- add our web resources -->
+
   <web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
     <resource type="download" name="contrast-bamboo-plugin.js" location="js/contrast-bamboo-plugin.js">
@@ -19,7 +17,14 @@
     </resource>
     <context>atl.admin</context>
   </web-resource>
-  
+
+  <taskType key="teamserver-threshold-tast" name="Teamserver Vulnerability Threshold Test" class="com.contrastsecurity.VerifyThresholdsTask">
+    <description>A task that prints 'Hello, World!'</description>
+    <configuration class="com.contrastsecurity.TeamserverTaskConfiguration"/>
+    <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
+    <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
+  </taskType>
+
   <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
     <url-pattern>/teamserverConnect</url-pattern>
   </servlet>
@@ -37,8 +42,9 @@
   <rest name="Teamserver REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
     <description>Provides REST resources for the Configuration UI.</description>
   </rest>
-  
   <rest name="contrastconfig" i18n-name-key="contrastconfig.name" key="contrastconfig" path="/contrastconfig" version="1.0">
     <description key="contrastconfig.description">The contrastconfig Plugin</description>
   </rest>
+
+  <resource type="i18n" name="helloworld language" location="i18n"/>
 </atlassian-plugin>

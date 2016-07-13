@@ -10,10 +10,13 @@ import org.jetbrains.annotations.NotNull;
 public class VerifyThresholdsTask implements TaskType{
 
     @NotNull
-    public TaskResult execute(@NotNull TaskContext taskContext) throws TaskException {
+    public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException
+    {
         final BuildLogger buildLogger = taskContext.getBuildLogger();
 
-        buildLogger.addBuildLogEntry("Hello, World!");
+        final String say = taskContext.getConfigurationMap().get("say");
+
+        buildLogger.addBuildLogEntry(say);
 
         return TaskResultBuilder.newBuilder(taskContext).success().build();
     }
