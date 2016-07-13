@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -85,8 +86,9 @@ public class ConfigResource
 
 		try {
 			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey());
-			int response = contrastsdk.makeConnection(profile.url+"/api/ng/profile", "GET").getResponseCode();
-			if(response != 200){
+			HttpURLConnection connection = contrastsdk.makeConnection(profile.url+"ng/profile", "GET");
+			System.out.println(connection.toString());
+			if(connection.getResponseCode() != 200){
 				return Response.status(404).build();
 			}
 		} catch (IllegalArgumentException e){
