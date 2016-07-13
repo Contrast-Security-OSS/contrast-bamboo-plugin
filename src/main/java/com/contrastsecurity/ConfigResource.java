@@ -11,6 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -73,7 +75,7 @@ public class ConfigResource
 	
 	@Path("/verifyconnection")
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes({MediaType.APPLICATION_JSON})
 	public Response testConnection(final TeamserverProfile profile, @Context HttpServletRequest request)
 	{
 		String username = userManager.getRemoteUsername(request);
@@ -81,11 +83,20 @@ public class ConfigResource
 		{
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
-		
-		ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(),profile.getApikey(), profile.getServicekey());
-		
-		//TEST CONNECTION here
-		
+
+		try {
+			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey());
+			HttpURLConnection connection = contrastsdk.makeConnection(profile.url+"ng/profile", "GET");
+			System.out.println(connection.toString());
+			if(connection.getResponseCode() != 200){
+				return Response.status(404).build();
+			}
+		} catch (IllegalArgumentException e){
+			return Response.status(404).build();
+		} catch (IOException e) {
+			return Response.status(404).build();
+		}
+
 		return Response.ok().build();
 	}
 	
@@ -113,16 +124,7 @@ public class ConfigResource
 				profiles.put(profile.getProfilename(), profile);
 				
 				settings.put(PLUGIN_PROFILES_KEY, profiles);
-				
-				/*
-				pluginSettings.put(PLUGIN_STORAGE_KEY + ".profilename", config.getProfilename());
-				pluginSettings.put(PLUGIN_STORAGE_KEY + ".username", config.getUsername());
-				pluginSettings.put(PLUGIN_STORAGE_KEY  +".apikey", config.getApikey());
-				pluginSettings.put(PLUGIN_STORAGE_KEY  +".servicekey", config.getServicekey());
-				pluginSettings.put(PLUGIN_STORAGE_KEY  +".url", config.getUrl());
-				pluginSettings.put(PLUGIN_STORAGE_KEY  +".servername", config.getServername());
-				pluginSettings.put(PLUGIN_STORAGE_KEY  +".uuid", config.getUuid());
-				*/
+
 				return null;
 			}
 		});
