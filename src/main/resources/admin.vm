@@ -24,7 +24,7 @@
                    <ul id="profile-list">
                         <li><a id="new-profile-dropdown-button">New Profile</a></li>
                    </ul>
-                 </div>
+               </div>
             </div>
         </div>
         <form id="admin-form" class="aui" style="display:none">

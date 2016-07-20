@@ -1,1 +1,1 @@
-[@ww.label labelKey="tast-config.say" name="say"/]
+[@ww.label labelKey="ts.task.config.say" name="say"/]

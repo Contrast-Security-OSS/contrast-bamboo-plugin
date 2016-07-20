@@ -4,17 +4,34 @@ import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.pluginsettings.PluginSettings;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.opensymphony.xwork2.TextProvider;
+import com.opensymphony.xwork2.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Set;
 
 public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
 {
+    private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
+    private static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
+
     private TextProvider textProvider;
+
+    @ComponentImport
+    private final PluginSettingsFactory pluginSettingsFactory;
+
+    @Inject
+    public TeamserverTaskConfiguration(PluginSettingsFactory psf)
+    {
+        this.pluginSettingsFactory = psf;
+    }
 
     @NotNull
     @Override
@@ -32,7 +49,13 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     {
         super.populateContextForCreate(context);
 
-        context.put("say", "Hello, World!");
+        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+        Set<String> keys = ((Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY)).keySet();
+
+        String[] profiles = keys.toArray(new String[keys.size()]);
+
+        context.put("say", "Your text here!");
+        context.put("profiles", profiles);
     }
 
     @Override
