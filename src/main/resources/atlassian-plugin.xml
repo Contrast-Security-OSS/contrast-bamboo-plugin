@@ -18,7 +18,7 @@
     <context>atl.admin</context>
   </web-resource>
 
-  <taskType key="teamserver-threshold-tast" name="Teamserver Vulnerability Threshold Test" class="com.contrastsecurity.VerifyThresholdsTask">
+  <taskType key="teamserver-threshold-tast" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.VerifyThresholdsTask">
     <description>A task for registering Teamserver results as build conditions.</description>
     <configuration class="com.contrastsecurity.TeamserverTaskConfiguration"/>
     <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
@@ -30,7 +30,7 @@
   <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
     <url-pattern>/teamserverConnect</url-pattern>
   </servlet>
-  
+
   <web-item key="bamboo-menu-item"
             name="Contrast Admin Page"
             section="system.admin/plugins"
@@ -40,7 +40,7 @@
     <label key="Teamserver Profiles"/>
     <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
   </web-item>
-  
+
   <rest name="Teamserver REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
     <description>Provides REST resources for the Configuration UI.</description>
   </rest>
