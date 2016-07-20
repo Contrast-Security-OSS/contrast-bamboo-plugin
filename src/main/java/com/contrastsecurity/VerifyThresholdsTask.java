@@ -1,5 +1,6 @@
 package com.contrastsecurity;
 import com.atlassian.bamboo.build.logger.BuildLogger;
+import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
@@ -14,9 +15,11 @@ public class VerifyThresholdsTask implements TaskType{
     {
         final BuildLogger buildLogger = taskContext.getBuildLogger();
 
-        final String say = taskContext.getConfigurationMap().get("say");
+        final ConfigurationMap map = taskContext.getConfigurationMap();
 
-        buildLogger.addBuildLogEntry(say);
+        buildLogger.addBuildLogEntry(map.get("count"));
+        buildLogger.addBuildLogEntry(map.get("severity"));
+        buildLogger.addBuildLogEntry(map.get("type"));
 
         return TaskResultBuilder.newBuilder(taskContext).success().build();
     }

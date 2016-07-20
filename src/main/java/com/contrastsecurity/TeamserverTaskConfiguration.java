@@ -39,7 +39,9 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 
-        config.put("say", params.getString("say"));
+        config.put("count", params.getInt("count", 0) + "");
+        config.put("severity", params.getString("severity"));
+        config.put("type", params.getString("type"));
 
         return config;
     }
@@ -48,13 +50,15 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     public void populateContextForCreate(@NotNull final Map<String, Object> context)
     {
         super.populateContextForCreate(context);
-
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        Set<String> keys = ((Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY)).keySet();
+        Map<String,Object> map = (Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY);
+        String[] profiles = new String[0];
 
-        String[] profiles = keys.toArray(new String[keys.size()]);
+        if (map != null) {
+            Set<String> keys = map.keySet();
+            profiles = keys.toArray(new String[keys.size()]);
+        }
 
-        context.put("say", "Your text here!");
         context.put("profiles", profiles);
     }
 
@@ -63,14 +67,14 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     {
         super.populateContextForEdit(context, taskDefinition);
 
-        context.put("say", taskDefinition.getConfiguration().get("say"));
+        //context.put("say", taskDefinition.getConfiguration().get("say"));
     }
 
     @Override
     public void populateContextForView(@NotNull final Map<String, Object> context, @NotNull final TaskDefinition taskDefinition)
     {
         super.populateContextForView(context, taskDefinition);
-        context.put("say", taskDefinition.getConfiguration().get("say"));
+        //context.put("say", taskDefinition.getConfiguration().get("say"));
     }
 
     @Override
@@ -78,11 +82,11 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     {
         super.validate(params, errorCollection);
 
-        final String sayValue = params.getString("say");
+        /*final String sayValue = params.getString("say");
         if (StringUtils.isEmpty(sayValue))
         {
             errorCollection.addError("say", textProvider.getText("helloworld.say.error"));
-        }
+        }*/
     }
 
     public void setTextProvider(final TextProvider textProvider)

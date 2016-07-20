@@ -99,7 +99,6 @@
             <option>xpath-injection</option>
             <option>xxe</option>
             <option>xxssprotection-header-disabled</option>
-
         </select>
     </div>
 [#else]
