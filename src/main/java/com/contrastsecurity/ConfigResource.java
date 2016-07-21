@@ -33,8 +33,8 @@ import com.contrastsecurity.sdk.ContrastSDK;
 @Path("/")
 public class ConfigResource
 {
-	private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
-	private static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
+	public static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
+	public static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
 
 	@ComponentImport
 	private final UserManager userManager;
