@@ -39,18 +39,21 @@ public class TeamserverProfile {
 		this.servicekey = servicekey;
 	}
 	public String getUrl() {
+		if (this.url == null){
+			return "https://app.contrastsecurity.com/Contrast/api";
+		}
 		return url;
 	}
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public String getProfilename() {
+	public String getProfileName() {
 		return profilename;
 	}
-	public void setProfilename(String profilename) {
+	public void setProfileName(String profilename) {
 		this.profilename = profilename;
 	}
-	public String getServername() {
+	public String getServerName() {
 		return servername;
 	}
 	public void setServername(String servername) {

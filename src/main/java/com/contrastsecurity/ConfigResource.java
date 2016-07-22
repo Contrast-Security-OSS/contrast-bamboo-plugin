@@ -27,6 +27,7 @@ import javax.inject.Named;
 
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
+import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.sdk.ContrastSDK;
 
 @Named("configuration")
@@ -83,20 +84,16 @@ public class ConfigResource
 		{
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
-
 		try {
-			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey());
-			HttpURLConnection connection = contrastsdk.makeConnection(profile.url+"ng/profile", "GET");
-			System.out.println(connection.toString());
-			if(connection.getResponseCode() != 200){
-				return Response.status(404).build();
-			}
-		} catch (IllegalArgumentException e){
-			return Response.status(404).build();
+			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
+			contrastsdk.getProfileDefaultOrganizations();
+		} catch (UnauthorizedException e){
+			System.out.println(e.getMessage());
+			return Response.status(Status.FORBIDDEN).build();
 		} catch (IOException e) {
-			return Response.status(404).build();
+			System.out.println(e.getMessage());
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-
 		return Response.ok().build();
 	}
 	
@@ -121,7 +118,7 @@ public class ConfigResource
 					profiles = new TreeMap<String, TeamserverProfile>();
 					System.out.println("profiles was null in post method");
 				}
-				profiles.put(profile.getProfilename(), profile);
+				profiles.put(profile.getProfileName(), profile);
 				
 				settings.put(PLUGIN_PROFILES_KEY, profiles);
 
