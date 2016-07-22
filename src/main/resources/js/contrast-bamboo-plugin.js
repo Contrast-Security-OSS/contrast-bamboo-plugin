@@ -7,7 +7,9 @@ window.onload  = function() {
 			dataType: "json",
 			success: function(configs) {
 				profiles = configs;
-				initDropDown(configs);
+				if(profiles != null){
+					initDropDown(configs);
+				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);
@@ -48,9 +50,10 @@ window.onload  = function() {
 			data:stringPayload,
 			processData: false,
 			success: function() {
+				profiles[JSONPayload.profilename] = JSONPayload;
 				AJS.messages.success({
 				    title: "Success!",
-				    body: "You have updated you Teamserver Configuration!"
+				    body: "You have updated your Teamserver Configuration!"
 				});
 			}
 		});
@@ -64,8 +67,10 @@ window.onload  = function() {
             AJS.$("#serviceKey").val(config.servicekey);
             AJS.$("#url").val(config.url);
             AJS.$("#servername").val(config.servername);
-            AJS.$("#uuid").val(config.uuid);
-            AJS.$("#profilename").val(config.profilename);
+			AJS.$("#uuid").val(config.uuid);
+			AJS.$("#uuid").val(config.uuid);
+			AJS.$("#profilename").val(config.profilename);
+			AJS.$("#profilename-display").html(config.profilename);
 		}
 		AJS.$("#admin-form").show();
 	}
@@ -119,30 +124,59 @@ window.onload  = function() {
 		});
 	}
 	function initDropDown(profs){
-		AJS.$("#new-profile-dropdown-button").click(newProfile);
+		var i = 0;
 		AJS.$.each(profs, function(name, profile) {
-			AJS.$("#profile-list").append("<li><a id='profile-item-"+name+"'>"+name+"</a></li>");
-			AJS.$("#profile-item-"+name).click(function(){
+			AJS.$("#profile-list").append("<li><a id='profile-item-"+(i)+"'>"+name+"</a></li>");
+			AJS.$("#profile-item-"+i).click(function(){
 				populateForm(name);
+				AJS.$("#profile-delete").show();
+				AJS.$("#profilename-display").css('display', 'inline');
+				AJS.$("#profilename-label").hide();
+				AJS.$("#profilename").hide();
 			});
+			i++;
 		});
 	}
-	function newProfile(){
-		clearForm();
-        AJS.$("#admin-form").show();
-    }
+	function isNew(name){
+		return (profiles[name] === undefined);
+	}
+
 	AJS.$("#admin-submit").removeAttr("onsubmit").submit(function(event){
         event.preventDefault();
     });
 	AJS.$("#test-connection").removeAttr("onsubmit").submit(function(event){
         event.preventDefault();
     });
+	AJS.$("#new-profile-button").removeAttr("onsubmit").submit(function(event){
+		event.preventDefault();
+	});
     AJS.$("#admin-submit").click(function(){
+		if(isNew(AJS.$("#profilename").attr("value"))){
+			AJS.$("#profile-list").html("");
+			updateConfig();
+			initDropDown(profiles);
+			return false;
+		}
 		updateConfig();
 		return false;
 	});
 	AJS.$("#test-connection").click(function(){
 		testConnection();
+		return false;
+	});
+	AJS.$("#new-profile-button").click(function(){
+		clearForm();
+		AJS.$("#admin-form").show();
+		AJS.$("#profilename-display").hide();
+		AJS.$("#profilename-label").show();
+		AJS.$("#profilename").show();
+		AJS.$("#profile-delete").hide();
+		return false;
+	});
+	AJS.$("#delete-profile-button").click(function(){
+		AJS.$("#admin-form").hide();
+		deleteProfile();
+		clearForm();
 		return false;
 	});
 	getProfiles();

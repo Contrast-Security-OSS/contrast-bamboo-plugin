@@ -152,11 +152,6 @@
 			<version>1.1.3-incubating</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.atlassian.labs.plugins</groupId>
-			<artifactId>quickreload</artifactId>
-			<version>1.30.2</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -168,7 +163,7 @@
 				<configuration>
 					<productVersion>${bamboo.version}</productVersion>
 					<productDataVersion>${bamboo.data.version}</productDataVersion>
-					<enableQuickReload>true</enableQuickReload>
+					<enableQuickReload>false</enableQuickReload>
 					<enableFastdev>false</enableFastdev>
 					<!-- See here for an explanation of default instructions: -->
 					<!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
