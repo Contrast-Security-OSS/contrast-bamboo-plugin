@@ -93,6 +93,7 @@
                 </div>
             </p>
         </form>
+        <br>
         <div id="aui-message-bar"></div>
     </body>
 </html>

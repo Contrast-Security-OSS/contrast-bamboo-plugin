@@ -23,7 +23,7 @@ window.onload  = function() {
 			}
 		});
 	}
-	function updateConfig() {
+	function addProfile() {
 		var user = AJS.$("#username").attr("value");
 		var api = AJS.$("#apiKey").attr("value");
 		var service = AJS.$("#serviceKey").attr("value");
@@ -52,7 +52,6 @@ window.onload  = function() {
 			success: function() {
 				profiles[JSONPayload.profilename] = JSONPayload;
 				AJS.$("#profile-list").empty();
-				console.log("Empty List");
 				initDropDown(profiles);
 				AJS.messages.success({
 				    title: "Success!",
@@ -61,6 +60,39 @@ window.onload  = function() {
 			}
 		});
 	}
+	function deleteProfile() {
+		var profilename = AJS.$("#profilename").attr("value");
+		var JSONPayload = {
+				"profilename":profilename,
+				"username":"",
+				"apikey":"",
+				"servicekey":"",
+				"url":"",
+				"servername":"",
+				"uuid":""
+			};
+		var stringPayload = JSON.stringify(JSONPayload);
+		AJS.$.ajax({
+			url: baseUrl + "/rest/teamserver-admin/1.0/deleteprofile",
+			type: "POST",
+			contentType: "application/json",
+			dataType:"json",
+			data:stringPayload,
+			processData: false,
+			success: function() {
+				delete profiles[JSONPayload.profilename];
+				AJS.$("#profile-list").empty();
+				console.log("Empty List");
+				initDropDown(profiles);
+				AJS.messages.success({
+					title: "Success!",
+					body: "You have deleted the profile: " + JSONPayload.profilename
+				});
+			}
+		});
+	}
+
+
 	function populateForm(profilename) {
 		clearForm();
         var config = profiles[profilename];
@@ -140,9 +172,6 @@ window.onload  = function() {
 			i++;
 		});
 	}
-	function isNew(name){
-		return (profiles[name] === undefined);
-	}
 
 	AJS.$("#admin-submit").removeAttr("onsubmit").submit(function(event){
         event.preventDefault();
@@ -157,7 +186,7 @@ window.onload  = function() {
 		event.preventDefault();
 	});
     AJS.$("#admin-submit").click(function(){
-		updateConfig();
+		addProfile();
 		return false;
 	});
 	AJS.$("#test-connection").click(function(){
@@ -173,7 +202,7 @@ window.onload  = function() {
 		AJS.$("#profile-delete").hide();
 		return false;
 	});
-	AJS.$("#delete-profile-button").click(function(){
+	AJS.$("#profile-delete").click(function(){
 		AJS.$("#admin-form").hide();
 		deleteProfile();
 		clearForm();

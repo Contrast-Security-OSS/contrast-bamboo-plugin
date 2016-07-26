@@ -96,7 +96,38 @@ public class ConfigResource
 		}
 		return Response.ok().build();
 	}
-	
+
+	@Path("/deleteprofile")
+	@POST
+	@Consumes({MediaType.APPLICATION_JSON})
+	public Response deleteProfile(final TeamserverProfile profile, @Context HttpServletRequest request){
+		String username = userManager.getRemoteUsername(request);
+		if (username == null || !userManager.isSystemAdmin(username))
+		{
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+
+		Boolean b = (Boolean)transactionTemplate.execute(new TransactionCallback<Object>()
+		{
+			public Object doInTransaction()
+			{
+				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+
+				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				if(profiles == null){
+					return false;
+				}
+				TeamserverProfile temp = profiles.remove(profile.getProfileName());
+				settings.put(PLUGIN_PROFILES_KEY, profiles);
+
+				return (temp != null);
+			}
+		});
+
+		if(b){ return Response.noContent().build(); }
+		else { return Response.notModified().build(); }
+	}
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateConfig(final TeamserverProfile profile, @Context HttpServletRequest request)
