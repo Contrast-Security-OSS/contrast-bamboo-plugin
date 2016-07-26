@@ -51,6 +51,9 @@ window.onload  = function() {
 			processData: false,
 			success: function() {
 				profiles[JSONPayload.profilename] = JSONPayload;
+				AJS.$("#profile-list").empty();
+				console.log("Empty List");
+				initDropDown(profiles);
 				AJS.messages.success({
 				    title: "Success!",
 				    body: "You have updated your Teamserver Configuration!"
@@ -150,13 +153,10 @@ window.onload  = function() {
 	AJS.$("#new-profile-button").removeAttr("onsubmit").submit(function(event){
 		event.preventDefault();
 	});
+	AJS.$("#profile-delete").removeAttr("onsubmit").submit(function(event){
+		event.preventDefault();
+	});
     AJS.$("#admin-submit").click(function(){
-		if(isNew(AJS.$("#profilename").attr("value"))){
-			AJS.$("#profile-list").html("");
-			updateConfig();
-			initDropDown(profiles);
-			return false;
-		}
 		updateConfig();
 		return false;
 	});
