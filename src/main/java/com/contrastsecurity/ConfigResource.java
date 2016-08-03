@@ -88,10 +88,8 @@ public class ConfigResource
 			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
 			contrastsdk.getProfileDefaultOrganizations();
 		} catch (UnauthorizedException e){
-			System.out.println(e.getMessage());
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 		return Response.ok().build();
@@ -107,7 +105,7 @@ public class ConfigResource
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 
-		Boolean b = (Boolean)transactionTemplate.execute(new TransactionCallback<Object>()
+		Boolean success = (Boolean)transactionTemplate.execute(new TransactionCallback<Object>()
 		{
 			public Object doInTransaction()
 			{
@@ -124,7 +122,7 @@ public class ConfigResource
 			}
 		});
 
-		if(b){ return Response.noContent().build(); }
+		if(success){ return Response.noContent().build(); }
 		else { return Response.notModified().build(); }
 	}
 
@@ -147,7 +145,7 @@ public class ConfigResource
 				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
 				if(profiles == null){
 					profiles = new TreeMap<String, TeamserverProfile>();
-					System.out.println("profiles was null in post method");
+					//System.out.println("profiles was null in post method");
 				}
 				profiles.put(profile.getProfileName(), profile);
 				

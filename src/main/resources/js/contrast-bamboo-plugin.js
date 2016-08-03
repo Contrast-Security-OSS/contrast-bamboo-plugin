@@ -9,6 +9,8 @@ window.onload  = function() {
 				profiles = configs;
 				if(profiles != null){
 					initDropDown(configs);
+				} else {
+				    profiles = {};
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -57,6 +59,12 @@ window.onload  = function() {
 				    title: "Success!",
 				    body: "You have updated your Teamserver Configuration!"
 				});
+			},
+			error: function(){
+			    AJS.messages.warning({
+                    title: "Unable to retrieve Teamserver Profiles!",
+                	body: "Check your internet connection and try again."
+                });
 			}
 		});
 	}
