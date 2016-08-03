@@ -115,15 +115,19 @@ public class ConfigResource
 				if(profiles == null){
 					return false;
 				}
-				TeamserverProfile temp = profiles.remove(profile.getProfileName());
+				TeamserverProfile fullProfile = profiles.remove(profile.getProfileName());
 				settings.put(PLUGIN_PROFILES_KEY, profiles);
 
-				return (temp != null);
+				return (fullProfile != null);
 			}
 		});
 
-		if(success){ return Response.noContent().build(); }
-		else { return Response.notModified().build(); }
+		if(success){
+			return Response.noContent().build();
+		}
+		else {
+			return Response.notModified().build();
+		}
 	}
 
 	@POST
@@ -145,7 +149,6 @@ public class ConfigResource
 				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
 				if(profiles == null){
 					profiles = new TreeMap<String, TeamserverProfile>();
-					//System.out.println("profiles was null in post method");
 				}
 				profiles.put(profile.getProfileName(), profile);
 				
