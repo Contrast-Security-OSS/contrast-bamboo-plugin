@@ -59,7 +59,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 
         config.put("profile_select", params.getString("profile_select"));
-        config.put("count", params.getInt("count", 0) + "");
+        config.put("count", Integer.toString(params.getInt("count", 0)));
         config.put("severity_select", params.getString("severity_select"));
         config.put("type_select", params.getString("type_select"));
         config.put("app_name", params.getString("app_name"));
@@ -135,11 +135,5 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     public void validate(@NotNull final ActionParametersMap params, @NotNull final ErrorCollection errorCollection)
     {
         super.validate(params, errorCollection);
-
-        /*final String sayValue = params.getString("say");
-        if (StringUtils.isEmpty(sayValue))
-        {
-            errorCollection.addError("say", textProvider.getText("helloworld.say.error"));
-        }*/
     }
 }

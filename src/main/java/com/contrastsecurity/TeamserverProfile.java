@@ -3,6 +3,9 @@ package com.contrastsecurity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TeamserverProfile {
+
+	private static final String DEFAULT_URL = "https://app.contrastsecurity.com/Contrast/api";
+
 	@JsonProperty("profilename") 
 	public String profilename;
 	@JsonProperty("username") 
@@ -40,7 +43,7 @@ public class TeamserverProfile {
 	}
 	public String getUrl() {
 		if (this.url == null){
-			return "https://app.contrastsecurity.com/Contrast/api";
+			return DEFAULT_URL;
 		}
 		return url;
 	}
