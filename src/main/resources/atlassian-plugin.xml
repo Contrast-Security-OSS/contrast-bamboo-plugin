@@ -1,42 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
-  <plugin-info>
-    <description>${project.description}</description>
-    <version>${project.version}</version>
-    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
-    <param name="plugin-icon">images/pluginIcon.png</param>
-    <param name="plugin-logo">images/pluginLogo.png</param>
-    <param name="configure.url">plugins/servlet/teamserverConnect</param>
-  </plugin-info>
-  <web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">
-    <dependency>com.atlassian.auiplugin:ajs</dependency>
-    <resource type="download" name="contrast-bamboo-plugin.js" location="js/contrast-bamboo-plugin.js">
-      <param name="content-type" value="application/javascript"/>
-    </resource>
-    <context>atl.admin</context>
-  </web-resource>
-  <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.VerifyThresholdsTask">
-    <description>A task for registering Teamserver results as build conditions.</description>
-    <configuration class="com.contrastsecurity.TeamserverTaskConfiguration"/>
-    <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
-    <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
-    <resource type="download" name="icon" location="images/pluginLogo.png"/>
-    <help link="ts.task.help.link" title="ts.task.help.title"/>
-  </taskType>
-  <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
-    <url-pattern>/teamserverConnect</url-pattern>
-  </servlet>
-  <web-item key="bamboo-menu-item" name="Contrast Admin Page" section="system.admin/plugins" weight="10" application="bamboo">
-    <description>Link to Contrast Teamserver Configuration page.</description>
-    <label key="Teamserver Profiles"/>
-    <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
-  </web-item>
-  <rest name="Teamserver REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
-    <description>Provides REST resources for the Configuration UI.</description>
-  </rest>
-  <rest name="contrastconfig" i18n-name-key="contrastconfig.name" key="contrastconfig" path="/contrastconfig" version="1.0">
-    <description key="contrastconfig.description">The contrastconfig Plugin</description>
-  </rest>
-  <resource type="i18n" name="language" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+        <param name="configure.url">plugins/servlet/teamserverConnect</param>
+    </plugin-info>
+    <web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="contrast-bamboo-plugin.js" location="js/contrast-bamboo-plugin.js">
+            <param name="content-type" value="application/javascript"/>
+        </resource>
+        <context>atl.admin</context>
+    </web-resource>
+    <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold"
+              class="com.contrastsecurity.VerifyThresholdsTask">
+        <description>A task for registering Teamserver results as build conditions.</description>
+        <configuration class="com.contrastsecurity.TeamserverTaskConfiguration"/>
+        <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
+        <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
+        <resource type="download" name="icon" location="images/pluginLogo.png"/>
+        <help link="ts.task.help.link" title="ts.task.help.title"/>
+    </taskType>
+    <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
+        <url-pattern>/teamserverConnect</url-pattern>
+    </servlet>
+    <web-item key="bamboo-menu-item" name="Contrast Admin Page" section="system.admin/plugins" weight="10"
+              application="bamboo">
+        <description>Link to Contrast Teamserver Configuration page.</description>
+        <label key="Teamserver Profiles"/>
+        <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
+    </web-item>
+    <rest name="Teamserver REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
+        <description>Provides REST resources for the Configuration UI.</description>
+    </rest>
+    <rest name="contrastconfig" i18n-name-key="contrastconfig.name" key="contrastconfig" path="/contrastconfig"
+          version="1.0">
+        <description key="contrastconfig.description">The contrastconfig Plugin</description>
+    </rest>
+    <resource type="i18n" name="language" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
+
+    <report key="teamserverVulnTracking"
+            name="Teamserver Vulnerabilities by Type"
+            class="com.contrastsecurity.VulnReportCollector">
+        <description>Shows the vulnerabilities in each build by type of vulnerability.</description>
+        <chartClass>com.atlassian.bamboo.reports.charts.BuildSummarySuccessRatioLineChart</chartClass>
+    </report>
+    <report key="teamserverSevTracking"
+            name="Teamserver Vulnerabilities by Severity"
+            class="com.contrastsecurity.SeverityReportCollector">
+        <description>Shows the vulnerabilities in each build by severity (Note, Low, Medium, High, Critical).</description>
+        <chartClass>com.atlassian.bamboo.reports.charts.BuildSummarySuccessRatioLineChart</chartClass>
+    </report>
 </atlassian-plugin>
