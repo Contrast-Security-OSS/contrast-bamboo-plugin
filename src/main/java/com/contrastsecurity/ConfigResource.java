@@ -145,7 +145,7 @@ public class ConfigResource
 				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
 				if(profiles == null){
 					profiles = new TreeMap<String, TeamserverProfile>();
-					System.out.println("profiles was null in post method");
+					//System.out.println("profiles was null in post method");
 				}
 				profiles.put(profile.getProfileName(), profile);
 				
