@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -100,11 +101,10 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
         //Gets Profile names from plugin settings
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
         Map<String,Object> map = (Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY);
-        String[] profiles = new String[0];
+        Set<String> profiles = new HashSet<String>();
 
         if (map != null) {
-            Set<String> keys = map.keySet();
-            profiles = keys.toArray(new String[keys.size()]);
+            profiles = map.keySet();
         }
 
         //Puts the profiles, severities, and types in context for the Freemarker template
