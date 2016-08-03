@@ -38,8 +38,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     @NotNull
     @Override
     public Map<String, String> generateTaskConfigMap(@NotNull final ActionParametersMap params,
-                                                     @Nullable final TaskDefinition previousTaskDefinition)
-    {
+                                                     @Nullable final TaskDefinition previousTaskDefinition) {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 
         config.put("profile_select", params.getString("profile_select"));
@@ -52,8 +51,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     }
 
     @Override
-    public void populateContextForCreate(@NotNull final Map<String, Object> context)
-    {
+    public void populateContextForCreate(@NotNull final Map<String, Object> context) {
         super.populateContextForCreate(context);
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
         Map<String,Object> map = (Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY);
@@ -78,8 +76,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
 
     @Override
     public void populateContextForEdit(@NotNull final Map<String, Object> context,
-                                       @NotNull final TaskDefinition taskDefinition)
-    {
+                                       @NotNull final TaskDefinition taskDefinition) {
         super.populateContextForEdit(context, taskDefinition);
         //Gets Profile names from plugin settings
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
@@ -104,8 +101,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
 
     @Override
     public void populateContextForView(@NotNull final Map<String, Object> context,
-                                       @NotNull final TaskDefinition taskDefinition)
-    {
+                                       @NotNull final TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
 
         context.put("count", taskDefinition.getConfiguration().get("count"));
@@ -115,8 +111,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     }
 
     @Override
-    public void validate(@NotNull final ActionParametersMap params, @NotNull final ErrorCollection errorCollection)
-    {
+    public void validate(@NotNull final ActionParametersMap params, @NotNull final ErrorCollection errorCollection) {
         super.validate(params, errorCollection);
     }
 }
