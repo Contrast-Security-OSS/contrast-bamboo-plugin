@@ -18,7 +18,7 @@ window.onload  = function() {
 				console.log(textStatus);
 				console.log(errorThrown);
 				AJS.messages.warning({
-				    title: "Unable to retrieve Teamserver Profiles!",
+				    title: "Unable to retrieve TeamServer Profiles!",
 				    body: "Check your internet connection and try again."
 				});
 				return null;
@@ -57,12 +57,12 @@ window.onload  = function() {
 				initDropDown(profiles);
 				AJS.messages.success({
 				    title: "Success!",
-				    body: "You have updated your Teamserver Configuration!"
+				    body: "You have updated your TeamServer Configuration!"
 				});
 			},
 			error: function(){
 			    AJS.messages.warning({
-                    title: "Unable to retrieve Teamserver Profiles!",
+                    title: "Unable to retrieve TeamServer Profiles!",
                 	body: "Check your internet connection and try again."
                 });
 			}

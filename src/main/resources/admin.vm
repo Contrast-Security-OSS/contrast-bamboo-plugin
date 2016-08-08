@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Teamserver Configuration</title>
+        <title>TeamServer Configuration</title>
         <meta name="decorator" content="atl.admin">
         $webResourceManager.requireResource("com.contrastsecurity.contrast-bamboo-plugin:contrast-bamboo-plugin-resources")
         <meta name="application-base-url" content=$baseUrl>
@@ -9,15 +9,15 @@
         <div class="aui-page-panel">
             <div class="aui-page-panel-inner">
                 <section class="aui-page-panel-content">
-                    <h1>Teamserver Profile Setup</h1>
-                    <h5>Configure Teamserver Profiles for use in testing.</h5>
+                    <h1>TeamServer Profile Setup</h1>
+                    <h5>Configure TeamServer Profiles for use in testing.</h5>
                 </section>
             </div>
         </div>
         <br>
         <div class="field-group">
-            <label for="tsprofile">Teamserver Profile: </label>
-            <button aria-owns="dropdown2-all-in" aria-haspopup="true" class="aui-button aui-dropdown2-trigger" id="profiles-select-button">Teamserver Profiles</button>
+            <label for="tsprofile">TeamServer Profile: </label>
+            <button aria-owns="dropdown2-all-in" aria-haspopup="true" class="aui-button aui-dropdown2-trigger" id="profiles-select-button">TeamServer Profiles</button>
             <div id="dropdown2-all-in" class="aui-dropdown2 aui-style-default">
                <div class="aui-dropdown2-section">
                    <strong>Profiles</strong>
@@ -70,7 +70,7 @@
                     </td>
                     <td>
                         <div class="field-group">
-                            <label for="url">Teamserver URL: </label>
+                            <label for="url">TeamServer URL: </label>
                             <input type="text" id="url" name="url" class="text">
                             <div class="description">For EOP Customers only.</div>
                         </div>

@@ -8,7 +8,6 @@ import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.http.FilterForm;
@@ -53,18 +52,18 @@ public class VerifyThresholdsTask implements TaskType {
         Traces traces;
         Set<Trace> resultTraces = new HashSet<Trace>();
 
-        //Use the pluginsettingsFactory to grab Teamserver profiles
-        Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)(pluginSettingsFactory
+        //Use the pluginsettingsFactory to grab TeamServer profiles
+        Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)(pluginSettingsFactory
                 .createGlobalSettings().get(ConfigResource.PLUGIN_PROFILES_KEY));
 
         //Checks if these profiles are null, fails the build if they are.
         if (profiles == null) {
-            buildLogger.addBuildLogEntry("Unable to load Teamserver Profiles. Check on the Teamserver Profiles page that your profiles are configured correctly.");
+            buildLogger.addBuildLogEntry("Unable to load TeamServer Profiles. Check on the TeamServer Profiles page that your profiles are configured correctly.");
             return builder.failed().build();
         }
 
         //Gets relevant teamserver profile from profiles.
-        TeamserverProfile profile = profiles.get(profile_name);
+        TeamServerProfile profile = profiles.get(profile_name);
 
         if (profile.getUuid() == null) {
             buildLogger.addBuildLogEntry("An organization id must be configured to check for vulnerabilities.");
@@ -108,7 +107,7 @@ public class VerifyThresholdsTask implements TaskType {
             buildLogger.addBuildLogEntry(e.getMessage());
             return builder.failed().build();
         } catch (UnauthorizedException e){
-            buildLogger.addBuildLogEntry("Unable to connect to Teamserver. " + e.getMessage());
+            buildLogger.addBuildLogEntry("Unable to connect to TeamServer. " + e.getMessage());
             return builder.failed().build();
         }
     }

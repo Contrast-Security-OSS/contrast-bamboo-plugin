@@ -2,7 +2,7 @@ package com.contrastsecurity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TeamserverProfile {
+public class TeamServerProfile {
 
 	private static final String DEFAULT_URL = "https://app.contrastsecurity.com/Contrast/api";
 

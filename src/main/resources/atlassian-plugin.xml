@@ -19,8 +19,8 @@
   </web-resource>
 
   <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.VerifyThresholdsTask">
-    <description>A task for registering Teamserver results as build conditions.</description>
-    <configuration class="com.contrastsecurity.TeamserverTaskConfiguration"/>
+    <description>A task for registering TeamServer results as build conditions.</description>
+    <configuration class="com.contrastsecurity.TeamServerTaskConfiguration"/>
     <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
     <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
     <resource type="download" name="icon" location="images/pluginLogo.png"/>
@@ -36,12 +36,12 @@
             section="system.admin/plugins"
             weight="10"
             application="bamboo">
-    <description>Link to Contrast Teamserver Configuration page.</description>
-    <label key="Teamserver Profiles"/>
+    <description>Link to Contrast TeamServer Configuration page.</description>
+    <label key="TeamServer Profiles"/>
     <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
   </web-item>
 
-  <rest name="Teamserver REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
+  <rest name="TeamServer REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
     <description>Provides REST resources for the Configuration UI.</description>
   </rest>
   <rest name="contrastconfig" i18n-name-key="contrastconfig.name" key="contrastconfig" path="/contrastconfig" version="1.0">

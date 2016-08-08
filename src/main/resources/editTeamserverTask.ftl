@@ -1,6 +1,6 @@
 [#if profiles?size != 0]
     <div class="field-group">
-        <label>Teamserver Profile</label>
+        <label>TeamServer Profile</label>
         <select class="select" id="profileSelect" name="profile_select" title="profile select">
             [#list profiles as profile]
                 [#if profile==profile_select]
@@ -45,5 +45,5 @@
         </select>
     </div>
 [#else]
-    <p>You have not yet configured a Teamserver profile. Please do so in the Administrator Settings, under the Teamserver Profiles tab.</p>
+    <p>You have not yet configured a TeamServer profile. Please do so in the Administrator Settings, under the TeamServer Profiles tab.</p>
 [/#if]

@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
+public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
 {
     private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
     private static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
@@ -30,7 +30,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     private final PluginSettingsFactory pluginSettingsFactory;
 
     @Inject
-    public TeamserverTaskConfiguration(PluginSettingsFactory psf)
+    public TeamServerTaskConfiguration(PluginSettingsFactory psf)
     {
         this.pluginSettingsFactory = psf;
     }
