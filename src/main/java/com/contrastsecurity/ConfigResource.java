@@ -85,10 +85,13 @@ public class ConfigResource
 		}
 		try {
 			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
+			System.out.println(profile.getUrl());
 			contrastsdk.getProfileDefaultOrganizations();
 		} catch (UnauthorizedException e){
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			System.out.println("IOException from verify");
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 		return Response.ok().build();

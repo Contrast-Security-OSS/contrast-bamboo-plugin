@@ -53,28 +53,32 @@
                     <td>
                         <div class="field-group">
                         <label for="username">Username: </label>
-                        <input type="text" id="username" name="username" class="text">
+                        <input type="text" id="username" name="username" class="text" required>
+                        </div>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="field-group">
+                        <label for="apiKey">API Key: </label>
+                        <input type="text" id="apiKey" name="apiKey" class="text" required>
                         </div>
                     </td>
                     <td>
                         <div class="field-group">
-                        <label for="apiKey">API Key: </label>
-                        <input type="text" id="apiKey" name="apiKey" class="text">
+                            <label for="serviceKey">Service Key: </label>
+                            <input type="text" id="serviceKey" name="serviceKey" class="text" required>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-group">
-                            <label for="serviceKey">Service Key: </label>
-                            <input type="text" id="serviceKey" name="serviceKey" class="text">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="field-group">
                             <label for="url">TeamServer URL: </label>
                             <input type="text" id="url" name="url" class="text">
-                            <div class="description">For EOP Customers only.</div>
+                            <div class="description">For EOP Customers only. Url will usually end with /Contrast/api</div>
                         </div>
                     </td>
                 </tr>
@@ -82,11 +86,11 @@
             <br>
             <div class="field-group">
                 <label for="servername">Server Name: </label>
-                <input type="text" id="servername" name="servername" class="text">
+                <input type="text" id="servername" name="servername" class="text" required>
             </div>
             <div class="field-group">
                 <label for="uuid">Organization UUID: </label>
-                <input type="text" id="uuid" name="uuid" class="text">
+                <input type="text" id="uuid" name="uuid" class="text" required>
             </div>
             <p class="aui-buttons">
                 <div class="field-group">

@@ -147,6 +147,10 @@ window.onload  = function() {
 		var uuid = AJS.$("#uuid").attr("value");
 		var profilename = AJS.$("#profilename").attr("value");
 
+        if(TSurl == ""){
+            TSurl = "http://app.contrastsecurity.com/Contrast/api";
+        }
+
 		var JSONPayload = {
 			"profilename":profilename,
 			"username":user,
@@ -157,6 +161,7 @@ window.onload  = function() {
 			"uuid":uuid
 		};
 		var stringPayload = JSON.stringify(JSONPayload);
+
 		AJS.$.ajax({
 			url: baseUrl + "/rest/teamserver-admin/1.0/verifyconnection",
 			type: "POST",

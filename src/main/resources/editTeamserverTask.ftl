@@ -23,6 +23,7 @@
     <div class="field-group">
         <label>Threshold Severity</label>
         <select class="select" name="severity_select" required='true'>
+            <option disabled selected value> -- select a severity -- </option>
             [#list severities as severity]
                 [#if severity==severity_select]
                     <option value=${severity} selected = "selected">${severity}</option>
@@ -35,6 +36,7 @@
     <div class="field-group">
         <label>Threshold Vulnerability Type</label>
         <select class="select" name="type_select" required='true'>
+            <option disabled selected value> -- select a type -- </option>
             [#list types as type]
                 [#if type==type_select]
                     <option value=${type} selected = "selected">${type}</option>
