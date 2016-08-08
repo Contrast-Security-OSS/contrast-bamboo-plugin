@@ -27,10 +27,6 @@
     <rest       name="Teamserver REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
         <description>Provides REST resources for the Configuration UI.</description>
     </rest>
-    <rest       name="contrastconfig" i18n-name-key="contrastconfig.name" key="contrastconfig" path="/contrastconfig" version="1.0">
-        <description
-            key="contrastconfig.description">The contrastconfig Plugin</description>
-    </rest>
     <taskType   name="Contrast Vulnerability Threshold" key="teamserver-threshold-task" class="com.contrastsecurity.VerifyThresholdsTask">
         <description>A task for registering Teamserver results as build conditions.</description>
         <configuration class="com.contrastsecurity.TeamserverTaskConfiguration"/>
@@ -40,6 +36,7 @@
         <help link="ts.task.help.link" title="ts.task.help.title"/>
     </taskType>
     <resource   name="language" type="i18n" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
+    <!--
     <report     name="Teamserver Vulnerabilities by Type" key="teamserverVulnTracking" class="com.contrastsecurity.VulnReportCollector">
         <description>Shows the vulnerabilities in each build by type of vulnerability.</description>
         <chartClass>com.atlassian.bamboo.reports.charts.BuildSummarySuccessRatioLineChart</chartClass>
@@ -48,4 +45,5 @@
         <description>Shows the vulnerabilities in each build by severity (Note, Low, Medium, High, Critical).</description>
         <chartClass>com.atlassian.bamboo.reports.charts.BuildSummarySuccessRatioLineChart</chartClass>
     </report>
+    -->
 </atlassian-plugin>
