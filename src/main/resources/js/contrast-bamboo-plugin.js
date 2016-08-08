@@ -1,4 +1,11 @@
 var profiles;
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+    return true;
+}
 window.onload  = function() {
 	var baseUrl = "/bamboo";
 	function getProfiles() {
@@ -8,7 +15,10 @@ window.onload  = function() {
 			success: function(configs) {
 				profiles = configs;
 				if(profiles != null){
-					initDropDown(configs);
+					initDropDown(profiles);
+				    if(!isEmpty(profiles)){
+                        AJS.$("#dropdown-menu").show();
+                    }
 				} else {
 				    profiles = {};
 				}
@@ -55,6 +65,7 @@ window.onload  = function() {
 				profiles[JSONPayload.profilename] = JSONPayload;
 				AJS.$("#profile-list").empty();
 				initDropDown(profiles);
+				AJS.$("#dropdown-menu").show();
 				AJS.messages.success({
 				    title: "Success!",
 				    body: "You have updated your TeamServer Configuration!"
@@ -90,8 +101,10 @@ window.onload  = function() {
 			success: function() {
 				delete profiles[JSONPayload.profilename];
 				AJS.$("#profile-list").empty();
-				console.log("Empty List");
 				initDropDown(profiles);
+				if(AJS.$.isEmptyObject(profiles)){
+                    AJS.$("#dropdown-menu").hide();
+				}
 				AJS.messages.success({
 					title: "Success!",
 					body: "You have deleted the profile: " + JSONPayload.profilename
@@ -99,7 +112,6 @@ window.onload  = function() {
 			}
 		});
 	}
-
 
 	function populateForm(profilename) {
 		clearForm();
@@ -216,5 +228,6 @@ window.onload  = function() {
 		clearForm();
 		return false;
 	});
+	AJS.$("#dropdown-menu").hide();
 	getProfiles();
 };
