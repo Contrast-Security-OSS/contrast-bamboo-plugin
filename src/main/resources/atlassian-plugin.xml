@@ -44,9 +44,6 @@
   <rest name="TeamServer REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
     <description>Provides REST resources for the Configuration UI.</description>
   </rest>
-  <rest name="contrastconfig" i18n-name-key="contrastconfig.name" key="contrastconfig" path="/contrastconfig" version="1.0">
-    <description key="contrastconfig.description">The contrastconfig Plugin</description>
-  </rest>
 
   <resource type="i18n" name="language" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
 </atlassian-plugin>
