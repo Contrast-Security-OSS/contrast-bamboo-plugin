@@ -23,7 +23,7 @@
     <configuration class="com.contrastsecurity.TeamServerTaskConfiguration"/>
     <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
     <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
-    <resource type="download" name="icon" location="images/pluginLogo.png"/>
+    <resource type="download" name="icon" location="images/taskIcon.png"/>
     <help link="ts.task.help.link" title="ts.task.help.title" />
   </taskType>
 
