@@ -14,9 +14,7 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
 {
@@ -41,12 +39,22 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
                                                      @Nullable final TaskDefinition previousTaskDefinition) {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 
+        System.out.println();
+        System.out.println(params.keySet().toString());
+        System.out.println();
+
         config.put("profile_select", params.getString("profile_select"));
-        config.put("count", Integer.toString(params.getInt("count", 0)));
-        config.put("severity_select", params.getString("severity_select"));
-        config.put("type_select", params.getString("type_select"));
         config.put("app_name", params.getString("app_name"));
 
+
+        for(int i = 1; ; i++){
+            if(!params.containsKey("count_" + i)){
+                break;
+            }
+            config.put("count_"+i, Integer.toString(params.getInt("count_"+i, 0)));
+            config.put("severity_select_"+i, params.getString("severity_select_"+i));
+            config.put("type_select_"+i, params.getString("type_select_"+i));
+        }
         return config;
     }
 
@@ -67,11 +75,9 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         context.put("types", TYPES);
 
         context.put("profile_select", "");
-        context.put("count", 0);
-        context.put("severity_select", "");
-        context.put("type_select", "");
         context.put("app_name", "");
 
+        context.put("thresholds", Arrays.asList(new Threshold(0, "","")));
     }
 
     @Override
@@ -93,10 +99,22 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         context.put("types", TYPES);
 
         context.put("profile_select", taskDefinition.getConfiguration().get("profile_select"));
-        context.put("count", taskDefinition.getConfiguration().get("count"));
-        context.put("severity_select", taskDefinition.getConfiguration().get("severity_select"));
-        context.put("type_select", taskDefinition.getConfiguration().get("type_select"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
+
+        ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
+
+
+        for(int i = 1; ; i++){
+            if(!taskDefinition.getConfiguration().containsKey("count_" + i)){
+                break;
+            }
+            thresholds.add(new Threshold(
+                    Integer.parseInt(taskDefinition.getConfiguration().get("count_"+i)),
+                    taskDefinition.getConfiguration().get("severity_select_"+i),
+                    taskDefinition.getConfiguration().get("type_select_"+i)));
+        }
+
+        context.put("thresholds", thresholds);
     }
 
     @Override
@@ -104,10 +122,10 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
                                        @NotNull final TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
 
-        context.put("count", taskDefinition.getConfiguration().get("count"));
-        context.put("severity_select", taskDefinition.getConfiguration().get("severity_select"));
-        context.put("type_select", taskDefinition.getConfiguration().get("type_select"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
+        context.put("count", taskDefinition.getConfiguration().get("count_1"));
+        context.put("severity_select", taskDefinition.getConfiguration().get("severity_select_1"));
+        context.put("type_select", taskDefinition.getConfiguration().get("type_select_1"));
     }
 
     @Override
