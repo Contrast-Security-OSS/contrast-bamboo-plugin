@@ -1,4 +1,5 @@
 [#if profiles?size != 0]
+    ${webResourceManager.requireResource("com.contrastsecurity.contrast-bamboo-plugin:task-helper")}
     <div class="field-group">
         <label>TeamServer Profile</label>
         <select class="select" id="profileSelect" name="profile_select" title="profile select">
@@ -17,7 +18,8 @@
     </div>
     [#assign index = 0]
     [#list thresholds as threshold]
-    <h3>Threshold Settings - ${threshold_index+1}</h3>
+    <hr>
+    <h2>Threshold Settings - ${threshold_index+1}</h2>
     <hr>
     <fieldset>
         <div class="field-group">
@@ -53,9 +55,8 @@
     </fieldset>
     [#assign index = threshold_index+1]
     [/#list]
-    <span id = "starting_index" class="hidden">${index}</span>
-    <br/>
-    <button class="aui-button">
+    <input type="hidden" name="starting_index" value = ${index} />
+    <button class="aui-button" onclick = "addPanel()">
         <span class="aui-icon aui-icon-small aui-iconfont-add"></span> Add new threshold
     </button>
 [#else]
