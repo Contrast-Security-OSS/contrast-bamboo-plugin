@@ -17,13 +17,6 @@
         <context>atl.admin</context>
     </web-resource>
 
-    <web-resource key="task-helper" name="Task JS">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource type="download" name="contrast-bamboo-task.js" location="js/contrast-bamboo-task.js">
-            <param name="content-type" value="application/javascript"/>
-        </resource>
-    </web-resource>
-
     <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.VerifyThresholdsTask">
         <description>A task for registering TeamServer results as build conditions.</description>
         <configuration class="com.contrastsecurity.TeamServerTaskConfiguration"/>

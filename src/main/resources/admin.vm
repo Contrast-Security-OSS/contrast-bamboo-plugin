@@ -17,7 +17,7 @@
         <div class="field-group">
             <span id="dropdown-menu" style="display:none">
                 <label for="tsprofile">TeamServer Profile: </label>
-                <button aria-owns="dropdown2-all-in" aria-haspopup="true" class="aui-button aui-dropdown2-trigger" id="profiles-select-button">TeamServer Profiles</button>
+                <button type = "button" aria-owns="dropdown2-all-in" aria-haspopup="true" class="aui-button aui-dropdown2-trigger" id="profiles-select-button">TeamServer Profiles</button>
                 <div id="dropdown2-all-in" class="aui-dropdown2 aui-style-default">
                    <div class="aui-dropdown2-section">
                        <strong>Profiles</strong>
@@ -25,7 +25,7 @@
                    </div>
                 </div>
             </span>
-            <button  class="aui-button" id="new-profile-button">New Profile</button>
+            <button type = "button" class="aui-button" id="new-profile-button">New Profile</button>
         </div>
         <form id="admin-form" class="aui" style="display:none">
             <table class = "aui">
@@ -94,7 +94,7 @@
             <p class="aui-buttons">
                 <div class="field-group">
                     <input id="admin-submit" type="submit" value="Save Changes" class="aui-button aui-button-primary">
-                    <button  class="aui-button" id="profile-delete">Delete Profile</button>
+                    <button type = "button" class="aui-button" id="profile-delete">Delete Profile</button>
                 </div>
             </p>
         </form>

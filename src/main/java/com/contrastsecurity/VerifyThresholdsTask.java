@@ -19,10 +19,7 @@ import com.opensymphony.xwork2.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class VerifyThresholdsTask implements TaskType {
 
@@ -44,10 +41,18 @@ public class VerifyThresholdsTask implements TaskType {
 
         //Get configuration data from task context
         String profile_name = confmap.get("profile_select");
-        int thresholdCount = Integer.parseInt(confmap.get("count"));
-        String severity = confmap.get("severity_select");
-        String vulnType = confmap.get("type_select");
         String app_name = confmap.get("app_name");
+
+        ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
+        for(int i = 1; ; i++){
+            if(!confmap.containsKey("count_" + i)){
+                break;
+            }
+            thresholds.add(new Threshold(
+                    Integer.parseInt(confmap.get("count_" + i)),
+                    confmap.get("severity_select_" + i),
+                    confmap.get("type_select_" + i)));
+        }
 
         Traces traces;
         Set<Trace> resultTraces = new HashSet<Trace>();
@@ -64,6 +69,10 @@ public class VerifyThresholdsTask implements TaskType {
 
         //Gets relevant teamserver profile from profiles.
         TeamServerProfile profile = profiles.get(profile_name);
+        if(profile == null) {
+            buildLogger.addBuildLogEntry("Unable to load TeamServer Profile " + profile_name + ". Check on the TeamServer Profiles page that this profile is configured correctly.");
+            return builder.failed().build();
+        }
 
         if (profile.getUuid() == null) {
             buildLogger.addBuildLogEntry("An organization id must be configured to check for vulnerabilities.");
@@ -78,30 +87,45 @@ public class VerifyThresholdsTask implements TaskType {
         ContrastSDK contrast = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
 
         try {
+
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
             long serverId = getServerId(contrast, profile.getUuid(), profile.getServerName(), applicationId);
 
-            int vulnTypeCount = 0; // used for vuln type
+            for(Threshold condition: thresholds) {
+                int maxVulns = condition.getCount();
+                String type = condition.getType_select();
+                String severity = condition.getSeverity_select();
 
-            FilterForm filterForm = new FilterForm();
-            filterForm.setSeverities(UrlBuilder.getSeverityList(severity));
+                int vulnTypeCount = 0; // used for vuln type
 
-            traces = contrast.getTraceFilterByRule(profile.getUuid(), applicationId, vulnType, filterForm);
+                FilterForm filterForm = new FilterForm();
 
-            for (Trace trace: traces.getTraces()) {
-                if (trace.getRule().equals(vulnType)) {
-                    vulnTypeCount += 1;
+                if (!severity.equals("")) {
+                    filterForm.setSeverities(UrlBuilder.getSeverityList(severity));
+                } else {
+                    filterForm = null;
+                }
+
+                if (type.equals("None")) {
+                    traces = contrast.getTracesWithFilter(profile.getUuid(), applicationId, "servers", Long.toString(serverId), filterForm);
+                } else {
+                    traces = contrast.getTraceFilterByRule(profile.getUuid(), applicationId, type, filterForm);
+
+                    for (Trace trace: traces.getTraces()) {
+                        if (trace.getRule().equals(type)) {
+                            vulnTypeCount += 1;
+                        }
+                    }
+                }
+
+                if (vulnTypeCount > maxVulns) {
+                    buildLogger.addBuildLogEntry("Failed on the threshold condition where the count is " + maxVulns +
+                            ", severity is " + severity +
+                            ", and rule type is " + type);
+
+                    return builder.failed().build();
                 }
             }
-
-            if (vulnTypeCount > thresholdCount) {
-                buildLogger.addBuildLogEntry("Failed on the threshold condition where the count is " + thresholdCount +
-                                            ", severity is " + severity +
-                                            ", and rule type is " + vulnType);
-
-                return builder.failed().build();
-            }
-
             return builder.success().build();
         } catch (IOException e) {
             buildLogger.addBuildLogEntry(e.getMessage());

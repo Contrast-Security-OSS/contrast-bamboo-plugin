@@ -43,17 +43,31 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         System.out.println(params.keySet().toString());
         System.out.println();
 
+        int total_thresholds = 0;
+
+        for (String key : params.keySet()) {
+            if (key.startsWith("count_")) {
+                total_thresholds++;
+            }
+        }
+
+        System.out.println();
+        System.out.println(total_thresholds);
+        System.out.println();
+
+
         config.put("profile_select", params.getString("profile_select"));
         config.put("app_name", params.getString("app_name"));
 
 
-        for(int i = 1; ; i++){
-            if(!params.containsKey("count_" + i)){
-                break;
-            }
-            config.put("count_"+i, Integer.toString(params.getInt("count_"+i, 0)));
-            config.put("severity_select_"+i, params.getString("severity_select_"+i));
-            config.put("type_select_"+i, params.getString("type_select_"+i));
+        int current = 1;
+        for(int i = 1; i <= total_thresholds && i < 100; i++){
+            for( ; !params.containsKey("count_" + current); current++);
+
+            config.put("count_" + i, Integer.toString(params.getInt("count_" + current, 0)));
+            config.put("severity_select_" + i, params.getString("severity_select_" + current));
+            config.put("type_select_" + i, params.getString("type_select_" + current));
+            current++;
         }
         return config;
     }
@@ -109,9 +123,9 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
                 break;
             }
             thresholds.add(new Threshold(
-                    Integer.parseInt(taskDefinition.getConfiguration().get("count_"+i)),
-                    taskDefinition.getConfiguration().get("severity_select_"+i),
-                    taskDefinition.getConfiguration().get("type_select_"+i)));
+                    Integer.parseInt(taskDefinition.getConfiguration().get("count_" + i)),
+                    taskDefinition.getConfiguration().get("severity_select_" + i),
+                    taskDefinition.getConfiguration().get("type_select_" + i)));
         }
 
         context.put("thresholds", thresholds);
@@ -131,5 +145,6 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
     @Override
     public void validate(@NotNull final ActionParametersMap params, @NotNull final ErrorCollection errorCollection) {
         super.validate(params, errorCollection);
+
     }
 }
