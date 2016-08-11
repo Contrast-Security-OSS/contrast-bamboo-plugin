@@ -82,7 +82,6 @@ public class ConfigResource
 		}
 		try {
 			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
-			System.out.println(profile.getUrl());
 			contrastsdk.getProfileDefaultOrganizations();
 		} catch (UnauthorizedException e){
 			return Response.status(Status.FORBIDDEN).build();
