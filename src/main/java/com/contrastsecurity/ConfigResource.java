@@ -33,9 +33,6 @@ import com.contrastsecurity.sdk.ContrastSDK;
 @Path("/")
 public class ConfigResource
 {
-	public static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
-	public static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
-
 	@ComponentImport
 	private final UserManager userManager;
 	@ComponentImport
@@ -67,7 +64,7 @@ public class ConfigResource
 			public Object doInTransaction()
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 				return profiles;
 			}
 		})).build();
@@ -113,12 +110,12 @@ public class ConfigResource
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 
-				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 				if(profiles == null){
 					return false;
 				}
 				TeamServerProfile fullProfile = profiles.remove(profile.getProfileName());
-				settings.put(PLUGIN_PROFILES_KEY, profiles);
+				settings.put(TeamServerProfile.PLUGIN_PROFILES_KEY, profiles);
 
 				return (fullProfile != null);
 			}
@@ -148,13 +145,13 @@ public class ConfigResource
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 
-				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 				if(profiles == null){
 					profiles = new TreeMap<String, TeamServerProfile>();
 				}
 				profiles.put(profile.getProfileName(), profile);
 				
-				settings.put(PLUGIN_PROFILES_KEY, profiles);
+				settings.put(TeamServerProfile.PLUGIN_PROFILES_KEY, profiles);
 
 				return null;
 			}

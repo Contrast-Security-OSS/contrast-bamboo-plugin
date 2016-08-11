@@ -18,9 +18,6 @@ import java.util.*;
 
 public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
 {
-    private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
-    private static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
-
     private static final String[] SEVERITIES = VulnerabilityTypes.SEVERITIES;
     private static final String[] TYPES = VulnerabilityTypes.TYPES;
 
@@ -39,10 +36,6 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
                                                      @Nullable final TaskDefinition previousTaskDefinition) {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 
-        System.out.println();
-        System.out.println(params.keySet().toString());
-        System.out.println();
-
         int total_thresholds = 0;
 
         for (String key : params.keySet()) {
@@ -50,11 +43,6 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
                 total_thresholds++;
             }
         }
-
-        System.out.println();
-        System.out.println(total_thresholds);
-        System.out.println();
-
 
         config.put("profile_select", params.getString("profile_select"));
         config.put("app_name", params.getString("app_name"));
@@ -76,7 +64,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
         super.populateContextForCreate(context);
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        Map<String,Object> map = (Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY);
+        Map<String,Object> map = (Map<String, Object>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
         String[] profiles = new String[0];
 
         if (map != null) {
@@ -100,7 +88,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         super.populateContextForEdit(context, taskDefinition);
         //Gets Profile names from plugin settings
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        Map<String,Object> map = (Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY);
+        Map<String,Object> map = (Map<String, Object>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
         Set<String> profiles = new HashSet<String>();
 
         if (map != null) {
@@ -116,7 +104,6 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
 
         ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
-
 
         for(int i = 1; ; i++){
             if(!taskDefinition.getConfiguration().containsKey("count_" + i)){

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TeamServerProfile {
 
 	private static final String DEFAULT_URL = "http://app.contrastsecurity.com/Contrast/api";
+	public static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
+	public static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
 
 	@JsonProperty("profilename") 
 	public String profilename;

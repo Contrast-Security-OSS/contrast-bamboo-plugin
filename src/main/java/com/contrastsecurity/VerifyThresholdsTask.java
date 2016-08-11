@@ -8,6 +8,7 @@ import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.http.FilterForm;
@@ -58,8 +59,8 @@ public class VerifyThresholdsTask implements TaskType {
         Set<Trace> resultTraces = new HashSet<Trace>();
 
         //Use the pluginsettingsFactory to grab TeamServer profiles
-        Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)(pluginSettingsFactory
-                .createGlobalSettings().get(ConfigResource.PLUGIN_PROFILES_KEY));
+        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+        Map<String,TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 
         //Checks if these profiles are null, fails the build if they are.
         if (profiles == null) {
@@ -96,11 +97,16 @@ public class VerifyThresholdsTask implements TaskType {
                 String type = condition.getType_select();
                 String severity = condition.getSeverity_select();
 
+                buildLogger.addBuildLogEntry("Attempting the threshold condition where the count is " + maxVulns +
+                        ", severity is " + severity +
+                        ", and rule type is " + type);
+
+
                 int vulnTypeCount = 0; // used for vuln type
 
                 FilterForm filterForm = new FilterForm();
 
-                if (!severity.equals("")) {
+                if (!severity.equals("None")) {
                     filterForm.setSeverities(UrlBuilder.getSeverityList(severity));
                 } else {
                     filterForm = null;
@@ -108,6 +114,7 @@ public class VerifyThresholdsTask implements TaskType {
 
                 if (type.equals("None")) {
                     traces = contrast.getTracesWithFilter(profile.getUuid(), applicationId, "servers", Long.toString(serverId), filterForm);
+                    vulnTypeCount = traces.getCount();
                 } else {
                     traces = contrast.getTraceFilterByRule(profile.getUuid(), applicationId, type, filterForm);
 
@@ -118,8 +125,10 @@ public class VerifyThresholdsTask implements TaskType {
                     }
                 }
 
-                if (vulnTypeCount > maxVulns) {
-                    buildLogger.addBuildLogEntry("Failed on the threshold condition where the count is " + maxVulns +
+                buildLogger.addBuildLogEntry("\tThere were " + vulnTypeCount + " vulns of this type of " + traces.getCount() + " total");
+
+                if (vulnTypeCount >= maxVulns) {
+                    buildLogger.addBuildLogEntry("Failed on the threshold condition where the minimum threshold is " + maxVulns +
                             ", severity is " + severity +
                             ", and rule type is " + type);
 
@@ -128,6 +137,7 @@ public class VerifyThresholdsTask implements TaskType {
             }
             return builder.success().build();
         } catch (IOException e) {
+            buildLogger.addBuildLogEntry("IOException");
             buildLogger.addBuildLogEntry(e.getMessage());
             return builder.failed().build();
         } catch (UnauthorizedException e){

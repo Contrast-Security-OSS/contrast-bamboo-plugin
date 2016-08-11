@@ -4,9 +4,9 @@
         <select class="select" id="profileSelect" name="profile_select" title="profile select">
             [#list profiles as profile]
                 [#if profile==profile_select]
-                    <option value=${profile} selected = "selected">${profile}</option>
+                    <option value="${profile}" selected = "selected">${profile}</option>
                 [#else]
-                    <option value=${profile}>${profile}</option>
+                    <option value="${profile}">${profile}</option>
                 [/#if]
             [/#list]
         </select>
@@ -42,7 +42,7 @@
             <div class="field-group">
                 <label>Threshold Vulnerability Type</label>
                 <select class="select" name="type_select_${threshold_index+1}">
-                    <option selected = "selected" value = ""> None </option>
+                    <option selected = "selected" value = "None"> None </option>
                     [#list types as type]
                         [#if type==threshold.type_select]
                             <option value=${type} selected = "selected">${type}</option>
@@ -89,7 +89,7 @@
                 '<div class="field-group">'+
                     '<label>Threshold Vulnerability Type</label>'+
                     '<select class="select" name="type_select_'+index+'">'+
-                        '<option selected = "selected" value = ""> None </option>'+
+                        '<option selected = "selected" value = "None"> None </option>'+
                         [#list types as type]
                             '<option value=${type}>${type}</option>'+
                         [/#list]
