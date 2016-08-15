@@ -4,7 +4,7 @@
     <meta name="decorator" content="atl.admin">
   </head>
   <body>
-  	<h1>Teamserver Connection Test</h1>
+  	<h1>TeamServer Connection Test</h1>
   
     <form id="admin" class="aui" method="POST">
         <div class="field-group">
@@ -20,7 +20,7 @@
              <input type="text" id="serviceKey" name="serviceKey" class="text">
         </div>
         <div class="field-group">
-             <label for="url">Teamserver Url:</label>
+             <label for="url">TeamServer Url:</label>
              <input type="text" id="url" name="url" class="text">
         </div>
         <div class="field-group">

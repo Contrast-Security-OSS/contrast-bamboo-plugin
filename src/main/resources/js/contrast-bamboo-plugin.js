@@ -1,4 +1,11 @@
 var profiles;
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+    return true;
+}
 window.onload  = function() {
 	var baseUrl = "/bamboo";
 	function getProfiles() {
@@ -7,21 +14,28 @@ window.onload  = function() {
 			dataType: "json",
 			success: function(configs) {
 				profiles = configs;
-				initDropDown(configs);
+				if(profiles != null){
+					initDropDown(profiles);
+				    if(!isEmpty(profiles)){
+                        AJS.$("#dropdown-menu").show();
+                    }
+				} else {
+				    profiles = {};
+				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);
 				console.log(textStatus);
 				console.log(errorThrown);
 				AJS.messages.warning({
-				    title: "Unable to retrieve Teamserver Profiles!",
+				    title: "Unable to retrieve TeamServer Profiles!",
 				    body: "Check your internet connection and try again."
 				});
 				return null;
 			}
 		});
 	}
-	function updateConfig() {
+	function addProfile() {
 		var user = AJS.$("#username").attr("value");
 		var api = AJS.$("#apiKey").attr("value");
 		var service = AJS.$("#serviceKey").attr("value");
@@ -48,13 +62,57 @@ window.onload  = function() {
 			data:stringPayload,
 			processData: false,
 			success: function() {
+				profiles[JSONPayload.profilename] = JSONPayload;
+				AJS.$("#profile-list").empty();
+				initDropDown(profiles);
+				AJS.$("#dropdown-menu").show();
 				AJS.messages.success({
 				    title: "Success!",
-				    body: "You have updated you Teamserver Configuration!"
+				    body: "You have updated your TeamServer Configuration!"
+				});
+			},
+			error: function(){
+			    AJS.messages.warning({
+                    title: "Unable to retrieve TeamServer Profiles!",
+                	body: "Check your internet connection and try again."
+                });
+			}
+		});
+	}
+	function deleteProfile() {
+		var profilename = AJS.$("#profilename").attr("value");
+		var JSONPayload = {
+				"profilename":profilename,
+				"username":"",
+				"apikey":"",
+				"servicekey":"",
+				"url":"",
+				"servername":"",
+				"uuid":""
+			};
+		var stringPayload = JSON.stringify(JSONPayload);
+		AJS.$.ajax({
+			url: baseUrl + "/rest/teamserver-admin/1.0/deleteprofile",
+			type: "POST",
+			contentType: "application/json",
+			dataType:"json",
+			data:stringPayload,
+			processData: false,
+			success: function() {
+				delete profiles[JSONPayload.profilename];
+				AJS.$("#profile-list").empty();
+				initDropDown(profiles);
+				if(AJS.$.isEmptyObject(profiles)){
+                    AJS.$("#dropdown-menu").hide();
+				}
+				AJS.messages.success({
+					title: "Success!",
+					body: "You have deleted the profile: " + JSONPayload.profilename
 				});
 			}
 		});
 	}
+
 	function populateForm(profilename) {
 		clearForm();
         var config = profiles[profilename];
@@ -64,8 +122,10 @@ window.onload  = function() {
             AJS.$("#serviceKey").val(config.servicekey);
             AJS.$("#url").val(config.url);
             AJS.$("#servername").val(config.servername);
-            AJS.$("#uuid").val(config.uuid);
-            AJS.$("#profilename").val(config.profilename);
+			AJS.$("#uuid").val(config.uuid);
+			AJS.$("#uuid").val(config.uuid);
+			AJS.$("#profilename").val(config.profilename);
+			AJS.$("#profilename-display").html(config.profilename);
 		}
 		AJS.$("#admin-form").show();
 	}
@@ -87,6 +147,10 @@ window.onload  = function() {
 		var uuid = AJS.$("#uuid").attr("value");
 		var profilename = AJS.$("#profilename").attr("value");
 
+        if(TSurl == ""){
+            TSurl = "http://app.contrastsecurity.com/Contrast/api";
+        }
+
 		var JSONPayload = {
 			"profilename":profilename,
 			"username":user,
@@ -97,6 +161,7 @@ window.onload  = function() {
 			"uuid":uuid
 		};
 		var stringPayload = JSON.stringify(JSONPayload);
+
 		AJS.$.ajax({
 			url: baseUrl + "/rest/teamserver-admin/1.0/verifyconnection",
 			type: "POST",
@@ -119,31 +184,55 @@ window.onload  = function() {
 		});
 	}
 	function initDropDown(profs){
-		AJS.$("#new-profile-dropdown-button").click(newProfile);
+		var i = 0;
 		AJS.$.each(profs, function(name, profile) {
-			AJS.$("#profile-list").append("<li><a id='profile-item-"+name+"'>"+name+"</a></li>");
-			AJS.$("#profile-item-"+name).click(function(){
+			AJS.$("#profile-list").append("<li><a id='profile-item-"+(i)+"'>"+name+"</a></li>");
+			AJS.$("#profile-item-"+i).click(function(){
 				populateForm(name);
+				AJS.$("#profile-delete").show();
+				AJS.$("#profilename-display").css('display', 'inline');
+				AJS.$("#profilename-label").hide();
+				AJS.$("#profilename").hide();
 			});
+			i++;
 		});
 	}
-	function newProfile(){
-		clearForm();
-        AJS.$("#admin-form").show();
-    }
+
 	AJS.$("#admin-submit").removeAttr("onsubmit").submit(function(event){
         event.preventDefault();
     });
 	AJS.$("#test-connection").removeAttr("onsubmit").submit(function(event){
         event.preventDefault();
     });
+	AJS.$("#new-profile-button").removeAttr("onsubmit").submit(function(event){
+		event.preventDefault();
+	});
+	AJS.$("#profile-delete").removeAttr("onsubmit").submit(function(event){
+		event.preventDefault();
+	});
     AJS.$("#admin-submit").click(function(){
-		updateConfig();
+		addProfile();
 		return false;
 	});
 	AJS.$("#test-connection").click(function(){
 		testConnection();
 		return false;
 	});
+	AJS.$("#new-profile-button").click(function(){
+		clearForm();
+		AJS.$("#admin-form").show();
+		AJS.$("#profilename-display").hide();
+		AJS.$("#profilename-label").show();
+		AJS.$("#profilename").show();
+		AJS.$("#profile-delete").hide();
+		return false;
+	});
+	AJS.$("#profile-delete").click(function(){
+		AJS.$("#admin-form").hide();
+		deleteProfile();
+		clearForm();
+		return false;
+	});
+	AJS.$("#dropdown-menu").hide();
 	getProfiles();
 };

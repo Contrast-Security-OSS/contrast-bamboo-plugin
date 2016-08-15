@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,15 +26,13 @@ import javax.inject.Named;
 
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
+import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.sdk.ContrastSDK;
 
 @Named("configuration")
 @Path("/")
 public class ConfigResource
 {
-	private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
-	private static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
-
 	@ComponentImport
 	private final UserManager userManager;
 	@ComponentImport
@@ -67,7 +64,7 @@ public class ConfigResource
 			public Object doInTransaction()
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 				return profiles;
 			}
 		})).build();
@@ -76,33 +73,64 @@ public class ConfigResource
 	@Path("/verifyconnection")
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response testConnection(final TeamserverProfile profile, @Context HttpServletRequest request)
+	public Response testConnection(final TeamServerProfile profile, @Context HttpServletRequest request)
 	{
 		String username = userManager.getRemoteUsername(request);
 		if (username == null || !userManager.isSystemAdmin(username))
 		{
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
-
 		try {
-			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey());
-			HttpURLConnection connection = contrastsdk.makeConnection(profile.url+"ng/profile", "GET");
-			System.out.println(connection.toString());
-			if(connection.getResponseCode() != 200){
-				return Response.status(404).build();
-			}
-		} catch (IllegalArgumentException e){
-			return Response.status(404).build();
+			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
+			contrastsdk.getProfileDefaultOrganizations();
+		} catch (UnauthorizedException e){
+			return Response.status(Status.FORBIDDEN).build();
 		} catch (IOException e) {
-			return Response.status(404).build();
+			System.out.println(e.getMessage());
+			System.out.println("IOException from verify");
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-
 		return Response.ok().build();
 	}
-	
+
+	@Path("/deleteprofile")
+	@POST
+	@Consumes({MediaType.APPLICATION_JSON})
+	public Response deleteProfile(final TeamServerProfile profile, @Context HttpServletRequest request){
+		String username = userManager.getRemoteUsername(request);
+		if (username == null || !userManager.isSystemAdmin(username))
+		{
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+
+		Boolean success = (Boolean)transactionTemplate.execute(new TransactionCallback<Object>()
+		{
+			public Object doInTransaction()
+			{
+				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+
+				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
+				if(profiles == null){
+					return false;
+				}
+				TeamServerProfile fullProfile = profiles.remove(profile.getProfileName());
+				settings.put(TeamServerProfile.PLUGIN_PROFILES_KEY, profiles);
+
+				return (fullProfile != null);
+			}
+		});
+
+		if(success){
+			return Response.noContent().build();
+		}
+		else {
+			return Response.notModified().build();
+		}
+	}
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateConfig(final TeamserverProfile profile, @Context HttpServletRequest request)
+	public Response updateConfig(final TeamServerProfile profile, @Context HttpServletRequest request)
 	{
 		String username = userManager.getRemoteUsername(request);
 		if (username == null || !userManager.isSystemAdmin(username))
@@ -116,14 +144,13 @@ public class ConfigResource
 			{
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 
-				Map<String, TeamserverProfile> profiles = (Map<String, TeamserverProfile>)settings.get(PLUGIN_PROFILES_KEY);
+				Map<String, TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 				if(profiles == null){
-					profiles = new TreeMap<String, TeamserverProfile>();
-					System.out.println("profiles was null in post method");
+					profiles = new TreeMap<String, TeamServerProfile>();
 				}
-				profiles.put(profile.getProfilename(), profile);
+				profiles.put(profile.getProfileName(), profile);
 				
-				settings.put(PLUGIN_PROFILES_KEY, profiles);
+				settings.put(TeamServerProfile.PLUGIN_PROFILES_KEY, profiles);
 
 				return null;
 			}
