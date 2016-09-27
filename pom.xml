@@ -10,7 +10,7 @@
         <url>contrastsecurity.com</url>
     </organization>
     <name>contrast-bamboo-plugin</name>
-    <description>This is the Contrast Security Teamserver plugin for Atlassian Bamboo.</description>
+    <description>This is the Contrast Security TeamServer plugin for Atlassian Bamboo.</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
         <bamboo.version>5.12.2</bamboo.version>

@@ -1,3 +1,11 @@
+var profiles;
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+    return true;
+}
 window.onload  = function() {
 	var baseUrl = "/bamboo";
 	var profiles;
@@ -8,7 +16,10 @@ window.onload  = function() {
 			success: function(configs) {
 				profiles = configs;
 				if(profiles != null){
-					initDropDown(configs);
+					initDropDown(profiles);
+				    if(!isEmpty(profiles)){
+                        AJS.$("#dropdown-menu").show();
+                    }
 				} else {
 				    profiles = {};
 				}
@@ -18,7 +29,7 @@ window.onload  = function() {
 				console.log(textStatus);
 				console.log(errorThrown);
 				AJS.messages.warning({
-				    title: "Unable to retrieve Teamserver Profiles!",
+				    title: "Unable to retrieve TeamServer Profiles!",
 				    body: "Check your internet connection and try again."
 				});
 				return null;
@@ -55,14 +66,15 @@ window.onload  = function() {
 				profiles[JSONPayload.profilename] = JSONPayload;
 				AJS.$("#profile-list").empty();
 				initDropDown(profiles);
+				AJS.$("#dropdown-menu").show();
 				AJS.messages.success({
 				    title: "Success!",
-				    body: "You have updated your Teamserver Configuration!"
+				    body: "You have updated your TeamServer Configuration!"
 				});
 			},
 			error: function(){
 			    AJS.messages.warning({
-                    title: "Unable to retrieve Teamserver Profiles!",
+                    title: "Unable to retrieve TeamServer Profiles!",
                 	body: "Check your internet connection and try again."
                 });
 			}
@@ -90,8 +102,10 @@ window.onload  = function() {
 			success: function() {
 				delete profiles[JSONPayload.profilename];
 				AJS.$("#profile-list").empty();
-				console.log("Empty List");
 				initDropDown(profiles);
+				if(AJS.$.isEmptyObject(profiles)){
+                    AJS.$("#dropdown-menu").hide();
+				}
 				AJS.messages.success({
 					title: "Success!",
 					body: "You have deleted the profile: " + JSONPayload.profilename
@@ -99,7 +113,6 @@ window.onload  = function() {
 			}
 		});
 	}
-
 
 	function populateForm(profilename) {
 		clearForm();
@@ -135,6 +148,10 @@ window.onload  = function() {
 		var uuid = AJS.$("#uuid").attr("value");
 		var profilename = AJS.$("#profilename").attr("value");
 
+        if(TSurl == ""){
+            TSurl = "http://app.contrastsecurity.com/Contrast/api";
+        }
+
 		var JSONPayload = {
 			"profilename":profilename,
 			"username":user,
@@ -145,6 +162,7 @@ window.onload  = function() {
 			"uuid":uuid
 		};
 		var stringPayload = JSON.stringify(JSONPayload);
+
 		AJS.$.ajax({
 			url: baseUrl + "/rest/teamserver-admin/1.0/verifyconnection",
 			type: "POST",
@@ -216,5 +234,6 @@ window.onload  = function() {
 		clearForm();
 		return false;
 	});
+	AJS.$("#dropdown-menu").hide();
 	getProfiles();
 };

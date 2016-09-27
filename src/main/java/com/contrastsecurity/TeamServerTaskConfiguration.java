@@ -14,15 +14,10 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
+public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
 {
-    private static final String PLUGIN_STORAGE_KEY = "com.contrastsecurity";
-    private static final String PLUGIN_PROFILES_KEY = PLUGIN_STORAGE_KEY + ".profiles";
-
     private static final String[] SEVERITIES = VulnerabilityTypes.SEVERITIES;
     private static final String[] TYPES = VulnerabilityTypes.TYPES;
 
@@ -30,7 +25,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     private final PluginSettingsFactory pluginSettingsFactory;
 
     @Inject
-    public TeamserverTaskConfiguration(PluginSettingsFactory psf)
+    public TeamServerTaskConfiguration(PluginSettingsFactory psf)
     {
         this.pluginSettingsFactory = psf;
     }
@@ -41,12 +36,27 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
                                                      @Nullable final TaskDefinition previousTaskDefinition) {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 
+        int total_thresholds = 0;
+
+        for (String key : params.keySet()) {
+            if (key.startsWith("count_")) {
+                total_thresholds++;
+            }
+        }
+
         config.put("profile_select", params.getString("profile_select"));
-        config.put("count", Integer.toString(params.getInt("count", 0)));
-        config.put("severity_select", params.getString("severity_select"));
-        config.put("type_select", params.getString("type_select"));
         config.put("app_name", params.getString("app_name"));
 
+
+        int current = 1;
+        for(int i = 1; i <= total_thresholds && i < 100; i++){
+            for( ; !params.containsKey("count_" + current); current++);
+
+            config.put("count_" + i, Integer.toString(params.getInt("count_" + current, 0)));
+            config.put("severity_select_" + i, params.getString("severity_select_" + current));
+            config.put("type_select_" + i, params.getString("type_select_" + current));
+            current++;
+        }
         return config;
     }
 
@@ -54,7 +64,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
         super.populateContextForCreate(context);
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        Map<String,Object> map = (Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY);
+        Map<String,Object> map = (Map<String, Object>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
         String[] profiles = new String[0];
 
         if (map != null) {
@@ -67,11 +77,9 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
         context.put("types", TYPES);
 
         context.put("profile_select", "");
-        context.put("count", 0);
-        context.put("severity_select", "");
-        context.put("type_select", "");
         context.put("app_name", "");
 
+        context.put("thresholds", Arrays.asList(new Threshold(0, "","")));
     }
 
     @Override
@@ -80,7 +88,7 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
         super.populateContextForEdit(context, taskDefinition);
         //Gets Profile names from plugin settings
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        Map<String,Object> map = (Map<String, Object>)settings.get(PLUGIN_PROFILES_KEY);
+        Map<String,Object> map = (Map<String, Object>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
         Set<String> profiles = new HashSet<String>();
 
         if (map != null) {
@@ -93,10 +101,21 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
         context.put("types", TYPES);
 
         context.put("profile_select", taskDefinition.getConfiguration().get("profile_select"));
-        context.put("count", taskDefinition.getConfiguration().get("count"));
-        context.put("severity_select", taskDefinition.getConfiguration().get("severity_select"));
-        context.put("type_select", taskDefinition.getConfiguration().get("type_select"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
+
+        ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
+
+        for(int i = 1; ; i++){
+            if(!taskDefinition.getConfiguration().containsKey("count_" + i)){
+                break;
+            }
+            thresholds.add(new Threshold(
+                    Integer.parseInt(taskDefinition.getConfiguration().get("count_" + i)),
+                    taskDefinition.getConfiguration().get("severity_select_" + i),
+                    taskDefinition.getConfiguration().get("type_select_" + i)));
+        }
+
+        context.put("thresholds", thresholds);
     }
 
     @Override
@@ -104,14 +123,15 @@ public class TeamserverTaskConfiguration extends AbstractTaskConfigurator
                                        @NotNull final TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
 
-        context.put("count", taskDefinition.getConfiguration().get("count"));
-        context.put("severity_select", taskDefinition.getConfiguration().get("severity_select"));
-        context.put("type_select", taskDefinition.getConfiguration().get("type_select"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
+        context.put("count", taskDefinition.getConfiguration().get("count_1"));
+        context.put("severity_select", taskDefinition.getConfiguration().get("severity_select_1"));
+        context.put("type_select", taskDefinition.getConfiguration().get("type_select_1"));
     }
 
     @Override
     public void validate(@NotNull final ActionParametersMap params, @NotNull final ErrorCollection errorCollection) {
         super.validate(params, errorCollection);
+
     }
 }
