@@ -25,6 +25,8 @@
         <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
         <resource type="download" name="icon" location="images/taskIcon.png"/>
         <help link="ts.task.help.link" title="ts.task.help.title" />
+        <component-import key="dataStorage" interface="com.atlassian.bandana.BandanaManager"/>
+        <component-import key="psf" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
     </taskType>
 
     <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
@@ -44,6 +46,14 @@
     <rest name="TeamServer REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
         <description>Provides REST resources for the Configuration UI.</description>
     </rest>
+
+    <report key="contrastSeverity" name="Severity Trends Across Builds"
+            class="com.contrastsecurity.SeverityReportCollector">
+        <description>Comparing success percentages gives you an idea of how stable a build is compared to one another.
+            100% means your build is always rock solid. 0% means something is seriously wrong.</description>
+        <chartClass>com.contrastsecurity.ContrastSeverityReportChart</chartClass>
+    </report>
+
 
     <resource type="i18n" name="language" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
 </atlassian-plugin>

@@ -1,5 +1,6 @@
 package com.contrastsecurity;
 
+import com.atlassian.bamboo.bandana.PlanAwareBandanaContext;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.task.TaskContext;
@@ -7,6 +8,10 @@ import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
+import com.atlassian.bandana.BandanaContext;
+import com.atlassian.bandana.BandanaManager;
+import com.atlassian.bandana.DefaultBandanaManager;
+import com.atlassian.bandana.impl.MemoryBandanaPersister;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -19,24 +24,36 @@ import com.contrastsecurity.sdk.ContrastSDK;
 import com.opensymphony.xwork2.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
+import javax.net.ssl.ManagerFactoryParameters;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class VerifyThresholdsTask implements TaskType {
 
     @ComponentImport
     private final PluginSettingsFactory pluginSettingsFactory;
+    @ComponentImport
+    private final BandanaManager dataStorage;
 
     @Inject
-    public VerifyThresholdsTask(PluginSettingsFactory psf) {
+    public VerifyThresholdsTask(PluginSettingsFactory psf, BandanaManager dataStorage) {
+        System.out.println("CALLED CONSTRUCTOR");
         this.pluginSettingsFactory = psf;
+        System.out.println(psf);
+        this.dataStorage = dataStorage;
+        System.out.println(dataStorage);
     }
 
     @NotNull
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
 
+        //dataStorage.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, "key", "value");
+        System.out.println((String)dataStorage.getValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, "key"));
+        //dataStorage.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, ,);
         //Get Task related objects
         final TaskResultBuilder builder = TaskResultBuilder.newBuilder(taskContext); //Initially set to Failed.
+
         final BuildLogger buildLogger = taskContext.getBuildLogger();
         final ConfigurationMap confmap = taskContext.getConfigurationMap();
 
@@ -131,7 +148,6 @@ public class VerifyThresholdsTask implements TaskType {
                     buildLogger.addBuildLogEntry("Failed on the threshold condition where the minimum threshold is " + maxVulns +
                             ", severity is " + severity +
                             ", and rule type is " + type);
-
                     return builder.failed().build();
                 }
             }
@@ -198,5 +214,11 @@ public class VerifyThresholdsTask implements TaskType {
         }
 
         throw new IOException("Application with name '" + applicationName + "' not found.");
+    }
+
+    private void save(String key){
+        //String key = taskContext.getBuildContext().getBuildKey().getKey();
+
+
     }
 }

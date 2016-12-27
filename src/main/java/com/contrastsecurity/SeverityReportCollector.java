@@ -1,63 +1,45 @@
 package com.contrastsecurity;
 
-import com.atlassian.bamboo.build.test.TestCollectionResult;
-import com.atlassian.bamboo.build.test.TestCollectionResultBuilder;
-import com.atlassian.bamboo.build.test.TestReportCollector;
-import com.atlassian.bamboo.results.tests.TestResults;
-import com.atlassian.bamboo.resultsummary.tests.TestState;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
-import org.apache.commons.lang.StringUtils;
+import com.atlassian.bamboo.reports.collector.ReportCollector;
+import com.atlassian.bamboo.resultsummary.ResultsSummary;
+import org.jetbrains.annotations.NotNull;
+import org.jfree.data.general.Dataset;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class SeverityReportCollector implements TestReportCollector
-{
-    public TestCollectionResult collect(File file) throws Exception
-    {
-        TestCollectionResultBuilder builder = new TestCollectionResultBuilder();
+public class SeverityReportCollector implements ReportCollector {
 
-        Collection<TestResults> successfulTestResults = Lists.newArrayList();
-        Collection<TestResults> failingTestResults = Lists.newArrayList();
-
-        List<String> lines = Files.readLines(file, Charset.forName("UTF-8"));
-
-        for (String line : lines)
-        {
-            String[] atoms = StringUtils.split(line, '|');
-            String suiteName = atoms[0];
-            String testName = atoms[1];
-            String durationInSeconds = atoms[2];
-            String status = atoms[3];
-
-            Double duration = (Double.parseDouble(durationInSeconds) * 1000);
-
-            TestResults testResults = new TestResults(suiteName, testName, duration.toString());
-            if ("SUCCESS".equals(status))
-            {
-                testResults.setState(TestState.SUCCESS);
-                successfulTestResults.add(testResults);
-            }
-            else
-            {
-                testResults.setState(TestState.FAILED);
-                failingTestResults.add(testResults);
-            }
-        }
-
-        return builder
-                .addSuccessfulTestResults(successfulTestResults)
-                .addFailedTestResults(failingTestResults)
-                .build();
+    @NotNull
+    public Dataset getDataset() {
+        return null;
     }
 
-    public Set<String> getSupportedFileExtensions()
-    {
-        return Sets.newHashSet("tssev"); // this will collect all *.tsresult files
+    public void setResultsList(@NotNull List<? extends ResultsSummary> list) {
+        System.out.println("set result list");
+        for(ResultsSummary l : list){
+            System.out.println(l.getBuildKey());
+            System.out.println(l.getBuildResultKey());
+            System.out.println(l.getPlanResultKey().getKey());
+            System.out.println(l.getPlanResultKey().getPlanKey());
+            System.out.println(l.getPlanResultKey().getBuildNumber());
+            System.out.println(l.getPlanResultKey().getEntityKey());
+
+            System.out.println(l.getImmutablePlan().getKey());
+            System.out.println(l.getImmutablePlan().getBuildKey());
+            System.out.println(l.getImmutablePlan().getPlanKey().getKey());
+            System.out.println(l.getPlanKey().getKey());
+
+            //System.out.println(l.get);
+        }
+    }
+
+    public void setParams(@NotNull Map<String, String[]> map) {
+
+    }
+
+    public String getPeriodRange() {
+        return null;
     }
 }
