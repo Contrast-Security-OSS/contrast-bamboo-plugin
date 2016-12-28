@@ -1,7 +1,13 @@
 package com.contrastsecurity;
 
+import com.atlassian.bamboo.bandana.BambooBandanaManager;
+import com.atlassian.bamboo.bandana.PlanAwareBandanaContext;
+import com.atlassian.bamboo.plan.Plan;
 import com.atlassian.bamboo.reports.collector.ReportCollector;
 import com.atlassian.bamboo.resultsummary.ResultsSummary;
+import com.atlassian.bandana.BandanaManager;
+import com.atlassian.bandana.DefaultBandanaManager;
+import com.atlassian.bandana.impl.MemoryBandanaPersister;
 import org.jetbrains.annotations.NotNull;
 import org.jfree.data.general.Dataset;
 
@@ -17,8 +23,13 @@ public class SeverityReportCollector implements ReportCollector {
     }
 
     public void setResultsList(@NotNull List<? extends ResultsSummary> list) {
+
+
+        //System.out.println(m.getValue(, "com.contrastsecurity.bambooplugin:A"));
+        System.out.println("******************************************************************************************************************************************************************");
         System.out.println("set result list");
         for(ResultsSummary l : list){
+            PlanAwareBandanaContext.forPlan(l.getImmutablePlan());
             System.out.println(l.getBuildKey());
             System.out.println(l.getBuildResultKey());
             System.out.println(l.getPlanResultKey().getKey());

@@ -16,6 +16,7 @@
         <bamboo.version>5.12.2</bamboo.version>
         <bamboo.data.version>5.12.2</bamboo.data.version>
         <amps.version>6.2.6</amps.version>
+        <ao.version>1.2.0</ao.version>
         <plugin.testrunner.version>1.2.3</plugin.testrunner.version>
         <atlassian.spring.scanner.version>1.2.6</atlassian.spring.scanner.version>
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml
@@ -151,6 +152,12 @@
             <version>1.1.3-incubating</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.activeobjects</groupId>
+            <artifactId>activeobjects-plugin</artifactId>
+            <version>${ao.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -167,9 +174,9 @@
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                     <instructions>
-                        <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
+
                         <!-- Add package to export here -->
-                        <Export-Package>com.contrastsecurity.api,</Export-Package>
+                        <Export-Package>com.contrastsecurity.api</Export-Package>
                         <!-- Add package import here -->
                         <Import-Package>org.springframework.osgi.*;resolution:="optional", org.eclipse.gemini.blueprint.*;resolution:="optional", javax.ws.rs*;version="[1,2)", javax.servlet*;version="2.5", javax.xml.bind*;version="[2.1,3)", *;version="0";resolution:=optional</Import-Package>
                         <!-- Ensure plugin is spring powered -->
@@ -177,6 +184,7 @@
                     </instructions>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>com.atlassian.plugin</groupId>
                 <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>

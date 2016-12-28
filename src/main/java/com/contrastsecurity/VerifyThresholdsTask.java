@@ -1,5 +1,7 @@
 package com.contrastsecurity;
 
+import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.bamboo.bandana.BambooBandanaManager;
 import com.atlassian.bamboo.bandana.PlanAwareBandanaContext;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
@@ -15,6 +17,7 @@ import com.atlassian.bandana.impl.MemoryBandanaPersister;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.http.FilterForm;
 import com.contrastsecurity.http.ServerFilterForm;
@@ -33,27 +36,22 @@ public class VerifyThresholdsTask implements TaskType {
 
     @ComponentImport
     private final PluginSettingsFactory pluginSettingsFactory;
+
+    private final String dataStoragePrepend = "com.contrastsecurity.bambooplugin:"; //append build ids for a storage key
+
     @ComponentImport
-    private final BandanaManager dataStorage;
+    private final ActiveObjects activeObjects;
 
     @Inject
-    public VerifyThresholdsTask(PluginSettingsFactory psf, BandanaManager dataStorage) {
-        System.out.println("CALLED CONSTRUCTOR");
+    public VerifyThresholdsTask(PluginSettingsFactory psf, ActiveObjects activeObjects) {
         this.pluginSettingsFactory = psf;
-        System.out.println(psf);
-        this.dataStorage = dataStorage;
-        System.out.println(dataStorage);
+        this.activeObjects = activeObjects;
     }
 
     @NotNull
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
 
-        //dataStorage.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, "key", "value");
-        System.out.println((String)dataStorage.getValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, "key"));
-        //dataStorage.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, ,);
-        //Get Task related objects
         final TaskResultBuilder builder = TaskResultBuilder.newBuilder(taskContext); //Initially set to Failed.
-
         final BuildLogger buildLogger = taskContext.getBuildLogger();
         final ConfigurationMap confmap = taskContext.getConfigurationMap();
 
@@ -66,44 +64,21 @@ public class VerifyThresholdsTask implements TaskType {
             if(!confmap.containsKey("count_" + i)){
                 break;
             }
-            thresholds.add(new Threshold(
-                    Integer.parseInt(confmap.get("count_" + i)),
-                    confmap.get("severity_select_" + i),
-                    confmap.get("type_select_" + i)));
+            thresholds.add(new Threshold(Integer.parseInt(confmap.get("count_" + i)), confmap.get("severity_select_" + i), confmap.get("type_select_" + i)));
         }
-
-        Traces traces;
-        Set<Trace> resultTraces = new HashSet<Trace>();
 
         //Use the pluginsettingsFactory to grab TeamServer profiles
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
         Map<String,TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 
         //Checks if these profiles are null, fails the build if they are.
-        if (profiles == null) {
-            buildLogger.addBuildLogEntry("Unable to load TeamServer Profiles. Check on the TeamServer Profiles page that your profiles are configured correctly.");
+        if(!verifySettings(profiles, buildLogger, profile_name)){
             return builder.failed().build();
         }
-
-        //Gets relevant teamserver profile from profiles.
         TeamServerProfile profile = profiles.get(profile_name);
-        if(profile == null) {
-            buildLogger.addBuildLogEntry("Unable to load TeamServer Profile " + profile_name + ". Check on the TeamServer Profiles page that this profile is configured correctly.");
-            return builder.failed().build();
-        }
-
-        if (profile.getUuid() == null) {
-            buildLogger.addBuildLogEntry("An organization id must be configured to check for vulnerabilities.");
-            return builder.failed().build();
-        }
-
-        if (profile.getServerName() == null) {
-            buildLogger.addBuildLogEntry("A server name must be configured to check for vulnerabilities.");
-            return builder.failed().build();
-        }
 
         ContrastSDK contrast = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
-
+        BuildResults results = new BuildResults(dataStoragePrepend+"A");
         try {
 
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
@@ -113,11 +88,9 @@ public class VerifyThresholdsTask implements TaskType {
                 int maxVulns = condition.getCount();
                 String type = condition.getType_select();
                 String severity = condition.getSeverity_select();
+                //can create result here
 
-                buildLogger.addBuildLogEntry("Attempting the threshold condition where the count is " + maxVulns +
-                        ", severity is " + severity +
-                        ", and rule type is " + type);
-
+                buildLogger.addBuildLogEntry("Attempting the threshold condition where the count is " + maxVulns + ", severity is " + severity + ", and rule type is " + type);
 
                 int vulnTypeCount = 0; // used for vuln type
 
@@ -129,18 +102,30 @@ public class VerifyThresholdsTask implements TaskType {
                     filterForm = null;
                 }
 
-                if (type.equals("None")) {
-                    traces = contrast.getTracesWithFilter(profile.getUuid(), applicationId, "servers", Long.toString(serverId), filterForm);
-                    vulnTypeCount = traces.getCount();
-                } else {
-                    traces = contrast.getTraceFilterByRule(profile.getUuid(), applicationId, type, filterForm);
+                //if (type.equals("None")) {
+                Traces traces = contrast.getTracesWithFilter(profile.getUuid(), applicationId, "servers", Long.toString(serverId), filterForm);
+                //    vulnTypeCount = traces.getCount();
+                //} else {
+                //    traces = contrast.getTraceFilterByRule(profile.getUuid(), applicationId, type, filterForm);
 
-                    for (Trace trace: traces.getTraces()) {
-                        if (trace.getRule().equals(type)) {
-                            vulnTypeCount += 1;
-                        }
+                ArrayList<Finding> findings = new ArrayList<Finding>();
+                for (final Trace trace : traces.getTraces()) {
+                    if (trace.getRule().equals(type) || type.equals("None")){
+                        activeObjects.executeInTransaction(new TransactionCallback<Finding>(){
+                            public Finding doInTransaction()
+                            {
+                                final Finding result = activeObjects.create(Finding.class); // (2)
+                                result.setSeverity(trace.getSeverity());
+                                result.setType(trace.getRule());
+                                result.save();
+                                return result;
+                            }
+                        });
+
+                        vulnTypeCount += 1;
                     }
                 }
+            //}
 
                 buildLogger.addBuildLogEntry("\tThere were " + vulnTypeCount + " vulns of this type of " + traces.getCount() + " total");
 
@@ -162,15 +147,7 @@ public class VerifyThresholdsTask implements TaskType {
         }
     }
 
-    /**
-     * Retrieves the server id by server name
-     *
-     * @param sdk              Contrast SDK object
-     * @param organizationUuid uuid of the organization
-     * @param serverName       name of the server to filter on
-     * @param applicationId    application id to filter on
-     * @return Long id of the server
-     */
+
     private long getServerId(ContrastSDK sdk, String organizationUuid, String serverName, String applicationId) throws IOException {
         ServerFilterForm serverFilterForm = new ServerFilterForm();
         serverFilterForm.setApplicationIds(Arrays.asList(applicationId));
@@ -216,9 +193,47 @@ public class VerifyThresholdsTask implements TaskType {
         throw new IOException("Application with name '" + applicationName + "' not found.");
     }
 
-    private void save(String key){
-        //String key = taskContext.getBuildContext().getBuildKey().getKey();
-
-
+    private void save(){
+        /*activeObjects.executeInTransaction(new TransactionCallback<BuildResults>() // (1)
+        {
+            @Override
+            public BuildResults doInTransaction()
+            {
+                final BuildResults  = ao.create(Todo.class); // (2)
+                todo.setDescription(description); // (3)
+                todo.setComplete(false);
+                todo.save(); // (4)
+                return todo;
+            }
+        });*/
+       // dataStorage.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, results.getBuildId(), results);
     }
+
+    private boolean verifySettings(Map<String,TeamServerProfile> profiles, BuildLogger buildLogger, String profileName){
+
+        if (profiles == null) {
+            buildLogger.addBuildLogEntry("Unable to load TeamServer Profiles. Check on the TeamServer Profiles page that your profiles are configured correctly.");
+            return false;
+        }
+
+        //Gets relevant teamserver profile from profiles.
+        TeamServerProfile profile = profiles.get(profileName);
+        if(profile == null) {
+            buildLogger.addBuildLogEntry("Unable to load TeamServer Profile " + profileName + ". Check on the TeamServer Profiles page that this profile is configured correctly.");
+            return false;
+        }
+
+        if (profile.getUuid() == null) {
+            buildLogger.addBuildLogEntry("An organization id must be configured to check for vulnerabilities.");
+            return false;
+        }
+
+        if (profile.getServerName() == null) {
+            buildLogger.addBuildLogEntry("A server name must be configured to check for vulnerabilities.");
+            return false;
+        }
+
+        return true;
+    }
+
 }
