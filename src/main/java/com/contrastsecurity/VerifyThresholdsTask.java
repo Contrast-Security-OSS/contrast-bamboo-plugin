@@ -41,7 +41,7 @@ public class VerifyThresholdsTask implements TaskType {
     @ComponentImport
     private final ActiveObjects activeObjects;
 
-    private final String DATA_STORAGE_CONTRAST = "com.contrastsecurity.bambooplugin:"; //append build ids for a storage key
+    public static final String DATA_STORAGE_CONTRAST = "com.contrastsecurity.bambooplugin:"; //append build ids for a storage key
     private final ArrayList<Finding> findings = new ArrayList<Finding>();
 
     @Inject
