@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>TeamServer Configuration</title>
+        <meta name="decorator" content="atl.admin">
+        <meta name="application-base-url" content=$baseUrl>
+    </head>
+    <body>
+        <div class="aui-page-panel">
+            <div class="aui-page-panel-inner">
+                <section class="aui-page-panel-content">
+                    <h1>TeamServer Profile Setup</h1>
+                    <h5>Configure TeamServer Profiles for use in testing.</h5>
+                </section>
+            </div>
+        </div>
+        <br>
+        <h1>Hi</h1>
+         <h1>Hi</h1>
+          <h1>Hi</h1>
+           <h1>Hi</h1>
+            <h1>Hi</h1>
+             <h1>Hi</h1>
+              <h1>Hi</h1>
+               <h1>Hi</h1>
+                <h1>Hi</h1>
+                 <h1>Hi</h1>
+                  <h1>Hi</h1>
+                   <h1>Hi</h1>
+                    <h1>Hi</h1>
+    </body>
+</html>

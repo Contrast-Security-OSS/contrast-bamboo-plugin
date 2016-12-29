@@ -8,6 +8,8 @@ import com.atlassian.bamboo.reports.collector.ReportCollector;
 import com.atlassian.bamboo.resultsummary.ResultsSummary;
 
 import org.jetbrains.annotations.NotNull;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.AbstractDataset;
 import org.jfree.data.general.Dataset;
 
 import java.io.File;
@@ -24,13 +26,15 @@ import com.contrastsecurity.http.UrlBuilder;
 import com.contrastsecurity.models.*;
 import com.contrastsecurity.sdk.ContrastSDK;
 import com.opensymphony.xwork2.inject.Inject;
+import org.jfree.data.general.DatasetGroup;
 
 public class SeverityReportCollector implements ReportCollector {
 
     @ComponentImport
     private final ActiveObjects activeObjects;
-
+    private Dataset set;
     private HashMap<String, ArrayList<Finding>> buildFindings;
+
     @Inject
     public SeverityReportCollector(ActiveObjects activeObjects){
         this.activeObjects = activeObjects;

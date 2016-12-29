@@ -19,9 +19,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
-@Named("myPlugin")
-public class ConnectionServlet extends HttpServlet
-{
+@Named("ContrastPlugin")
+public class ConnectionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@ComponentImport
 	private final UserManager userManager;
@@ -37,27 +36,23 @@ public class ConnectionServlet extends HttpServlet
 		this.loginUriProvider = loginUriProvider;
 		this.templateRenderer = templateRenderer;
 	}
+
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
-	{
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String username = userManager.getRemoteUsername(request);
-		if (username == null || !userManager.isSystemAdmin(username))
-		{
+		if (username == null || !userManager.isSystemAdmin(username)) {
 			redirectToLogin(request, response);
 			return;
 		}
 		response.setContentType("text/html;charset=utf-8");
 		templateRenderer.render("admin.vm", response.getWriter());
 	}
-	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException
-	{
+	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
 	}
-	private URI getUri(HttpServletRequest request)
-	{
+	private URI getUri(HttpServletRequest request) {
 		StringBuffer builder = request.getRequestURL();
-		if (request.getQueryString() != null)
-		{
+		if (request.getQueryString() != null){
 			builder.append("?");
 			builder.append(request.getQueryString());
 		}

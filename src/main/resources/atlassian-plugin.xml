@@ -30,6 +30,9 @@
     <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
         <url-pattern>/teamserverConnect</url-pattern>
     </servlet>
+    <servlet name="contrast-postbuild-plugin" class="com.contrastsecurity.PostBuildServlet" key="postbuild-reports">
+        <url-pattern>/postBuild</url-pattern>
+    </servlet>
 
     <web-item key="bamboo-menu-item"
         name="Contrast Admin Page"
@@ -41,6 +44,17 @@
         <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
     </web-item>
 
+    <web-item key="post-build-report"
+              name="Contrast Reports"
+              section="results.subMenu/results"
+              weight="10"
+              application="bamboo">
+        <description>Show reports from previous builds on this plan.</description>
+        <label key="Contrast Report"/>
+        <link linkId="contrast-report-link">/plugins/servlet/postBuild</link>
+    </web-item>
+
+
     <rest name="TeamServer REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
         <description>Provides REST resources for the Configuration UI.</description>
     </rest>
@@ -51,19 +65,12 @@
             100% means your build is always rock solid. 0% means something is seriously wrong.</description>
         <chartClass>com.contrastsecurity.ContrastSeverityReportChart</chartClass>
     </report>
-    <report key="test" name="Percentage of Test Successful Builds"
-            class="com.atlassian.bamboo.reports.collector.RatioOfSuccessCollector">
-        <description>Yee</description>
-        <chartClass>com.atlassian.bamboo.reports.charts.BuildSummarySuccessRatioLineChart</chartClass>
-    </report>
 
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
         <entity>com.contrastsecurity.Finding</entity>
     </ao>
-    <component-import key="ao" name="Active Objects service" interface="com.atlassian.activeobjects.external.ActiveObjects">
-          <description>Component to access Active Objects functionality from the plugin</description>
-    </component-import>
+
 
 
     <resource type="i18n" name="language" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
