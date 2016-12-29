@@ -9,7 +9,9 @@ public interface Finding extends Entity {
 
     public void setSeverity(String severity);
     public void setType(String type);
-    public void getSeverity();
-    public void getType();
+    public void setBuildId(String buildId);
+    public String getSeverity();
+    public String getType();
+    public String getBuildId();
 
 }

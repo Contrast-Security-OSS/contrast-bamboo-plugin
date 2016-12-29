@@ -51,6 +51,11 @@
             100% means your build is always rock solid. 0% means something is seriously wrong.</description>
         <chartClass>com.contrastsecurity.ContrastSeverityReportChart</chartClass>
     </report>
+    <report key="test" name="Percentage of Test Successful Builds"
+            class="com.atlassian.bamboo.reports.collector.RatioOfSuccessCollector">
+        <description>Yee</description>
+        <chartClass>com.atlassian.bamboo.reports.charts.BuildSummarySuccessRatioLineChart</chartClass>
+    </report>
 
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>

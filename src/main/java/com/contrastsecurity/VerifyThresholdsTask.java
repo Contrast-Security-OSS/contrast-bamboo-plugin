@@ -31,16 +31,18 @@ import javax.net.ssl.ManagerFactoryParameters;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VerifyThresholdsTask implements TaskType {
 
     @ComponentImport
     private final PluginSettingsFactory pluginSettingsFactory;
-
-    private final String dataStoragePrepend = "com.contrastsecurity.bambooplugin:"; //append build ids for a storage key
-
     @ComponentImport
     private final ActiveObjects activeObjects;
+
+    private final String DATA_STORAGE_CONTRAST = "com.contrastsecurity.bambooplugin:"; //append build ids for a storage key
+    private final ArrayList<Finding> findings = new ArrayList<Finding>();
 
     @Inject
     public VerifyThresholdsTask(PluginSettingsFactory psf, ActiveObjects activeObjects) {
@@ -58,7 +60,7 @@ public class VerifyThresholdsTask implements TaskType {
         //Get configuration data from task context
         String profile_name = confmap.get("profile_select");
         String app_name = confmap.get("app_name");
-
+        final String key = DATA_STORAGE_CONTRAST + getReportAccessibleKey(taskContext.getBuildContext().getEntityKey().getKey()) + taskContext.getBuildContext().getBuildNumber();//PROJ-PLAN-#
         ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
         for(int i = 1; ; i++){
             if(!confmap.containsKey("count_" + i)){
@@ -78,7 +80,6 @@ public class VerifyThresholdsTask implements TaskType {
         TeamServerProfile profile = profiles.get(profile_name);
 
         ContrastSDK contrast = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
-        BuildResults results = new BuildResults(dataStoragePrepend+"A");
         try {
 
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
@@ -108,16 +109,17 @@ public class VerifyThresholdsTask implements TaskType {
                 //} else {
                 //    traces = contrast.getTraceFilterByRule(profile.getUuid(), applicationId, type, filterForm);
 
-                ArrayList<Finding> findings = new ArrayList<Finding>();
+
                 for (final Trace trace : traces.getTraces()) {
                     if (trace.getRule().equals(type) || type.equals("None")){
                         activeObjects.executeInTransaction(new TransactionCallback<Finding>(){
-                            public Finding doInTransaction()
-                            {
-                                final Finding result = activeObjects.create(Finding.class); // (2)
+                            public Finding doInTransaction() {
+                                final Finding result = activeObjects.create(Finding.class);
                                 result.setSeverity(trace.getSeverity());
                                 result.setType(trace.getRule());
+                                result.setBuildId(key);
                                 result.save();
+                                findings.add(result);
                                 return result;
                             }
                         });
@@ -128,7 +130,6 @@ public class VerifyThresholdsTask implements TaskType {
             //}
 
                 buildLogger.addBuildLogEntry("\tThere were " + vulnTypeCount + " vulns of this type of " + traces.getCount() + " total");
-
                 if (vulnTypeCount >= maxVulns) {
                     buildLogger.addBuildLogEntry("Failed on the threshold condition where the minimum threshold is " + maxVulns +
                             ", severity is " + severity +
@@ -192,23 +193,6 @@ public class VerifyThresholdsTask implements TaskType {
 
         throw new IOException("Application with name '" + applicationName + "' not found.");
     }
-
-    private void save(){
-        /*activeObjects.executeInTransaction(new TransactionCallback<BuildResults>() // (1)
-        {
-            @Override
-            public BuildResults doInTransaction()
-            {
-                final BuildResults  = ao.create(Todo.class); // (2)
-                todo.setDescription(description); // (3)
-                todo.setComplete(false);
-                todo.save(); // (4)
-                return todo;
-            }
-        });*/
-       // dataStorage.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, results.getBuildId(), results);
-    }
-
     private boolean verifySettings(Map<String,TeamServerProfile> profiles, BuildLogger buildLogger, String profileName){
 
         if (profiles == null) {
@@ -234,6 +218,19 @@ public class VerifyThresholdsTask implements TaskType {
         }
 
         return true;
+    }
+
+    private String getReportAccessibleKey(String candidate){
+        System.out.println("CANDIDATE KEY: " + candidate);
+        String re1="((?:[a-z][a-z0-9_]*))(-)((?:[a-z][a-z0-9_]*))(-)";
+        Pattern p = Pattern.compile(re1,Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Matcher m = p.matcher(candidate);
+        if(m.find()){
+            System.out.println("FOUND: " + m.group(1) + m.group(2) + m.group(3) + m.group(4));
+            return m.group(1) + m.group(2) + m.group(3) + m.group(4);
+        }
+        return candidate;
+
     }
 
 }
