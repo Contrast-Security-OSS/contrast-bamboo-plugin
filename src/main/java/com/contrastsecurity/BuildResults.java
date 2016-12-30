@@ -87,12 +87,12 @@ public class BuildResults{
     public String toString(){
         StringBuilder builder = new StringBuilder("{");
         builder.append("\"buildId\":\"" + simplifyBuildId()+"\",");
-        builder.append("\"lowCount\":\"" + lowCount+"\",");
-        builder.append("\"mediumCount\":\"" + mediumCount+"\",");
-        builder.append("\"highCount\":\"" + highCount+"\",");
-        builder.append("\"noteCount\":\"" + noteCount+"\",");
-        builder.append("\"criticalCount\":\"" + criticalCount+"\",");
-        builder.append("\"totalCount\":\"" + getTotal()+"\",");
+        builder.append("\"lowCount\":" + lowCount+",");
+        builder.append("\"mediumCount\":" + mediumCount+",");
+        builder.append("\"highCount\":" + highCount+",");
+        builder.append("\"noteCount\":" + noteCount+",");
+        builder.append("\"criticalCount\":" + criticalCount+",");
+        builder.append("\"totalCount\":" + getTotal()+",");
         builder.append("\"findings\":" + "["+getFindingsJson() +"]}");
 
         return builder.toString();
