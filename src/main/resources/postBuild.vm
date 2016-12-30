@@ -4,40 +4,114 @@
         <meta name="decorator" content="atl.admin">
         <meta name="application-base-url" content=$baseUrl>
 
+        #requireResource("com.contrastsecurity:d3v3")
+        #set ($chartData = $results)
+
+        <style>
+             .axis path,
+             .axis line{
+        	fill: #000;
+        	stroke: #000;
+        	shape-rendering: crispEdges;
+            }
+         </style>
     </head>
     <body>
         <div class="aui-page-panel">
-            <div class="aui-page-panel-inner">
-                <section class="aui-page-panel-content">
-                    <h1>TeamServer Profile Setup</h1>
-                    <h5>Configure TeamServer Profiles for use in testing.</h5>
-                </section>
-            </div>
-        </div>
-        <ul>
-          #foreach( $finding in $findings )
-            <li><span>$finding.type</span><span>$finding.severity</span><span>$finding.buildId</span></li>
-          #end
-        </ul>
-        <h4>$test</h4>
+        <h4>Severity Trends Across Builds</h4>
         <div id="stacked-bar-chart">
             <script>
+            console.log(("${chartData}").replace(/&quot;/g,'"'));
+            var data = JSON.parse(("${chartData}").replace(/&quot;/g,'"'));;
+            data.sort(function(a, b) {
+                return a.buildId - b.buildId;
+            });
+            console.log(data);
+           var margin = {top: 20, right: 50, bottom: 30, left: 100},
+                       width = 600 - margin.left - margin.right,
+                       height = 400 - margin.top - margin.bottom;
+           var maxCount = Math.max.apply(Math,data.map(function(o){return o.totalCount;}));
 
-                       var svgContainer = d3.select("#stacked-bar-chart").append("svg")
-                                                               .attr("width", 200)
-                                                               .attr("height", 200);
+                   var svg = d3.select("#stacked-bar-chart").append("svg")
+                           .attr("width", width + margin.left + margin.right)
+                           .attr("height", height + margin.top + margin.bottom)
+                           .append("g")
+                           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                   var x = d3.scale.ordinal()
+                          .rangeRoundBands([0, width], .35);
+                   var y =  d3.scale.linear()
+                          .domain([0, maxCount])
+                          .range([height, 0]);
+                   var yAxis = d3.svg.axis()
+                          .scale(y)
+                          .orient("left")
+                          .ticks(5);
+                   var color = d3.scale.category10();
+                   var xAxis = d3.svg.axis()
+                       .scale(x)
+                       .orient("bottom");
+            var dataIntermediate=['noteCount','lowCount','mediumCount','highCount','criticalCount'].map(function(key,i){
+                    return data.map(function(d,j){
+                        return {x: d.buildId, y: d[key] };
+                    })
+                });
+                    var dataStackLayout = d3.layout.stack()(dataIntermediate);
+                    x.domain(dataStackLayout[0].map(function (d) {
+                        return d.x;
+                    }));
+                    y.domain([0,d3.max(dataStackLayout[dataStackLayout.length - 1],
+                            function (d) { return d.y0 + d.y;})
+                    ]).nice();
+
+                    var layer = svg.selectAll(".stack")
+                        .data(dataStackLayout)
+                        .enter().append("g")
+                        .attr("class", "stack")
+                        .style("fill", function (d, i) {
+                            return color(i);
+                        });
+
+                    layer.selectAll("rect")
+                            .data(function (d) {
+                                return d;
+                            })
+                            .enter().append("rect")
+                            .attr("x", function (d) {
+                                return x(d.x);
+                            })
+                            .attr("y", function (d) {
+                                return y(d.y + d.y0);
+                            })
+                            .attr("height", function (d) {
+                                return y(d.y0) - y(d.y + d.y0);
+                            })
+                            .attr("width", x.rangeBand());
 
 
-                            var circle = svgContainer.append("ellipse")
-                                                     .attr("cx", 50)
-                                                     .attr("cy", 50)
-                                                    .attr("rx", 25)
-                                                    .attr("ry", 10);
+                    svg.append("g")
+                               .classed("y axis", true)
+                               .attr("transform", "translate("+margin.left+",0)")
+                               .call(yAxis);
+                    svg.append("g")
+                       .classed("y axis", true)
+                       .attr("transform", "translate(0,"+height+")")
+                       .call(xAxis);
+                     svg.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "translate(25,"+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+                                .text("Severity Count");
+
+                    svg.append("text")
+                        .attr("text-anchor", "middle")
+                        .attr("transform", "translate("+ (width/2) +","+(height+25)+")")  // centre below axis
+                        .text("Build Number");
 
 
-                   </script>
+
+            </script>
         </div>
-        <h4>After</h4>
+        <h4>Vulnerability Trends Across Builds</h4>
+        <h6>TODO</h6>
         <br>
 
     </body>

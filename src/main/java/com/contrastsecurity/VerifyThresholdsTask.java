@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.ManagerFactoryParameters;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -128,7 +129,7 @@ public class VerifyThresholdsTask implements TaskType {
                     }
                 }
             //}
-
+                //saveBeforeExit(key);
                 buildLogger.addBuildLogEntry("\tThere were " + vulnTypeCount + " vulns of this type of " + traces.getCount() + " total");
                 if (vulnTypeCount >= maxVulns) {
                     buildLogger.addBuildLogEntry("Failed on the threshold condition where the minimum threshold is " + maxVulns +
@@ -228,7 +229,7 @@ public class VerifyThresholdsTask implements TaskType {
             return m.group(1) + m.group(2) + m.group(3) + m.group(4);
         }
         return candidate;
-
     }
+
 
 }

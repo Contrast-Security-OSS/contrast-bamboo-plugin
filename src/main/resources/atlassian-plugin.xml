@@ -44,6 +44,13 @@
         <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
     </web-item>
 
+    <web-resource key="d3v3" name="Contrast D3 Dependency">
+        <resource type="download" name="d3v3.js" location="js/d3v3.js">
+            <param name="content-type" value="application/javascript"/>
+        </resource>
+        <context>atl.general</context>
+    </web-resource>
+
     <web-item key="post-build-report"
               name="Contrast Reports"
               section="results.subMenu/results"
@@ -59,17 +66,12 @@
         <description>Provides REST resources for the Configuration UI.</description>
     </rest>
 
-    <report key="contrastSeverity" name="Severity Trends Across Builds"
-            class="com.contrastsecurity.SeverityReportCollector">
-        <description>Comparing success percentages gives you an idea of how stable a build is compared to one another.
-            100% means your build is always rock solid. 0% means something is seriously wrong.</description>
-        <chartClass>com.contrastsecurity.ContrastSeverityReportChart</chartClass>
-    </report>
 
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
         <entity>com.contrastsecurity.Finding</entity>
     </ao>
+
 
 
 
