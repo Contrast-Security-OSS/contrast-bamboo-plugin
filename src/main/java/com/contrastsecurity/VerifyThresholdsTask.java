@@ -1,8 +1,6 @@
 package com.contrastsecurity;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
-import com.atlassian.bamboo.bandana.BambooBandanaManager;
-import com.atlassian.bamboo.bandana.PlanAwareBandanaContext;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.task.TaskContext;
@@ -10,30 +8,29 @@ import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
-import com.atlassian.bandana.BandanaContext;
-import com.atlassian.bandana.BandanaManager;
-import com.atlassian.bandana.DefaultBandanaManager;
-import com.atlassian.bandana.impl.MemoryBandanaPersister;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
+import com.contrastsecurity.data.TeamServerProfile;
 import com.contrastsecurity.exceptions.UnauthorizedException;
-import com.contrastsecurity.http.FilterForm;
+import com.contrastsecurity.http.RuleSeverity;
+
 import com.contrastsecurity.http.ServerFilterForm;
-import com.contrastsecurity.http.UrlBuilder;
+import com.contrastsecurity.http.TraceFilterForm;
 import com.contrastsecurity.models.*;
 import com.contrastsecurity.sdk.ContrastSDK;
 import com.opensymphony.xwork2.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.ManagerFactoryParameters;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.codec.binary.Base64;
+
+import static com.contrastsecurity.utils.ContrastSDKUtils.SEVERITIES;
+
 
 public class VerifyThresholdsTask implements TaskType {
 
@@ -57,10 +54,11 @@ public class VerifyThresholdsTask implements TaskType {
         final TaskResultBuilder builder = TaskResultBuilder.newBuilder(taskContext); //Initially set to Failed.
         final BuildLogger buildLogger = taskContext.getBuildLogger();
         final ConfigurationMap confmap = taskContext.getConfigurationMap();
-
         //Get configuration data from task context
         String profile_name = confmap.get("profile_select");
         String app_name = confmap.get("app_name");
+
+
         final String key = DATA_STORAGE_CONTRAST + getReportAccessibleKey(taskContext.getBuildContext().getEntityKey().getKey()) + taskContext.getBuildContext().getBuildNumber();//PROJ-PLAN-#
         ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
         for(int i = 1; ; i++){
@@ -72,6 +70,7 @@ public class VerifyThresholdsTask implements TaskType {
 
         //Use the pluginsettingsFactory to grab TeamServer profiles
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+        System.out.println(settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY));
         Map<String,TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 
         //Checks if these profiles are null, fails the build if they are.
@@ -81,6 +80,7 @@ public class VerifyThresholdsTask implements TaskType {
         TeamServerProfile profile = profiles.get(profile_name);
 
         ContrastSDK contrast = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
+
         try {
 
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
@@ -96,16 +96,16 @@ public class VerifyThresholdsTask implements TaskType {
 
                 int vulnTypeCount = 0; // used for vuln type
 
-                FilterForm filterForm = new FilterForm();
+                TraceFilterForm filterForm = new TraceFilterForm();
 
                 if (!severity.equals("None")) {
-                    filterForm.setSeverities(UrlBuilder.getSeverityList(severity));
+                    filterForm.setSeverities(getSeverityList(severity));
                 } else {
                     filterForm = null;
                 }
 
                 //if (type.equals("None")) {
-                Traces traces = contrast.getTracesWithFilter(profile.getUuid(), applicationId, "servers", Long.toString(serverId), filterForm);
+                Traces traces = contrast.getTraces(profile.getUuid(), applicationId, filterForm);
                 //    vulnTypeCount = traces.getCount();
                 //} else {
                 //    traces = contrast.getTraceFilterByRule(profile.getUuid(), applicationId, type, filterForm);
@@ -140,7 +140,10 @@ public class VerifyThresholdsTask implements TaskType {
             }
             return builder.success().build();
         } catch (IOException e) {
-            buildLogger.addBuildLogEntry("IOException");
+            buildLogger.addBuildLogEntry("IOException ");
+            e.printStackTrace();
+            System.out.println("*************************************************************************************");
+
             buildLogger.addBuildLogEntry(e.getMessage());
             return builder.failed().build();
         } catch (UnauthorizedException e){
@@ -230,6 +233,18 @@ public class VerifyThresholdsTask implements TaskType {
         }
         return candidate;
     }
+
+        private static EnumSet<RuleSeverity> getSeverityList(String severity) {
+            List<String> severityList = SEVERITIES.subList(SEVERITIES.indexOf(severity), SEVERITIES.size());
+
+            List<RuleSeverity> ruleSeverities = new ArrayList<RuleSeverity>();
+
+            for (String severityToAdd : severityList) {
+                ruleSeverities.add(RuleSeverity.valueOf(severityToAdd));
+            }
+
+            return EnumSet.copyOf(ruleSeverities);
+        }
 
 
 }

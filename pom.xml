@@ -102,7 +102,8 @@
         <dependency>
             <groupId>com.contrastsecurity</groupId>
             <artifactId>contrast-sdk-java</artifactId>
-            <version>2.1.1</version>
+            <version>2.2</version>
+            <scope>compile</scope>
         </dependency>
         <!-- WIRED TEST RUNNER DEPENDENCIES -->
         <dependency>

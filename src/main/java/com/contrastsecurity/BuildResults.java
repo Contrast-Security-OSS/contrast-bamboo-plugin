@@ -5,6 +5,7 @@ import net.java.ao.OneToMany;
 import net.java.ao.Preload;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,7 +94,8 @@ public class BuildResults{
         builder.append("\"noteCount\":" + noteCount+",");
         builder.append("\"criticalCount\":" + criticalCount+",");
         builder.append("\"totalCount\":" + getTotal()+",");
-        builder.append("\"findings\":" + "["+getFindingsJson() +"]}");
+        builder.append("\"findings\":" + "["+getFindingsJson() +"],");
+        builder.append("\"findingsCount\":" + "["+getFindingCounts()+"]}");
 
         return builder.toString();
 
@@ -111,6 +113,28 @@ public class BuildResults{
         }
         return builder.toString();
     }
+    private String getFindingCounts(){
+        StringBuilder builder = new StringBuilder();
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for(int i = 0; i < findings.size(); i++){
+            Finding f = findings.get(i);
+           if(!map.containsKey(f.getType())){
+               map.put(f.getType(), 1);
+           }else{
+               map.put(f.getType(), map.get(f.getType())+1);
+           }
+        }
+        int count = 0;
+        for(String key : map.keySet()){
+            builder.append("{\"type\":\""+key+"\",\"count\":\""+map.get(key) +"\"}");
+            if(count < map.size() - 1){
+                builder.append(",");
+            }
+            count++;
+        }
+        return builder.toString();
+    }
+
     private String simplifyBuildId(){
         String re1="(com\\.contrastsecurity\\.bambooplugin)(:)((?:[a-z][a-z0-9_]*))(-)((?:[a-z][a-z0-9_]*))(-)(\\d+)";
         Pattern p = Pattern.compile(re1, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);

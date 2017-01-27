@@ -19,10 +19,10 @@
     <body>
         <div class="aui-page-panel">
         <h4>Severity Trends Across Builds</h4>
-        <div id="stacked-bar-chart">
+        <div id="severity-bar-chart">
             <script>
-            console.log(("${chartData}").replace(/&quot;/g,'"'));
-            var data = JSON.parse(("${chartData}").replace(/&quot;/g,'"'));;
+            console.log((("${chartData}").replace(/&quot;/g,'"')));
+            var data = JSON.parse(("${chartData}").replace(/&quot;/g,'"'));
             data.sort(function(a, b) {
                 return a.buildId - b.buildId;
             });
@@ -33,19 +33,20 @@
                         .range(colorValues);
                     var margin = {top: 20, right: 50, bottom: 50, left: 100},
                                            width = 600 - margin.left - margin.right,
-                                           height = 400 - margin.top - margin.bottom;
+                                           totalHeight = 600,
+                                           chartHeight = 400 - margin.top - margin.bottom;
                                var maxCount = Math.max.apply(Math,data.map(function(o){return o.totalCount;}));
 
-                                       var svg = d3.select("#stacked-bar-chart").append("svg")
+                                       var svg = d3.select("#severity-bar-chart").append("svg")
                                                .attr("width", width + margin.left + margin.right)
-                                               .attr("height", height + margin.top + margin.bottom)
+                                               .attr("height", totalHeight + margin.top + margin.bottom)
                                                .append("g")
                                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                                        var x = d3.scale.ordinal()
                                               .rangeRoundBands([0, width], .35);
                                        var y =  d3.scale.linear()
                                               .domain([0, maxCount])
-                                              .range([height, 0]);
+                                              .range([chartHeight, 0]);
                                        var yAxis = d3.svg.axis()
                                               .scale(y)
                                               .orient("left")
@@ -98,47 +99,47 @@
                                                    .call(yAxis);
                                         svg.append("g")
                                            .classed("y axis", true)
-                                           .attr("transform", "translate(0,"+height+")")
+                                           .attr("transform", "translate(0,"+chartHeight+")")
                                            .call(xAxis);
                                          svg.append("text")
                                                     .attr("text-anchor", "middle")
-                                                    .attr("transform", "translate(-60,"+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+                                                    .attr("transform", "translate(-60,"+(chartHeight/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
                                                     .text("Severity Count");
 
                                         svg.append("text")
                                             .attr("text-anchor", "middle")
-                                            .attr("transform", "translate("+ (width/2) +","+(height+40)+")")  // centre below axis
+                                            .attr("transform", "translate("+ (width/2) +","+(chartHeight+40)+")")  // centre below axis
                                             .text("Build Number");
 
                                             // add legend
-            	var legend = svg.append("g")
-            	  .attr("class", "legend")
-            	  .attr("height", 100)
-            	  .attr("width", 100)
-                .attr('transform', 'translate(-20,50)')
+                                            var legend = svg.append("g")
+                                                    	  .attr("class", "legend")
+                                                    	  .attr("height", 100)
+                                                    	  .attr("width", 100)
+                                                        .attr('transform', 'translate(0,'+ (chartHeight+50)+')')
 
 
-                legend.selectAll('rect')
-                  .data(colorValues)
-                  .enter()
-                  .append("rect")
-            	  .attr("x", width - 65)
-                  .attr("y", function(d, i){ return i *  20;})
-            	  .attr("width", 10)
-            	  .attr("height", 10)
-            	  .style("fill", function(d) {
-                      return d;
-                  })
+                                                        legend.selectAll('rect')
+                                                          .data(colorValues)
+                                                          .enter()
+                                                          .append("rect")
+                                                    	  .attr("x", width - 65)
+                                                          .attr("y", function(d, i){ return i *  20;})
+                                                    	  .attr("width", 10)
+                                                    	  .attr("height", 10)
+                                                    	  .style("fill", function(d) {
+                                                              return d;
+                                                          })
 
-                legend.selectAll('text')
-                  .data(legendValues)
-                  .enter()
-                  .append("text")
-            	  .attr("x", width - 52)
-                  .attr("y", function(d, i){ return i *  20 + 9;})
-            	  .text(function(d) {
-                    return d;
-                  });
+                                                        legend.selectAll('text')
+                                                          .data(legendValues)
+                                                          .enter()
+                                                          .append("text")
+                                                    	  .attr("x", width - 52)
+                                                          .attr("y", function(d, i){ return i *  20 + 9;})
+                                                    	  .text(function(d) {
+                                                            return d;
+                                                          });
 
 
 
@@ -148,7 +149,134 @@
             </script>
         </div>
         <h4>Vulnerability Trends Across Builds</h4>
-        <h6>TODO</h6>
+        <div id="vuln-bar-chart">
+                    <script>
+                    var data = JSON.parse(("${chartData}").replace(/&quot;/g,'"'));;
+                    data.sort(function(a, b) {
+                        return a.buildId - b.buildId;
+                    });
+
+                    var colorValues = ["#AECD43","#3CC3B2","#F7B600","#F78A31","#E63025"]
+                    var color = d3.scale.ordinal()
+                        .domain(legendValues)
+                        .range(colorValues);
+                    var margin = {top: 20, right: 50, bottom: 50, left: 100},
+                                   width = 600 - margin.left - margin.right,
+                                   totalHeight = 600,
+                                   chartHeight = 400 - margin.top - margin.bottom;
+                   var maxCount = Math.max.apply(Math,data.map(function(o){return o.totalCount;}));
+
+                   var svg = d3.select("#stacked-bar-chart").append("svg")
+                           .attr("width", width + margin.left + margin.right)
+                           .attr("height", totalHeight + margin.top + margin.bottom)
+                           .append("g")
+                           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                   var x = d3.scale.ordinal()
+                          .rangeRoundBands([0, width], .35);
+                   var y =  d3.scale.linear()
+                          .domain([0, maxCount])
+                          .range([chartHeight, 0]);
+                   var yAxis = d3.svg.axis()
+                          .scale(y)
+                          .orient("left")
+                          .ticks(5);
+
+                   var xAxis = d3.svg.axis()
+                       .scale(x)
+                       .orient("bottom");
+                                        var dataIntermediate=['noteCount','lowCount','mediumCount','highCount','criticalCount'].map(function(key,i){
+                                                return data.map(function(d,j){
+                                                    return {x: d.buildId, y: d[key] };
+                                                })
+                                            });
+                    var dataStackLayout = d3.layout.stack()(dataIntermediate);
+                    x.domain(dataStackLayout[0].map(function (d) {
+                        return d.x;
+                    }));
+                    y.domain([0,d3.max(dataStackLayout[dataStackLayout.length - 1],
+                            function (d) { return d.y0 + d.y;})
+                    ]).nice();
+
+                    var layer = svg.selectAll(".stack")
+                        .data(dataStackLayout)
+                        .enter().append("g")
+                        .attr("class", "stack")
+                        .style("fill", function (d, i) {
+                            return color(i);
+                        });
+
+                    layer.selectAll("rect")
+                            .data(function (d) {
+                                return d;
+                            })
+                            .enter().append("rect")
+                            .attr("x", function (d) {
+                                return x(d.x);
+                            })
+                            .attr("y", function (d) {
+                                return y(d.y + d.y0);
+                            })
+                            .attr("height", function (d) {
+                                return y(d.y0) - y(d.y + d.y0);
+                            })
+                            .attr("width", x.rangeBand());
+
+
+                    svg.append("g")
+                               .classed("y axis", true)
+
+                               .call(yAxis);
+                    svg.append("g")
+                       .classed("y axis", true)
+                       .attr("transform", "translate(0,"+chartHeight+")")
+                       .call(xAxis);
+                     svg.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "translate(-60,"+(chartHeight/2)+")rotate(-90)")
+                                .text("Vulnerability Count");
+
+                    svg.append("text")
+                        .attr("text-anchor", "middle")
+                        .attr("transform", "translate("+ (width/2) +","+(chartHeight+40)+")")
+                        .text("Build Number");
+
+                                                    // add legend
+                                                    var legend = svg.append("g")
+                                                            	  .attr("class", "legend")
+                                                            	  .attr("height", 100)
+                                                            	  .attr("width", 100)
+                                                                .attr('transform', 'translate(0,'+ (chartHeight+50)+')')
+
+
+                                                                legend.selectAll('rect')
+                                                                  .data(colorValues)
+                                                                  .enter()
+                                                                  .append("rect")
+                                                            	  .attr("x", width - 65)
+                                                                  .attr("y", function(d, i){ return i *  20;})
+                                                            	  .attr("width", 10)
+                                                            	  .attr("height", 10)
+                                                            	  .style("fill", function(d) {
+                                                                      return d;
+                                                                  })
+
+                                                                legend.selectAll('text')
+                                                                  .data(legendValues)
+                                                                  .enter()
+                                                                  .append("text")
+                                                            	  .attr("x", width - 52)
+                                                                  .attr("y", function(d, i){ return i *  20 + 9;})
+                                                            	  .text(function(d) {
+                                                                    return d;
+                                                                  });
+
+
+
+
+
+
+                    </script>
+                </div>
         <br>
 
     </body>

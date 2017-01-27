@@ -58,7 +58,7 @@
               application="bamboo">
         <description>Show reports from previous builds on this plan.</description>
         <label key="Contrast Report"/>
-        <link linkId="contrast-report-link">/plugins/servlet/postBuild</link>
+        <link linkId="contrast-report-link">/plugins/servlet/postBuild?buildKey=${buildKey}</link>
     </web-item>
 
 

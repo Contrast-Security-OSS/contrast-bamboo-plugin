@@ -26,6 +26,7 @@ import javax.inject.Named;
 
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
+import com.contrastsecurity.data.TeamServerProfile;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.sdk.ContrastSDK;
 

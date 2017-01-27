@@ -1,4 +1,4 @@
-package com.contrastsecurity;
+package com.contrastsecurity.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -70,4 +70,6 @@ public class TeamServerProfile {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
+
+
 }

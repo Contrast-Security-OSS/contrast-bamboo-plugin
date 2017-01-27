@@ -7,10 +7,8 @@ import com.atlassian.bamboo.utils.error.ErrorCollection;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.opensymphony.xwork2.TextProvider;
+import com.contrastsecurity.data.TeamServerProfile;
 import com.opensymphony.xwork2.inject.Inject;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
