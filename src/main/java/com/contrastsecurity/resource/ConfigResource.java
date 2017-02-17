@@ -1,4 +1,4 @@
-package com.contrastsecurity;
+package com.contrastsecurity.resource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
-import com.contrastsecurity.data.TeamServerProfile;
+import com.contrastsecurity.model.TeamServerProfile;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.sdk.ContrastSDK;
 

@@ -1,4 +1,4 @@
-package com.contrastsecurity;
+package com.contrastsecurity.model;
 
 
 import net.java.ao.Entity;

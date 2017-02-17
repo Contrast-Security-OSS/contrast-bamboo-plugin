@@ -1,4 +1,4 @@
-package com.contrastsecurity;
+package com.contrastsecurity.task;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
@@ -7,7 +7,9 @@ import com.atlassian.bamboo.utils.error.ErrorCollection;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.contrastsecurity.data.TeamServerProfile;
+import com.contrastsecurity.model.TeamServerProfile;
+import com.contrastsecurity.model.Threshold;
+import com.contrastsecurity.model.VulnerabilityTypes;
 import com.opensymphony.xwork2.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

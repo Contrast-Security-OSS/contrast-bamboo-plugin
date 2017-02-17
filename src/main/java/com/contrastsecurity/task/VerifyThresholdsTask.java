@@ -1,4 +1,4 @@
-package com.contrastsecurity;
+package com.contrastsecurity.task;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.bamboo.build.logger.BuildLogger;
@@ -9,11 +9,14 @@ import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.util.concurrent.NotNull;
-import com.contrastsecurity.data.TeamServerProfile;
+import com.contrastsecurity.util.KeyGenerator;
+import com.contrastsecurity.model.TeamServerProfile;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.http.RuleSeverity;
 import com.contrastsecurity.http.ServerFilterForm;
 import com.contrastsecurity.http.TraceFilterForm;
+import com.contrastsecurity.model.Finding;
+import com.contrastsecurity.model.Threshold;
 import com.contrastsecurity.models.Application;
 import com.contrastsecurity.models.Applications;
 import com.contrastsecurity.models.Servers;
@@ -27,9 +30,6 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 
 public class VerifyThresholdsTask implements TaskType {
@@ -194,7 +194,8 @@ public class VerifyThresholdsTask implements TaskType {
 
         throw new IOException("Application with name '" + applicationName + "' not found.");
     }
-    private boolean verifySettings(Map<String,TeamServerProfile> profiles, BuildLogger buildLogger, String profileName){
+    public boolean verifySettings(Map<String,TeamServerProfile> profiles, BuildLogger buildLogger, String
+            profileName){
 
         if (profiles == null) {
             buildLogger.addBuildLogEntry("Unable to load TeamServer Profiles. Check on the TeamServer Profiles page that your profiles are configured correctly.");

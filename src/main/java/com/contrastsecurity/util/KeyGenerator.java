@@ -1,12 +1,10 @@
-package com.contrastsecurity;
+package com.contrastsecurity.util;
 
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class KeyGenerator {
-
-    final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
 
     public static String generate(String c){
         String re1="((?:[a-z][a-z0-9_]*))(-)((?:[a-z][a-z0-9_]*))(-)";
@@ -18,13 +16,5 @@ public class KeyGenerator {
         return c;
     }
 
-    public static int retrieveId(String input){
-        Matcher matcher = lastIntPattern.matcher(input);
-        int id = 0;
-        if (matcher.find()) {
-            String foundResult = matcher.group(1);
-            return Integer.parseInt(foundResult);
-        }
-        return id;
-    }
+
 }

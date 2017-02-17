@@ -1,4 +1,4 @@
-package com.contrastsecurity;
+package com.contrastsecurity.servlet;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +28,6 @@ public class ConnectionServlet extends HttpServlet {
 	private final LoginUriProvider loginUriProvider;
 	@ComponentImport
 	private final TemplateRenderer templateRenderer;
-	//@ComponentImport
 
 	@Inject
 	public ConnectionServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer templateRenderer){

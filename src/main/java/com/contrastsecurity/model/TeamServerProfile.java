@@ -1,4 +1,4 @@
-package com.contrastsecurity.data;
+package com.contrastsecurity.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

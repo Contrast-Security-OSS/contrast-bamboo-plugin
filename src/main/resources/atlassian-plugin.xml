@@ -18,19 +18,19 @@
         <context>atl.admin</context>
     </web-resource>
 
-    <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.VerifyThresholdsTask">
+    <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.task.VerifyThresholdsTask">
         <description>A task for registering TeamServer results as build conditions.</description>
-        <configuration class="com.contrastsecurity.TeamServerTaskConfiguration"/>
+        <configuration class="com.contrastsecurity.task.TeamServerTaskConfiguration"/>
         <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
         <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
         <resource type="download" name="icon" location="images/taskIcon.png"/>
         <help link="ts.task.help.link" title="ts.task.help.title" />
     </taskType>
 
-    <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
+    <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.servlet.ConnectionServlet" key="teamserver-config">
         <url-pattern>/teamserverConnect</url-pattern>
     </servlet>
-    <servlet name="contrast-postbuild-plugin" class="com.contrastsecurity.PostBuildServlet" key="postbuild-reports">
+    <servlet name="contrast-postbuild-plugin" class="com.contrastsecurity.servlet.PostBuildServlet" key="postbuild-reports">
         <url-pattern>/postBuild</url-pattern>
     </servlet>
 
@@ -69,7 +69,7 @@
 
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
-        <entity>com.contrastsecurity.Finding</entity>
+        <entity>com.contrastsecurity.model.Finding</entity>
     </ao>
 
 

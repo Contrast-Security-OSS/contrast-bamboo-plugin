@@ -1,17 +1,9 @@
-package com.contrastsecurity;
-
-import net.java.ao.Entity;
-import net.java.ao.OneToMany;
-import net.java.ao.Preload;
+package com.contrastsecurity.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-/**
- * Created by donaldpropst on 12/30/16.
- */
 
 public class BuildResults{
 
@@ -43,19 +35,22 @@ public class BuildResults{
         return findings;
     }
     public void addFinding(Finding f){
-        findings.add(f);
-        String severity = f.getSeverity();
-        if(severity.equals("Note")){
-            noteCount++;
-        }else if(severity.equals("Low")){
-            lowCount++;
-        }else if(severity.equals("Medium")){
-            mediumCount++;
-        }else if(severity.equals("High")){
-            highCount++;
-        }else {
-            criticalCount++;
+        if(f != null){
+            findings.add(f);
+            String severity = f.getSeverity();
+            if(severity.equals("Note")){
+                noteCount++;
+            }else if(severity.equals("Low")){
+                lowCount++;
+            }else if(severity.equals("Medium")){
+                mediumCount++;
+            }else if(severity.equals("High")){
+                highCount++;
+            }else {
+                criticalCount++;
+            }
         }
+
     }
 
     public void setFindings(ArrayList<Finding> findings) {
@@ -63,11 +58,7 @@ public class BuildResults{
     }
 
     public String getBuildId() {
-        return buildId;
-    }
-
-    public int getIdCode(){
-        return KeyGenerator.retrieveId(buildId);
+        return simplifyBuildId();
     }
 
     public int getNoteCount() {
@@ -114,7 +105,6 @@ public class BuildResults{
             if(i < findings.size()-1){
                 builder.append(",");
             }
-
         }
         return builder.toString();
     }

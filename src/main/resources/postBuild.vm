@@ -154,20 +154,21 @@
                     data.sort(function(a, b) {
                         return a.buildId - b.buildId;
                     });
-             var color = d3.scale.category20();
-                                var margin = {top: 20, right: 50, bottom: 50, left: 100},
-                                               width = 600 - margin.left - margin.right,
-                                               totalHeight = 425,
-                                               chartHeight = 400 - margin.top - margin.bottom;
-                               var maxCount = Math.max.apply(Math,data.map(function(o){return o.totalCount;}));
 
-                               var svg = d3.select("#vuln-bar-chart").append("svg")
-                                       .attr("width", width + margin.left + margin.right)
-                                       .attr("height", totalHeight + margin.top + margin.bottom)
-                                       .append("g")
-                                       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                               var x = d3.scale.ordinal()
-                                      .rangeRoundBands([0, width], .35);
+             var color = d3.scale.category20();
+             var margin = {top: 20, right: 50, bottom: 50, left: 100},
+                           width = 600 - margin.left - margin.right,
+                           totalHeight = 425,
+                           chartHeight = 400 - margin.top - margin.bottom;
+             var maxCount = Math.max.apply(Math,data.map(function(o){return o.totalCount;}));
+
+             var svg = d3.select("#vuln-bar-chart").append("svg")
+                           .attr("width", width + margin.left + margin.right)
+                           .attr("height", totalHeight + margin.top + margin.bottom)
+                           .append("g")
+                           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+             var x = d3.scale.ordinal()
+                        .rangeRoundBands([0, width], .35);
                                var y =  d3.scale.linear()
                                       .domain([0, maxCount])
                                       .range([chartHeight, 0]);
@@ -180,6 +181,7 @@
                                    .scale(x)
                                    .orient("bottom");
 
+                                    var unique = [];
                                    var counts = [];
                                      data.map(function(build, i){
                                          build.y0 = 0;
@@ -187,6 +189,10 @@
                                          counts[counts.length] = current;
                                          build.findings.map(function(finding, i){
                                              var found = false;
+                                             if(!unique[finding.type]){
+                                                unique[finding.type] = finding.type;
+                                                }
+
 
                                              for(var i = 0; i < current.length; i++){
                                                  if(current[i].type === finding.type){
@@ -205,7 +211,9 @@
                                                  build.y0 = build.y0+1;
                                              }
                                          });
+
                                      });
+
 
                                 var dataStackLayout = counts;
                                 var ids = Object.keys(data).map(function(index){ return Number(data[index].buildId); });
@@ -261,6 +269,36 @@
                                     .attr("text-anchor", "middle")
                                     .attr("transform", "translate("+ (width/2) +","+(chartHeight+40)+")")
                                     .text("Build Number");
+                         // add legend
+                        var legend = svg.append("g")
+                                  .attr("class", "legend")
+                                  .attr("height", 100)
+                                  .attr("width", 100)
+                                .attr('transform', 'translate(50,'+ (margin.top + 50)+')')
+
+
+                                    legend.selectAll('rect')
+                                      .data(unique)
+                                      .enter()
+                                      .append("rect")
+                                      .attr("x", width - 65)
+                                      .attr("y", function(d, i){ return i *  20;})
+                                      .attr("width", 10)
+                                      .attr("height", 10)
+                                      .style("fill", function(d) {
+                                          return color(d);
+                                      })
+
+                                    legend.selectAll('text')
+                                      .data(unique)
+                                      .enter()
+                                      .append("text")
+                                      .attr("x", width - 52)
+                                      .attr("y", function(d, i){ return i *  20 + 9;})
+                                      .text(function(d) {
+                                        return d;
+                                      });
+
 
 
 
