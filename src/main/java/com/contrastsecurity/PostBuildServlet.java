@@ -8,6 +8,7 @@ import com.atlassian.bamboo.plan.PlanManager;
 import com.atlassian.bamboo.resultsummary.ResultsSummary;
 import com.atlassian.bamboo.resultsummary.ResultsSummaryManager;
 import com.atlassian.bamboo.v2.build.BuildContext;
+import com.atlassian.bamboo.v2.build.trigger.BuildResultTriggerReason;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
@@ -28,9 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,7 +71,8 @@ public class PostBuildServlet extends HttpServlet {
         ArrayList<BuildResults> results = new ArrayList<BuildResults>();
         HashMap<String, BuildResults> resultMap = new HashMap<String, BuildResults>();
         String key = VerifyThresholdsTask.DATA_STORAGE_CONTRAST + getReportAccessibleKey(buildKey);
-        for(Finding f : activeObjects.find(Finding.class, Query.select().where("BUILD_ID LIKE ?", key+"%"))){
+        Finding[] findings = retrieveFindings(key);
+        for(Finding f : findings){
             if(f.getBuildId() != null){
                 if(!resultMap.containsKey(f.getBuildId())){
                     resultMap.put(f.getBuildId(), new BuildResults(f.getBuildId(), f));
@@ -80,12 +80,13 @@ public class PostBuildServlet extends HttpServlet {
                     resultMap.get(f.getBuildId()).addFinding(f);
                 }
             }
-
         }
+
         for(String s : resultMap.keySet()){
             results.add(resultMap.get(s));
         }
-        return results;
+        return new ArrayList<BuildResults>(limit(results));
+        //return results;
     }
 
     private String getReportAccessibleKey(String candidate){
@@ -96,6 +97,24 @@ public class PostBuildServlet extends HttpServlet {
             return m.group(1) + m.group(2) + m.group(3) + m.group(4);
         }
         return candidate;
+    }
+
+    private Finding[] retrieveFindings(String key){
+        Finding[] findings = activeObjects.find(Finding.class, Query.select()
+                .order("ID DESC")
+                .where("BUILD_ID LIKE ?", key+"%"));
+
+        return findings;
+    }
+    private List<BuildResults> limit(ArrayList<BuildResults> results){
+        Collections.sort(results, new Comparator<BuildResults>(){
+            public int compare(BuildResults o1, BuildResults o2){
+                if(o1.getIdCode() == o2.getIdCode())
+                    return 0;
+                return o1.getIdCode() > o2.getIdCode() ? -1 : 1;
+            }
+        });
+        return results.subList(0,10);
     }
 
 

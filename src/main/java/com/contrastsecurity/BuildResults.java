@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 public class BuildResults{
 
     private ArrayList<Finding> findings;
+
     private String buildId;
     private int noteCount;
     private int lowCount;
@@ -63,6 +64,10 @@ public class BuildResults{
 
     public String getBuildId() {
         return buildId;
+    }
+
+    public int getIdCode(){
+        return KeyGenerator.retrieveId(buildId);
     }
 
     public int getNoteCount() {
