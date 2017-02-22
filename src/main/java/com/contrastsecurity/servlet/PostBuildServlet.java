@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Named("ContrastPlugin")
 public class PostBuildServlet extends HttpServlet {
@@ -32,6 +30,7 @@ public class PostBuildServlet extends HttpServlet {
 
     private String buildKey;
 
+
     @Inject
     public PostBuildServlet(TemplateRenderer templateRenderer, ActiveObjects activeObjects){
         this.templateRenderer = templateRenderer;
@@ -42,21 +41,21 @@ public class PostBuildServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
             buildKey = request.getParameter("buildKey");
+
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("results", getPreviousBuildResults());
+            map.put("results", getPreviousBuildResults(buildKey));
 
             response.setContentType("text/html;charset=utf-8");
             response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
             response.setHeader("Pragma", "no-cache");
             templateRenderer.render("postBuild.vm", map,response.getWriter());
 
-
     }
 
-    public ArrayList<BuildResults> getPreviousBuildResults(){
+    public ArrayList<BuildResults> getPreviousBuildResults(String parameterKey){
         ArrayList<BuildResults> results = new ArrayList<BuildResults>();
         HashMap<String, BuildResults> resultMap = new HashMap<String, BuildResults>();
-        String key = VerifyThresholdsTask.DATA_STORAGE_CONTRAST + KeyGenerator.generate(buildKey);
+        String key = VerifyThresholdsTask.DATA_STORAGE_CONTRAST + KeyGenerator.generate(parameterKey);
         Finding[] findings = retrieveFindings(key);
         for(Finding f : findings){
             if(f.getBuildId() != null){
@@ -83,10 +82,13 @@ public class PostBuildServlet extends HttpServlet {
 
         return findings;
     }
-    public List<BuildResults> limit(ArrayList<BuildResults> results){
-        return results.subList(0,10);
+    public List<BuildResults> limit(List<BuildResults> results){
+        if(results.size() > 10)
+            return results.subList(0,10);
+        return results;
     }
     public void sort(ArrayList<BuildResults> results){
+        if(results == null) return;
         Collections.sort(results, new Comparator<BuildResults>(){
             public int compare(BuildResults o1, BuildResults o2){
                 if(Integer.parseInt(o1.getBuildId()) == Integer.parseInt(o2.getBuildId()))

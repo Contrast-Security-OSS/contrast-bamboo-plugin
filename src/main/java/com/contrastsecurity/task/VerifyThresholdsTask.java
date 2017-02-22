@@ -10,7 +10,7 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.util.concurrent.NotNull;
 import com.contrastsecurity.util.KeyGenerator;
-import com.contrastsecurity.model.TeamServerProfile;
+import com.contrastsecurity.data.TeamServerProfile;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.http.RuleSeverity;
 import com.contrastsecurity.http.ServerFilterForm;

@@ -8,12 +8,7 @@ import java.io.IOException;
 import java.net.URI;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
-//import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.templaterenderer.TemplateRenderer;
-//import com.atlassian.sal.api.pluginsettings.PluginSettings;
-//import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-//import com.google.common.collect.Maps;
-//import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;

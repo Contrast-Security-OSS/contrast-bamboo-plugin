@@ -7,7 +7,7 @@
 
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
-        <param name="configure.url">plugins/servlet/teamserverConnect</param>
+
     </plugin-info>
 
     <web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">

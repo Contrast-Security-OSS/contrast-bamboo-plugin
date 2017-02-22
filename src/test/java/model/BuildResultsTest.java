@@ -57,7 +57,7 @@ public class BuildResultsTest {
 
     @Test
     public void validJSON(){
-        boolean valid = false;
+        boolean valid;
         try {
             final ObjectMapper mapper = new ObjectMapper();
             mapper.readTree(results.toString());
