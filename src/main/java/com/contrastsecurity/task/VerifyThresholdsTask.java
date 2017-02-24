@@ -103,6 +103,10 @@ public class VerifyThresholdsTask implements TaskType {
 
                 com.contrastsecurity.http.TraceFilterForm filterForm = new TraceFilterForm();
 
+                if(!"All".equals(type)){
+                    filterForm.setVulnTypes(Arrays.asList(type));
+                }
+
                 filterForm.setSeverities(getSeverityList(severity));
                 filterForm.setServerIds(Arrays.asList(serverId));
 
@@ -110,7 +114,6 @@ public class VerifyThresholdsTask implements TaskType {
                 Traces traces = contrast.getTraces(profile.getUuid(), applicationId, filterForm);
 
                 for (final Trace trace : traces.getTraces()) {
-                    if (trace.getRule().equals(type) || type.equals("None")){
                         activeObjects.executeInTransaction(new TransactionCallback<Finding>(){
                             public Finding doInTransaction() {
                                 final Finding result = activeObjects.create(Finding.class);
@@ -122,12 +125,9 @@ public class VerifyThresholdsTask implements TaskType {
                                 return result;
                             }
                         });
-
                         vulnTypeCount += 1;
-                    }
                 }
-                //}
-                //saveBeforeExit(key);
+
                 buildLogger.addBuildLogEntry("\tThere were " + vulnTypeCount + " vulns of this type of " + traces.getCount() + " total");
                 if (vulnTypeCount >= maxVulns) {
                     buildLogger.addBuildLogEntry("Failed on the threshold condition where the minimum threshold is " + maxVulns +
@@ -139,7 +139,7 @@ public class VerifyThresholdsTask implements TaskType {
 
             return builder.success().build();
         } catch (IOException e) {
-            buildLogger.addBuildLogEntry("IOException ");
+            buildLogger.addBuildLogEntry("IOException");
             e.printStackTrace();
             buildLogger.addBuildLogEntry(e.getMessage());
             return builder.failed().build();

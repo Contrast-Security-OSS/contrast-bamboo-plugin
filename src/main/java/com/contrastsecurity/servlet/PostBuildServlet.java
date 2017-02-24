@@ -53,7 +53,7 @@ public class PostBuildServlet extends HttpServlet {
     }
 
     public ArrayList<BuildResults> getPreviousBuildResults(String parameterKey){
-        ArrayList<BuildResults> results = new ArrayList<BuildResults>();
+        ArrayList<BuildResults> results;
         HashMap<String, BuildResults> resultMap = new HashMap<String, BuildResults>();
         String key = VerifyThresholdsTask.DATA_STORAGE_CONTRAST + KeyGenerator.generate(parameterKey);
         Finding[] findings = retrieveFindings(key);
@@ -67,12 +67,10 @@ public class PostBuildServlet extends HttpServlet {
             }
         }
 
-        for(String s : resultMap.keySet()){
-            results.add(resultMap.get(s));
-        }
-
+        results = new ArrayList<>();
+        results.addAll(resultMap.values());
         sort(results);
-        return new ArrayList<BuildResults>(limit(results));
+        return new ArrayList<>(limit(results));
     }
 
     private Finding[] retrieveFindings(String key){

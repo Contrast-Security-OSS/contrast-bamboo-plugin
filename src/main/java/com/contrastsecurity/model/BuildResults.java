@@ -37,20 +37,30 @@ public class BuildResults{
     public void addFinding(Finding f){
         if(f != null){
             findings.add(f);
-            String severity = f.getSeverity();
-            if(severity.equals("Note")){
-                noteCount++;
-            }else if(severity.equals("Low")){
-                lowCount++;
-            }else if(severity.equals("Medium")){
-                mediumCount++;
-            }else if(severity.equals("High")){
-                highCount++;
-            }else {
-                criticalCount++;
-            }
+            increaseSeverity(f.getSeverity());
         }
+    }
 
+    private void increaseSeverity(String severity){
+        switch(severity){
+            case "Note":
+                noteCount++;
+                break;
+            case "Low":
+                lowCount++;
+                break;
+            case "Medium":
+                mediumCount++;
+                break;
+            case "High":
+                highCount++;
+                break;
+            case "Critical":
+                criticalCount++;
+                break;
+            default:
+                break;
+        }
     }
 
     public void setFindings(ArrayList<Finding> findings) {

@@ -18,7 +18,8 @@
         <context>atl.admin</context>
     </web-resource>
 
-    <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.task.VerifyThresholdsTask">
+    <taskType key="teamserver-threshold-task" name="Contrast CI for Assess"
+              class="com.contrastsecurity.task.VerifyThresholdsTask">
         <description>A task for registering TeamServer results as build conditions.</description>
         <configuration class="com.contrastsecurity.task.TeamServerTaskConfiguration"/>
         <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
