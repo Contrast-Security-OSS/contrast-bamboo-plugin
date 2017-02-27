@@ -43,7 +43,7 @@ public class VerifyThresholdsTask implements TaskType {
     private static final HashMap<String, Integer> SEVERITIES = new HashMap<String, Integer>();
 
     static{
-        SEVERITIES.put("None", -1);
+        SEVERITIES.put("Any", -1);
         SEVERITIES.put("Note", 0);
         SEVERITIES.put("Low", 1);
         SEVERITIES.put("Medium", 2);
@@ -74,7 +74,6 @@ public class VerifyThresholdsTask implements TaskType {
 
         //Use the pluginsettingsFactory to grab TeamServer profiles
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        System.out.println(settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY));
         Map<String,TeamServerProfile> profiles = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
 
         //Checks if these profiles are null, fails the build if they are.

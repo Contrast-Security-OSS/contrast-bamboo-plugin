@@ -19,7 +19,6 @@ import java.util.*;
 public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
 {
     private static final String[] SEVERITIES = VulnerabilityTypes.SEVERITIES;
-    private static final String[] TYPES = VulnerabilityTypes.TYPES;
 
     @ComponentImport
     private final PluginSettingsFactory pluginSettingsFactory;
@@ -63,18 +62,8 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
     @Override
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
         super.populateContextForCreate(context);
-        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        Map<String,Object> map = (Map<String, Object>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
-        String[] profiles = new String[0];
 
-        if (map != null) {
-            Set<String> keys = map.keySet();
-            profiles = keys.toArray(new String[keys.size()]);
-        }
-
-        context.put("profiles", profiles);
-        context.put("severities", SEVERITIES);
-        context.put("types", TYPES);
+        baseContextPopulation(context);
 
         context.put("profile_select", "");
         context.put("app_name", "");
@@ -86,19 +75,8 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
     public void populateContextForEdit(@NotNull final Map<String, Object> context,
                                        @NotNull final TaskDefinition taskDefinition) {
         super.populateContextForEdit(context, taskDefinition);
-        //Gets Profile names from plugin settings
-        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        Map<String,Object> map = (Map<String, Object>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
-        Set<String> profiles = new HashSet<String>();
 
-        if (map != null) {
-            profiles = map.keySet();
-        }
-
-        //Puts the profiles, severities, and types in context for the Freemarker template
-        context.put("profiles", profiles);
-        context.put("severities", SEVERITIES);
-        context.put("types", TYPES);
+        baseContextPopulation(context);
 
         context.put("profile_select", taskDefinition.getConfiguration().get("profile_select"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
@@ -118,6 +96,23 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         context.put("thresholds", thresholds);
     }
 
+    private void baseContextPopulation(final Map<String, Object> context){
+        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+        Map<String,TeamServerProfile> map = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
+        ArrayList<String> profiles = new ArrayList<>();
+
+        for(String key : map.keySet()){
+            profiles.add(map.get(key).getProfileName());
+        }
+        String[] vulnTypes = VulnerabilityTypes.getTypes(map.get(profiles.get(0)));
+
+        //Puts the profiles, severities, and types in context for the Freemarker template
+        context.put("profiles", profiles.toArray());
+        context.put("severities", SEVERITIES);
+        context.put("types", vulnTypes);
+    }
+
+
     @Override
     public void populateContextForView(@NotNull final Map<String, Object> context,
                                        @NotNull final TaskDefinition taskDefinition) {
@@ -132,6 +127,5 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
     @Override
     public void validate(@NotNull final ActionParametersMap params, @NotNull final ErrorCollection errorCollection) {
         super.validate(params, errorCollection);
-
     }
 }
