@@ -60,7 +60,7 @@ You will now be prompted to give the build plan a project name, plan name, and l
 Once you create the plan you will be able to add a task to the build process, do so by clicking the "Add Task" button.
 ![Bamboo Add Contrast Task ](./img/Bamboo_Add_First_Task.png)
 
-A popover menu will be presented, find the "Contrast Vulnerability Threshold" task and select it.
+A popover menu will be presented, find the "Contrast CI for Assess" task and select it.
 
 ![Bamboo Add Contrast Task ](./img/Bamboo_Add_Contrast_Task.png)
 

@@ -120,14 +120,10 @@ public class BuildResults{
 
 
     private String simplifyBuildId(){
-        String re1="(com\\.contrastsecurity\\.bambooplugin)(:)((?:[a-z][a-z0-9_]*))(-)((?:[a-z][a-z0-9_]*))(-)(\\d+)";
-        Pattern p = Pattern.compile(re1, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Matcher m = p.matcher(buildId);
-        if (m.find()) {
-           return m.group(7);
-        }
-        return "0";
+        String[] parts = buildId.split("-");
+        return parts[parts.length-1];
     }
+
     private int getTotal(){
         return noteCount + lowCount + highCount + mediumCount + criticalCount;
     }
