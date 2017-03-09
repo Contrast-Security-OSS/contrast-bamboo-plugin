@@ -8,6 +8,7 @@ function isEmpty(obj) {
 }
 window.onload  = function() {
 	var baseUrl = "/bamboo";
+	var profiles;
 	function getProfiles() {
 		AJS.$.ajax({
 			url: baseUrl + "/rest/teamserver-admin/1.0/",

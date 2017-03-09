@@ -4,9 +4,10 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
-        <param name="configure.url">plugins/servlet/teamserverConnect</param>
+
     </plugin-info>
 
     <web-resource key="configuration.js" name="contrast-bamboo-plugin Configuration javascript">
@@ -17,17 +18,21 @@
         <context>atl.admin</context>
     </web-resource>
 
-    <taskType key="teamserver-threshold-task" name="Contrast Vulnerability Threshold" class="com.contrastsecurity.VerifyThresholdsTask">
+    <taskType key="teamserver-threshold-task" name="Contrast CI for Assess"
+              class="com.contrastsecurity.task.VerifyThresholdsTask">
         <description>A task for registering TeamServer results as build conditions.</description>
-        <configuration class="com.contrastsecurity.TeamServerTaskConfiguration"/>
+        <configuration class="com.contrastsecurity.task.TeamServerTaskConfiguration"/>
         <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
         <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
         <resource type="download" name="icon" location="images/taskIcon.png"/>
         <help link="ts.task.help.link" title="ts.task.help.title" />
     </taskType>
 
-    <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.ConnectionServlet" key="teamserver-config">
+    <servlet name="contrast-bamboo-plugin" class="com.contrastsecurity.servlet.ConnectionServlet" key="teamserver-config">
         <url-pattern>/teamserverConnect</url-pattern>
+    </servlet>
+    <servlet name="contrast-postbuild-plugin" class="com.contrastsecurity.servlet.PostBuildServlet" key="postbuild-reports">
+        <url-pattern>/postBuild</url-pattern>
     </servlet>
 
     <web-item key="bamboo-menu-item"
@@ -40,9 +45,36 @@
         <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
     </web-item>
 
+    <web-resource key="d3v3" name="Contrast D3 Dependency">
+        <resource type="download" name="d3v3.js" location="js/d3v3.js">
+            <param name="content-type" value="application/javascript"/>
+        </resource>
+        <context>atl.general</context>
+    </web-resource>
+
+    <web-item key="post-build-report"
+              name="Contrast Reports"
+              section="results.subMenu/results"
+              weight="10"
+              application="bamboo">
+        <description>Show reports from previous builds on this plan.</description>
+        <label key="Contrast Report"/>
+        <link linkId="contrast-report-link">/plugins/servlet/postBuild?buildKey=${buildKey}</link>
+    </web-item>
+
+
     <rest name="TeamServer REST Resource" key="contrast-rest" path="/teamserver-admin" version="1.0">
         <description>Provides REST resources for the Configuration UI.</description>
     </rest>
+
+
+    <ao key="ao-module">
+        <description>The module configuring the Active Objects service used by this plugin</description>
+        <entity>com.contrastsecurity.model.Finding</entity>
+    </ao>
+
+
+
 
     <resource type="i18n" name="language" location="com.contrastsecurity.contrast-bamboo-plugin.i18n"/>
 </atlassian-plugin>
