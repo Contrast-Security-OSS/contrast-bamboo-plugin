@@ -11,6 +11,12 @@
             [/#list]
         </select>
     </div>
+
+    <div class="field-group">
+        <label for="server_name">Server Name: </label>
+        <input type="text" name="server_name" class="text" value="${server_name}" required>
+    </div>
+
     <div class="field-group">
         <label>Application Name</label>
         <input class="text" type="text" name="app_name" required="true" value="${app_name}"></input>

@@ -32,7 +32,7 @@ To use the plugin, you should first configure a TeamServer profile. To do this, 
 
 You'll then be brought to the **Profile Configuration** page. Select the **New Profile** button to see fields for adding a profile.
 
-Fill out the form fields according to their labels. The server name that you enter should correspond to a server name on TeamServer.
+Fill out the form fields according to their labels.
 If you are a SaaS customer you do **not** need to enter a TeamServer URL. Once you have filled out all the fields, select the **Test Connection** button to verify that your settings are correct.
 
 ![Bamboo Configuration Success](./img/Bamboo_Add_Profile_Success.png)
@@ -59,7 +59,7 @@ A dialog will appear. Find the **Contrast CI for Assess** task and select it.
 
 ![Bamboo Add Contrast Task ](./img/Bamboo_Add_Contrast_Task.png)
 
-The task configuration screen relies on a TeamServer Profile, which you configured in the previous steps, and an application name. The application name must be on the server that you defined when creating the profile.
+The task configuration screen relies on a TeamServer Profile, which you configured in the previous steps, a server name, and an application name. The server name that you enter should correspond to a server name on TeamServer. The application name must be on the server that you defined.
 
 The next part of the task configuration is defining conditions for when to fail a build. This involves entering three pieces of data:
 
