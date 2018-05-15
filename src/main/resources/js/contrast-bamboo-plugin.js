@@ -41,7 +41,6 @@ window.onload  = function() {
 		var api = AJS.$("#apiKey").attr("value");
 		var service = AJS.$("#serviceKey").attr("value");
 		var TSurl = AJS.$("#url").attr("value");
-		var servername = AJS.$("#servername").attr("value");
 		var uuid = AJS.$("#uuid").attr("value");
 		var profilename = AJS.$("#profilename").attr("value");
 
@@ -51,7 +50,6 @@ window.onload  = function() {
 				"apikey":api,
 				"servicekey":service,
 				"url":TSurl,
-				"servername":servername,
 				"uuid":uuid
 			};
 		var stringPayload = JSON.stringify(JSONPayload);
@@ -88,7 +86,6 @@ window.onload  = function() {
 				"apikey":"",
 				"servicekey":"",
 				"url":"",
-				"servername":"",
 				"uuid":""
 			};
 		var stringPayload = JSON.stringify(JSONPayload);
@@ -122,7 +119,6 @@ window.onload  = function() {
             AJS.$("#apiKey").val(config.apikey);
             AJS.$("#serviceKey").val(config.servicekey);
             AJS.$("#url").val(config.url);
-            AJS.$("#servername").val(config.servername);
 			AJS.$("#uuid").val(config.uuid);
 			AJS.$("#uuid").val(config.uuid);
 			AJS.$("#profilename").val(config.profilename);
@@ -135,7 +131,6 @@ window.onload  = function() {
 		AJS.$("#apiKey").val("");
 		AJS.$("#serviceKey").val("");
 		AJS.$("#url").val("");
-		AJS.$("#servername").val("");
 		AJS.$("#uuid").val("");
 		AJS.$("#profilename").val("");
 	}
@@ -144,7 +139,6 @@ window.onload  = function() {
 		var api = AJS.$("#apiKey").attr("value");
 		var service = AJS.$("#serviceKey").attr("value");
 		var TSurl = AJS.$("#url").attr("value");
-		var servername = AJS.$("#servername").attr("value");
 		var uuid = AJS.$("#uuid").attr("value");
 		var profilename = AJS.$("#profilename").attr("value");
 
@@ -158,7 +152,6 @@ window.onload  = function() {
 			"apikey":api,
 			"servicekey":service,
 			"url":TSurl,
-			"servername":servername,
 			"uuid":uuid
 		};
 		var stringPayload = JSON.stringify(JSONPayload);

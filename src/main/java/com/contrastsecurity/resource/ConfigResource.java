@@ -82,7 +82,7 @@ public class ConfigResource
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 		try {
-			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
+			ContrastSDK contrastsdk = new ContrastSDK(profile.getUsername(), profile.getServicekey(), profile.getApikey(), profile.getUrl());
 			contrastsdk.getProfileDefaultOrganizations();
 		} catch (UnauthorizedException e){
 			return Response.status(Status.FORBIDDEN).build();

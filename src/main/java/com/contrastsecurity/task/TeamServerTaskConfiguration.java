@@ -44,6 +44,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         }
 
         config.put("profile_select", params.getString("profile_select"));
+        config.put("server_name", params.getString("server_name"));
         config.put("app_name", params.getString("app_name"));
 
 
@@ -66,6 +67,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         baseContextPopulation(context);
 
         context.put("profile_select", "");
+        context.put("server_name", "");
         context.put("app_name", "");
 
         context.put("thresholds", Arrays.asList(new Threshold(0, "","")));
@@ -79,6 +81,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         baseContextPopulation(context);
 
         context.put("profile_select", taskDefinition.getConfiguration().get("profile_select"));
+        context.put("server_name", taskDefinition.getConfiguration().get("server_name"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
 
         ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
@@ -121,6 +124,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
                                        @NotNull final TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
 
+        context.put("server_name", taskDefinition.getConfiguration().get("server_name"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
         context.put("count", taskDefinition.getConfiguration().get("count_1"));
         context.put("severity_select", taskDefinition.getConfiguration().get("severity_select_1"));

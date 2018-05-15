@@ -65,6 +65,7 @@ public class VerifyThresholdsTask implements TaskType {
         final ConfigurationMap confmap = taskContext.getConfigurationMap();
         //Get configuration data from task context
         String profile_name = confmap.get("profile_select");
+        String server_name = confmap.get("server_name");
         String app_name = confmap.get("app_name");
 
 
@@ -83,12 +84,12 @@ public class VerifyThresholdsTask implements TaskType {
 
         TeamServerProfile profile = profiles.get(profile_name);
 
-        ContrastSDK contrast = new ContrastSDK(profile.getUsername(), profile.getApikey(), profile.getServicekey(), profile.getUrl());
+        ContrastSDK contrast = new ContrastSDK(profile.getUsername(), profile.getServicekey(), profile.getApikey(), profile.getUrl());
 
         try {
             //Get app and server id
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
-            long serverId = getServerId(contrast, profile.getUuid(), profile.getServerName(), applicationId);
+            long serverId = getServerId(contrast, profile.getUuid(), server_name, applicationId);
 
             for(Threshold condition: thresholds) {
                 int maxVulns = condition.getCount();
@@ -210,11 +211,6 @@ public class VerifyThresholdsTask implements TaskType {
 
         if (profile.getUuid() == null) {
             buildLogger.addBuildLogEntry("An organization id must be configured to check for vulnerabilities.");
-            return false;
-        }
-
-        if (profile.getServerName() == null) {
-            buildLogger.addBuildLogEntry("A server name must be configured to check for vulnerabilities.");
             return false;
         }
 
