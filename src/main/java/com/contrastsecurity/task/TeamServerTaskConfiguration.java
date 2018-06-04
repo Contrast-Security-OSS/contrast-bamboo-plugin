@@ -114,7 +114,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         }
 
         String[] vulnTypes = new String[0];
-        if (map!=null){
+        if (map!=null && !profiles.isEmpty()){
             vulnTypes = VulnerabilityTypes.getTypes(map.get(profiles.get(0)));
         }
 
