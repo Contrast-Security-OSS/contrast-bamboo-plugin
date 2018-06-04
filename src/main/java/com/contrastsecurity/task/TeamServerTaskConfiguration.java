@@ -104,13 +104,20 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         Map<String,TeamServerProfile> map = (Map<String, TeamServerProfile>)settings.get(TeamServerProfile.PLUGIN_PROFILES_KEY);
         ArrayList<String> profiles = new ArrayList<>();
 
-        Set<Map.Entry<String, TeamServerProfile>> set = map.entrySet();
+        Set<Map.Entry<String, TeamServerProfile>> set = new HashSet<>();
+        if (map!=null) {
+            set = map.entrySet();
+        }
 
         for(Map.Entry<String, TeamServerProfile> entry : set){
             profiles.add(entry.getValue().getProfileName());
         }
 
-        String[] vulnTypes = VulnerabilityTypes.getTypes(map.get(profiles.get(0)));
+        String[] vulnTypes = new String[0];
+        if (map!=null){
+            vulnTypes = VulnerabilityTypes.getTypes(map.get(profiles.get(0)));
+        }
+
 
         //Puts the profiles, severities, and types in context for the Freemarker template
         context.put("profiles", profiles.toArray());
