@@ -7,7 +7,7 @@ function isEmpty(obj) {
     return true;
 }
 window.onload  = function() {
-	var baseUrl = "/bamboo";
+	var baseUrl = AJS.contextPath();
 	var profiles;
 	function getProfiles() {
 		AJS.$.ajax({
