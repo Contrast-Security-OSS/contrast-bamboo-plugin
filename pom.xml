@@ -6,11 +6,11 @@
     <artifactId>contrast-bamboo-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <organization>
-        <name>Contrast Security, INC</name>
+        <name>Contrast Security, Inc.</name>
         <url>contrastsecurity.com</url>
     </organization>
-    <name>contrast-bamboo-plugin</name>
-    <description>This is the Contrast Security TeamServer plugin for Atlassian Bamboo.</description>
+    <name>Contrast CI Plugin for Bamboo</name>
+    <description>This plugin adds a task to check Contrast TeamServer for reported vulnerabilities. It compares the number of vulnerabilities found against your set thresholds and trigger a build failure if the thresholds are exceeded. This threshold is configurable based on the number, type, and severity of the vulnerabilities discovered.</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
         <bamboo.version>5.12.2</bamboo.version>
