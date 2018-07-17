@@ -21,7 +21,7 @@
         <atlassian.spring.scanner.version>1.2.6</atlassian.spring.scanner.version>
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml
 			and the key to generate bundle. -->
-        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <atlassian.plugin.key>${project.groupId}.ci.${project.artifactId}</atlassian.plugin.key>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/Contrast-Security-OSS/contrast-bamboo-plugin.git</connection>
