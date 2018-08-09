@@ -103,15 +103,22 @@ public class VerifyThresholdsTask implements TaskType {
 
                 com.contrastsecurity.http.TraceFilterForm filterForm = new TraceFilterForm();
 
-                if(!"All".equals(type)){
+//                filterForm.setAppVersionTags(Collections.singletonList(buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber())));
+                filterForm.setAppVersionTags(Collections.singletonList("0.0.1"));
+
+                if(!"Any".equals(type)){
                     filterForm.setVulnTypes(Arrays.asList(type));
                 }
 
-                filterForm.setSeverities(getSeverityList(severity));
+                if(!"Any".equals(severity)){
+                    filterForm.setSeverities(getSeverityList(severity));
+                }
+
                 filterForm.setServerIds(Arrays.asList(serverId));
 
 
-                Traces traces = contrast.getTraces(profile.getUuid(), applicationId, filterForm);
+                System.out.println(filterForm);
+                Traces traces = contrast.getTracesInOrg(profile.getUuid(), filterForm);
 
                 for (final Trace trace : traces.getTraces()) {
                         activeObjects.executeInTransaction(new TransactionCallback<Finding>(){
@@ -129,7 +136,7 @@ public class VerifyThresholdsTask implements TaskType {
                 }
 
                 buildLogger.addBuildLogEntry("\tThere were " + vulnTypeCount + " vulns of this type of " + traces.getCount() + " total");
-                if (vulnTypeCount >= maxVulns) {
+                if (traces.getCount() > maxVulns) {
                     buildLogger.addBuildLogEntry("Failed on the threshold condition where the minimum threshold is " + maxVulns +
                             ", severity is " + severity +
                             ", and rule type is " + type);
@@ -250,6 +257,10 @@ public class VerifyThresholdsTask implements TaskType {
         }
 
         return EnumSet.copyOf(ruleSeverities);
+    }
+
+    public static String buildAppVersionTag(String applicationName, int buildNumber) {
+        return applicationName + "-" + buildNumber;
     }
 
 
