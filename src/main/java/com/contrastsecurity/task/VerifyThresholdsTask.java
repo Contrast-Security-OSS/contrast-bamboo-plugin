@@ -26,6 +26,7 @@ import com.contrastsecurity.sdk.ContrastSDK;
 import com.google.inject.Inject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,7 +158,7 @@ public class VerifyThresholdsTask implements TaskType {
     private long getServerId(ContrastSDK sdk, String organizationUuid, String serverName, String applicationId) throws IOException {
         ServerFilterForm serverFilterForm = new ServerFilterForm();
         serverFilterForm.setApplicationIds(Arrays.asList(applicationId));
-        serverFilterForm.setQ(serverName);
+        serverFilterForm.setQ(URLEncoder.encode(serverName, "UTF-8"));
 
         Servers servers;
         long serverId;
