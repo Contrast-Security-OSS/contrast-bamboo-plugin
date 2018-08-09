@@ -103,8 +103,7 @@ public class VerifyThresholdsTask implements TaskType {
 
                 com.contrastsecurity.http.TraceFilterForm filterForm = new TraceFilterForm();
 
-//                filterForm.setAppVersionTags(Collections.singletonList(buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber())));
-                filterForm.setAppVersionTags(Collections.singletonList("0.0.1"));
+                filterForm.setAppVersionTags(Collections.singletonList(buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber())));
 
                 if(!"Any".equals(type)){
                     filterForm.setVulnTypes(Arrays.asList(type));
@@ -116,8 +115,6 @@ public class VerifyThresholdsTask implements TaskType {
 
                 filterForm.setServerIds(Arrays.asList(serverId));
 
-
-                System.out.println(filterForm);
                 Traces traces = contrast.getTracesInOrg(profile.getUuid(), filterForm);
 
                 for (final Trace trace : traces.getTraces()) {
