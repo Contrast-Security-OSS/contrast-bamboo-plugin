@@ -26,6 +26,7 @@ import com.contrastsecurity.sdk.ContrastSDK;
 import com.google.inject.Inject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,15 +104,19 @@ public class VerifyThresholdsTask implements TaskType {
 
                 com.contrastsecurity.http.TraceFilterForm filterForm = new TraceFilterForm();
 
-                if(!"All".equals(type)){
+                filterForm.setAppVersionTags(Collections.singletonList(buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber())));
+
+                if(!"Any".equals(type)){
                     filterForm.setVulnTypes(Arrays.asList(type));
                 }
 
-                filterForm.setSeverities(getSeverityList(severity));
+                if(!"Any".equals(severity)){
+                    filterForm.setSeverities(getSeverityList(severity));
+                }
+
                 filterForm.setServerIds(Arrays.asList(serverId));
 
-
-                Traces traces = contrast.getTraces(profile.getUuid(), applicationId, filterForm);
+                Traces traces = contrast.getTracesInOrg(profile.getUuid(), filterForm);
 
                 for (final Trace trace : traces.getTraces()) {
                         activeObjects.executeInTransaction(new TransactionCallback<Finding>(){
@@ -129,7 +134,7 @@ public class VerifyThresholdsTask implements TaskType {
                 }
 
                 buildLogger.addBuildLogEntry("\tThere were " + vulnTypeCount + " vulns of this type of " + traces.getCount() + " total");
-                if (vulnTypeCount >= maxVulns) {
+                if (traces.getCount() > maxVulns) {
                     buildLogger.addBuildLogEntry("Failed on the threshold condition where the minimum threshold is " + maxVulns +
                             ", severity is " + severity +
                             ", and rule type is " + type);
@@ -153,7 +158,7 @@ public class VerifyThresholdsTask implements TaskType {
     private long getServerId(ContrastSDK sdk, String organizationUuid, String serverName, String applicationId) throws IOException {
         ServerFilterForm serverFilterForm = new ServerFilterForm();
         serverFilterForm.setApplicationIds(Arrays.asList(applicationId));
-        serverFilterForm.setQ(serverName);
+        serverFilterForm.setQ(URLEncoder.encode(serverName, "UTF-8"));
 
         Servers servers;
         long serverId;
@@ -250,6 +255,10 @@ public class VerifyThresholdsTask implements TaskType {
         }
 
         return EnumSet.copyOf(ruleSeverities);
+    }
+
+    public static String buildAppVersionTag(String applicationName, int buildNumber) {
+        return applicationName + "-" + buildNumber;
     }
 
 
