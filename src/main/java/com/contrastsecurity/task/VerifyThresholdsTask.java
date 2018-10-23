@@ -99,6 +99,7 @@ public class VerifyThresholdsTask implements TaskType {
                 //can create result here
 
                 buildLogger.addBuildLogEntry("Attempting the threshold condition where the count is " + maxVulns + ", severity is " + severity + ", and rule type is " + type);
+                buildLogger.addBuildLogEntry("and app version is " + buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber()));
 
                 int vulnTypeCount = 0; // used for vuln type
 
