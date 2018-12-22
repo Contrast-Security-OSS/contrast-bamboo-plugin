@@ -68,6 +68,7 @@ public class VerifyThresholdsTask implements TaskType {
         String profile_name = confmap.get("profile_select");
         String server_name = confmap.get("server_name");
         String app_name = confmap.get("app_name");
+        boolean passive = confmap.getAsBoolean("passive");
 
 
         final String key = DATA_STORAGE_CONTRAST + getReportAccessibleKey(taskContext.getBuildContext().getEntityKey().getKey()) + taskContext.getBuildContext().getBuildNumber();

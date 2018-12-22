@@ -46,6 +46,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         config.put("profile_select", params.getString("profile_select"));
         config.put("server_name", params.getString("server_name"));
         config.put("app_name", params.getString("app_name"));
+        config.put("passive", params.getString("passive"));
 
 
         int current = 1;
@@ -69,6 +70,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         context.put("profile_select", "");
         context.put("server_name", "");
         context.put("app_name", "");
+        context.put("passive", "false");
 
         context.put("thresholds", Arrays.asList(new Threshold(0, "","")));
     }
@@ -83,6 +85,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
         context.put("profile_select", taskDefinition.getConfiguration().get("profile_select"));
         context.put("server_name", taskDefinition.getConfiguration().get("server_name"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
+        context.put("passive", taskDefinition.getConfiguration().get("passive"));
 
         ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
 
@@ -133,6 +136,7 @@ public class TeamServerTaskConfiguration extends AbstractTaskConfigurator
 
         context.put("server_name", taskDefinition.getConfiguration().get("server_name"));
         context.put("app_name", taskDefinition.getConfiguration().get("app_name"));
+        context.put("passive", taskDefinition.getConfiguration().get("passive"));
         context.put("count", taskDefinition.getConfiguration().get("count_1"));
         context.put("severity_select", taskDefinition.getConfiguration().get("severity_select_1"));
         context.put("type_select", taskDefinition.getConfiguration().get("type_select_1"));
