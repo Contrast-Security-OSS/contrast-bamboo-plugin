@@ -9,7 +9,6 @@ import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.util.concurrent.NotNull;
-import com.contrastsecurity.util.KeyGenerator;
 import com.contrastsecurity.data.TeamServerProfile;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.http.RuleSeverity;
@@ -17,20 +16,14 @@ import com.contrastsecurity.http.ServerFilterForm;
 import com.contrastsecurity.http.TraceFilterForm;
 import com.contrastsecurity.model.Finding;
 import com.contrastsecurity.model.Threshold;
-import com.contrastsecurity.models.Application;
-import com.contrastsecurity.models.Applications;
-import com.contrastsecurity.models.Servers;
-import com.contrastsecurity.models.Trace;
-import com.contrastsecurity.models.Traces;
+import com.contrastsecurity.models.*;
 import com.contrastsecurity.sdk.ContrastSDK;
+import com.contrastsecurity.util.KeyGenerator;
 import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class VerifyThresholdsTask implements TaskType {
@@ -106,7 +99,9 @@ public class VerifyThresholdsTask implements TaskType {
 
                 com.contrastsecurity.http.TraceFilterForm filterForm = new TraceFilterForm();
 
-                filterForm.setAppVersionTags(Collections.singletonList(buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber())));
+                if (!passive) {
+                    filterForm.setAppVersionTags(Collections.singletonList(buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber())));
+                }
 
                 if(!"Any".equals(type)){
                     filterForm.setVulnTypes(Arrays.asList(type));
@@ -118,7 +113,12 @@ public class VerifyThresholdsTask implements TaskType {
 
                 filterForm.setServerIds(Arrays.asList(serverId));
 
-                Traces traces = contrast.getTracesInOrg(profile.getUuid(), filterForm);
+                Traces traces;
+                if (!passive) {
+                    traces = contrast.getTracesInOrg(profile.getUuid(), filterForm);
+                } else {
+                    traces = contrast.getTraces(profile.getUuid(), applicationId, filterForm);
+                }
 
                 for (final Trace trace : traces.getTraces()) {
                         activeObjects.executeInTransaction(new TransactionCallback<Finding>(){

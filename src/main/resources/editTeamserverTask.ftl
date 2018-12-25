@@ -22,10 +22,7 @@
         <input class="text" type="text" name="app_name" required="true" value="${app_name}"></input>
     </div>
 
-    <div class="checkbox">
-        <input id="passive" class="checkbox" type="checkbox" name="passive" value="${passive}"></input>
-        <label for="passive">Passive</label>
-    </div>
+    [@ww.checkbox labelKey="Passive" name="passive" toggle="true"/]
 
     [#assign index = 0]
     <fieldset id = "thresholds">
