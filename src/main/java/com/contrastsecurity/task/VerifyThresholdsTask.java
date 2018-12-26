@@ -24,6 +24,7 @@ import com.contrastsecurity.models.Trace;
 import com.contrastsecurity.models.Traces;
 import com.contrastsecurity.sdk.ContrastSDK;
 import com.google.inject.Inject;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -90,7 +91,10 @@ public class VerifyThresholdsTask implements TaskType {
         try {
             //Get app and server id
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
-            long serverId = getServerId(contrast, profile.getUuid(), server_name, applicationId);
+            long serverId = 0;
+            if (StringUtils.isNotBlank(server_name)) {
+                serverId = getServerId(contrast, profile.getUuid(), server_name, applicationId);
+            }
 
             for(Threshold condition: thresholds) {
                 int maxVulns = condition.getCount();
@@ -115,7 +119,9 @@ public class VerifyThresholdsTask implements TaskType {
                     filterForm.setSeverities(getSeverityList(severity));
                 }
 
-                filterForm.setServerIds(Arrays.asList(serverId));
+                if (serverId != 0) {
+                    filterForm.setServerIds(Arrays.asList(serverId));
+                }
 
                 Traces traces = contrast.getTracesInOrg(profile.getUuid(), filterForm);
 
