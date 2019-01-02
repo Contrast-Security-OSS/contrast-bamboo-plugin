@@ -14,7 +14,7 @@
 
     <div class="field-group">
         <label for="server_name">Server Name: </label>
-        <input type="text" name="server_name" class="text" value="${server_name}" required>
+        <input type="text" name="server_name" class="text" value="${server_name}">
     </div>
 
     <div class="field-group">

@@ -20,6 +20,7 @@ import com.contrastsecurity.models.*;
 import com.contrastsecurity.sdk.ContrastSDK;
 import com.contrastsecurity.util.KeyGenerator;
 import com.google.inject.Inject;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -84,7 +85,10 @@ public class VerifyThresholdsTask implements TaskType {
         try {
             //Get app and server id
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
-            long serverId = getServerId(contrast, profile.getUuid(), server_name, applicationId);
+            Long serverId = null;
+            if (StringUtils.isNotBlank(server_name)) {
+                serverId = getServerId(contrast, profile.getUuid(), server_name, applicationId);
+            }
 
             for(Threshold condition: thresholds) {
                 int maxVulns = condition.getCount();
@@ -119,8 +123,13 @@ public class VerifyThresholdsTask implements TaskType {
                     filterForm.setSeverities(getSeverityList(severity));
                 }
 
-                buildLogger.addBuildLogEntry("Server name " + server_name + " with id " + serverId);
-                filterForm.setServerIds(Arrays.asList(serverId));
+
+                if (serverId == null) {
+                    buildLogger.addBuildLogEntry("Not filtering on server name");
+                } else {
+                    buildLogger.addBuildLogEntry("Server name " + server_name + " with id " + serverId);
+                    filterForm.setServerIds(Arrays.asList(serverId));
+                }
 
                 Traces traces;
                 if (!passive) {
