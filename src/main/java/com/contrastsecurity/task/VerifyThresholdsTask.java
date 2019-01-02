@@ -92,14 +92,22 @@ public class VerifyThresholdsTask implements TaskType {
                 String severity = condition.getSeverity_select();
                 //can create result here
 
+                buildLogger.addBuildLogEntry("Verifying conditions for app " + app_name + ", id " + applicationId);
+
                 buildLogger.addBuildLogEntry("Attempting the threshold condition where the count is " + maxVulns + ", severity is " + severity + ", and rule type is " + type);
-                buildLogger.addBuildLogEntry("and app version is " + buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber()));
+                
+                if(passive) {
+                    buildLogger.addBuildLogEntry("Passive mode is on. We won't use an appVersion to check for vulnerabilities");
+                } else {
+                    buildLogger.addBuildLogEntry("Passive mode is off.");
+                }
 
                 int vulnTypeCount = 0; // used for vuln type
 
                 com.contrastsecurity.http.TraceFilterForm filterForm = new TraceFilterForm();
 
                 if (!passive) {
+                    buildLogger.addBuildLogEntry("and app version is " + buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber()));
                     filterForm.setAppVersionTags(Collections.singletonList(buildAppVersionTag(app_name, taskContext.getBuildContext().getBuildNumber())));
                 }
 
@@ -111,6 +119,7 @@ public class VerifyThresholdsTask implements TaskType {
                     filterForm.setSeverities(getSeverityList(severity));
                 }
 
+                buildLogger.addBuildLogEntry("Server name " + server_name + " with id " + serverId);
                 filterForm.setServerIds(Arrays.asList(serverId));
 
                 Traces traces;
