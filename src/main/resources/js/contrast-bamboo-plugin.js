@@ -36,7 +36,37 @@ window.onload  = function() {
 			}
 		});
 	}
+
+	function isEmpty(str) {
+        return (!str || 0 === str.length);
+    }
+
+	function validate() {
+	    var user = AJS.$("#username").attr("value");
+        var api = AJS.$("#apiKey").attr("value");
+        var service = AJS.$("#serviceKey").attr("value");
+        var TSurl = AJS.$("#url").attr("value");
+        var uuid = AJS.$("#uuid").attr("value");
+        var profilename = AJS.$("#profilename").attr("value");
+        console.log(user);
+        console.log(api);
+        console.log(service);
+        console.log(TSurl);
+        console.log(uuid);
+        console.log(profilename);
+
+        if (isEmpty(user) || isEmpty(api) || isEmpty(service) || isEmpty(TSurl) || isEmpty(uuid) || isEmpty(profilename)) {
+            AJS.messages.warning({
+                title: "Unable to save TeamServer Profile!",
+                body: "Fill in all the fields and try afain."
+            });
+        }
+
+	}
+
 	function addProfile() {
+
+	    validate();
 		var user = AJS.$("#username").attr("value");
 		var api = AJS.$("#apiKey").attr("value");
 		var service = AJS.$("#serviceKey").attr("value");

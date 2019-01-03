@@ -1,34 +1,27 @@
 package com.contrastsecurity.resource;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
-
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserManager;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-
 import com.contrastsecurity.data.TeamServerProfile;
 import com.contrastsecurity.exceptions.UnauthorizedException;
 import com.contrastsecurity.sdk.ContrastSDK;
+import org.apache.commons.lang.StringUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Named("configuration")
 @Path("/")
@@ -42,7 +35,7 @@ public class ConfigResource
 	private final TransactionTemplate transactionTemplate;
 
 	@Inject
-	public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory, 
+	public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory,
 			TransactionTemplate transactionTemplate)
 	{
 		this.userManager = userManager;
@@ -70,7 +63,7 @@ public class ConfigResource
 			}
 		})).build();
 	}
-	
+
 	@Path("/verifyconnection")
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON})
@@ -137,6 +130,10 @@ public class ConfigResource
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 
+		if (!validate(profile)) {
+            return Response.notModified().build();
+        }
+
 		transactionTemplate.execute(new TransactionCallback<Object>()
 		{
 			public Object doInTransaction()
@@ -148,7 +145,7 @@ public class ConfigResource
 					profiles = new TreeMap<String, TeamServerProfile>();
 				}
 				profiles.put(profile.getProfileName(), profile);
-				
+
 				settings.put(TeamServerProfile.PLUGIN_PROFILES_KEY, profiles);
 
 				return null;
@@ -156,4 +153,13 @@ public class ConfigResource
 		});
 		return Response.noContent().build();
 	}
+
+    private static boolean validate(final TeamServerProfile profile) {
+        if (StringUtils.isBlank(profile.getUuid()) || StringUtils.isBlank(profile.getUsername())
+                || StringUtils.isBlank(profile.getUrl()) || StringUtils.isBlank(profile.getServicekey()) ||
+                StringUtils.isBlank(profile.getApikey()) || StringUtils.isBlank(profile.getProfileName())) {
+            return false;
+        }
+        return true;
+    }
 }
