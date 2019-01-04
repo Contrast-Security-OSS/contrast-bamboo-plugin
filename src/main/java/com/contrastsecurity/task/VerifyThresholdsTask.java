@@ -169,7 +169,7 @@ public class VerifyThresholdsTask implements TaskType {
             buildLogger.addBuildLogEntry(e.getMessage());
             return builder.failed().build();
         } catch (UnauthorizedException e){
-            buildLogger.addBuildLogEntry("Unable to connect to TeamServer. " + e.getMessage());
+            buildLogger.addBuildLogEntry("Unable to connect to Contrast. " + e.getMessage());
             return builder.failed().build();
         }
     }
@@ -188,7 +188,7 @@ public class VerifyThresholdsTask implements TaskType {
         } catch (IOException e) {
             throw new IOException("Unable to retrieve the servers. " + e.getMessage());
         } catch (UnauthorizedException e) {
-            throw new IOException("Unable to connect to TeamServer.");
+            throw new IOException("Unable to connect to Contrast.");
         }
 
         if (!servers.getServers().isEmpty()) {
@@ -208,7 +208,7 @@ public class VerifyThresholdsTask implements TaskType {
         } catch (IOException e) {
             throw new IOException("Unable to retrieve the applications. " + e.getMessage());
         } catch (UnauthorizedException e) {
-            throw new IOException("Unable to connect to TeamServer.");
+            throw new IOException("Unable to connect to Contrast.");
         }
 
         for(Application application: applications.getApplications()) {
@@ -223,14 +223,14 @@ public class VerifyThresholdsTask implements TaskType {
             profileName){
 
         if (profiles == null) {
-            buildLogger.addBuildLogEntry("Unable to load TeamServer Profiles. Check on the TeamServer Profiles page that your profiles are configured correctly.");
+            buildLogger.addBuildLogEntry("Unable to load Contrast Profiles. Check on the Contrast Profiles page that your profiles are configured correctly.");
             return false;
         }
 
         //Gets relevant teamserver profile from profiles.
         TeamServerProfile profile = profiles.get(profileName);
         if(profile == null) {
-            buildLogger.addBuildLogEntry("Unable to load TeamServer Profile " + profileName + ". Check on the TeamServer Profiles page that this profile is configured correctly.");
+            buildLogger.addBuildLogEntry("Unable to load Contrast Profile " + profileName + ". Check on the Contrast Profiles page that this profile is configured correctly.");
             return false;
         }
 

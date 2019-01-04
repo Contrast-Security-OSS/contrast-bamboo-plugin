@@ -29,7 +29,7 @@ window.onload  = function() {
 				console.log(textStatus);
 				console.log(errorThrown);
 				AJS.messages.warning({
-				    title: "Unable to retrieve TeamServer Profiles!",
+				    title: "Unable to retrieve Contrast Profiles!",
 				    body: "Check your internet connection and try again."
 				});
 				return null;
@@ -67,12 +67,12 @@ window.onload  = function() {
 				AJS.$("#dropdown-menu").show();
 				AJS.messages.success({
 				    title: "Success!",
-				    body: "You have updated your TeamServer Configuration!"
+				    body: "You have updated your Contrast Configuration!"
 				});
 			},
 			error: function(){
 			    AJS.messages.warning({
-                    title: "Unable to retrieve TeamServer Profiles!",
+                    title: "Unable to retrieve Contrast Profiles!",
                 	body: "Check your internet connection and try again."
                 });
 			}

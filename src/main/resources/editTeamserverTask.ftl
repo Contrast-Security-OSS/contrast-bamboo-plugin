@@ -1,6 +1,6 @@
 [#if profiles?size != 0]
     <div class="field-group">
-        <label>TeamServer Profile</label>
+        <label>Contrast Profile</label>
         <select class="select" id="profileSelect" name="profile_select" title="profile select">
             [#list profiles as profile]
                 [#if profile==profile_select]
@@ -114,5 +114,5 @@
         <span class="aui-icon aui-icon-small aui-iconfont-add"></span> Add new threshold condition
     </button>
 [#else]
-    <p>You have not yet configured a TeamServer profile. Please do so in the Administrator Settings, under the TeamServer Profiles tab.</p>
+    <p>You have not yet configured a Contrast profile. Please do so in the Administrator Settings, under the Contrast Profiles tab.</p>
 [/#if]

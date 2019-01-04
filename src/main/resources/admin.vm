@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>TeamServer Configuration</title>
+        <title>Contrast Configuration</title>
         <meta name="decorator" content="atl.admin">
         <meta name="application-base-url" content=$baseUrl>
     </head>
@@ -8,16 +8,16 @@
         <div class="aui-page-panel">
             <div class="aui-page-panel-inner">
                 <section class="aui-page-panel-content">
-                    <h1>TeamServer Profile Setup</h1>
-                    <h5>Configure TeamServer Profiles for use in testing.</h5>
+                    <h1>Contrast Profile Setup</h1>
+                    <h5>Configure Contrast Profiles for use in testing.</h5>
                 </section>
             </div>
         </div>
         <br>
         <div class="field-group">
             <span id="dropdown-menu" style="display:none">
-                <label for="tsprofile">TeamServer Profile: </label>
-                <button type = "button" aria-owns="dropdown2-all-in" aria-haspopup="true" class="aui-button aui-dropdown2-trigger" id="profiles-select-button">TeamServer Profiles</button>
+                <label for="tsprofile">Contrast Profile: </label>
+                <button type = "button" aria-owns="dropdown2-all-in" aria-haspopup="true" class="aui-button aui-dropdown2-trigger" id="profiles-select-button">Contrast Profiles</button>
                 <div id="dropdown2-all-in" class="aui-dropdown2 aui-style-default">
                    <div class="aui-dropdown2-section">
                        <strong>Profiles</strong>
@@ -65,6 +65,8 @@
                         <input type="text" id="apiKey" name="apiKey" class="text" required>
                         </div>
                     </td>
+                </tr>
+                <tr>
                     <td>
                         <div class="field-group">
                             <label for="serviceKey">Service Key: </label>
@@ -75,7 +77,7 @@
                 <tr>
                     <td>
                         <div class="field-group">
-                            <label for="url">TeamServer URL: </label>
+                            <label for="url">Contrast URL: </label>
                             <input type="text" id="url" name="url" class="text">
                             <div class="description">For EOP Customers only. Url will usually end with /Contrast/api</div>
                         </div>
