@@ -2,3 +2,4 @@
 contrast-bamboo-plugin.iml
 target/
 .DS_STORE
+bin/

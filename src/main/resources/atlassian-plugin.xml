@@ -20,7 +20,7 @@
 
     <taskType key="teamserver-threshold-task" name="Contrast CI for Assess"
               class="com.contrastsecurity.task.VerifyThresholdsTask">
-        <description>A task for registering TeamServer results as build conditions.</description>
+        <description>A task for registering Contrast results as build conditions.</description>
         <configuration class="com.contrastsecurity.task.TeamServerTaskConfiguration"/>
         <resource type="freemarker" name="edit" location="editTeamserverTask.ftl"/>
         <resource type="freemarker" name="view" location="viewTeamserverTask.ftl"/>
@@ -40,8 +40,8 @@
         section="system.admin/plugins"
         weight="10"
         application="bamboo">
-        <description>Link to Contrast TeamServer Configuration page.</description>
-        <label key="TeamServer Profiles"/>
+        <description>Link to Contrast Configuration page.</description>
+        <label key="Contrast Profiles"/>
         <link linkId="teamserver-admin-link">/plugins/servlet/teamserverConnect</link>
     </web-item>
 
