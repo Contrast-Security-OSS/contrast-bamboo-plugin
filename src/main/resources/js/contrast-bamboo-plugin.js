@@ -88,20 +88,20 @@ window.onload  = function() {
                     AJS.$("#dropdown-menu").show();
                     AJS.messages.success({
                         title: "Success!",
-                        body: "You have updated your Contrast Configuration!"
+                        body: "You have updated your Contrast Configuration"
                     });
         		},
         		error: function(){
         		    AJS.messages.warning({
-                        title: "Unable to retrieve Contrast Profiles!",
+                        title: "Unable to retrieve Contrast Profiles.",
                         body: "Check your internet connection and try again."
                     });
         		}
         	});
 	    } else {
 	        AJS.messages.warning({
-                title: "Unable to save TeamServer Profile!",
-                body: "Fill in all the fields and try afain."
+                title: "Unable to save TeamServer Profile.",
+                body: "Fill in all the fields and try again."
             });
 	    }
 	}
@@ -193,7 +193,7 @@ window.onload  = function() {
 			success: function() {
 				AJS.messages.success({
 					title: "Success!",
-					body: "A connection has been established!"
+					body: "A connection has been established."
 				});
 			},
 			error: function() {
