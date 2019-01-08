@@ -48,65 +48,62 @@ window.onload  = function() {
         var TSurl = AJS.$("#url").attr("value");
         var uuid = AJS.$("#uuid").attr("value");
         var profilename = AJS.$("#profilename").attr("value");
-        console.log(user);
-        console.log(api);
-        console.log(service);
-        console.log(TSurl);
-        console.log(uuid);
-        console.log(profilename);
 
         if (isEmpty(user) || isEmpty(api) || isEmpty(service) || isEmpty(TSurl) || isEmpty(uuid) || isEmpty(profilename)) {
-            AJS.messages.warning({
-                title: "Unable to save TeamServer Profile!",
-                body: "Fill in all the fields and try afain."
-            });
+            return false;
         }
+        return true;
 
 	}
 
 	function addProfile() {
+	    if (validate()) {
+	        var user = AJS.$("#username").attr("value");
+        	var api = AJS.$("#apiKey").attr("value");
+        	var service = AJS.$("#serviceKey").attr("value");
+        	var TSurl = AJS.$("#url").attr("value");
+        	var uuid = AJS.$("#uuid").attr("value");
+        	var profilename = AJS.$("#profilename").attr("value");
 
-	    validate();
-		var user = AJS.$("#username").attr("value");
-		var api = AJS.$("#apiKey").attr("value");
-		var service = AJS.$("#serviceKey").attr("value");
-		var TSurl = AJS.$("#url").attr("value");
-		var uuid = AJS.$("#uuid").attr("value");
-		var profilename = AJS.$("#profilename").attr("value");
-
-		var JSONPayload = {
-				"profilename":profilename,
-				"username":user,
-				"apikey":api,
-				"servicekey":service,
-				"url":TSurl,
-				"uuid":uuid
-			};
-		var stringPayload = JSON.stringify(JSONPayload);
-		AJS.$.ajax({
-			url: baseUrl + "/rest/teamserver-admin/1.0/",
-			type: "POST",
-			contentType: "application/json",
-			dataType:"json",
-			data:stringPayload,
-			processData: false,
-			success: function() {
-				profiles[JSONPayload.profilename] = JSONPayload;
-				AJS.$("#profile-list").empty();
-				initDropDown(profiles);
-				AJS.$("#dropdown-menu").show();
-				AJS.messages.success({
-				    title: "Success!",
-				    body: "You have updated your Contrast Configuration!"
-				});
-			},
-			error: function(){
-			    AJS.messages.warning({
-                    title: "Unable to retrieve Contrast Profiles!",
-                	body: "Check your internet connection and try again."
-                });
-			}
-		});
+        	var JSONPayload = {
+        	    "profilename":profilename,
+        		"username":user,
+        		"apikey":api,
+        		"servicekey":service,
+        		"url":TSurl,
+        		"uuid":uuid
+        	};
+        	var stringPayload = JSON.stringify(JSONPayload);
+        	AJS.$.ajax({
+        	    url: baseUrl + "/rest/teamserver-admin/1.0/",
+        		type: "POST",
+        		contentType: "application/json",
+        		dataType:"json",
+        		data:stringPayload,
+        		processData: false,
+        		success: function() {
+                    profiles[JSONPayload.profilename] = JSONPayload;
+                    AJS.$("#profile-list").empty();
+                    initDropDown(profiles);
+                    AJS.$("#dropdown-menu").show();
+                    AJS.messages.success({
+                        title: "Success!",
+                        body: "You have updated your Contrast Configuration!"
+                    });
+        		},
+        		error: function(){
+        		    AJS.messages.warning({
+                        title: "Unable to retrieve Contrast Profiles!",
+                        body: "Check your internet connection and try again."
+                    });
+        		}
+        	});
+	    } else {
+	        AJS.messages.warning({
+                title: "Unable to save TeamServer Profile!",
+                body: "Fill in all the fields and try afain."
+            });
+	    }
 	}
 	function deleteProfile() {
 		var profilename = AJS.$("#profilename").attr("value");
