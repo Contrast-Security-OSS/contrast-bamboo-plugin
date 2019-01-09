@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.contrastsecurity</groupId>
     <artifactId>contrast-bamboo-plugin</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.0</version>
     <organization>
         <name>Contrast Security, Inc.</name>
         <url>contrastsecurity.com</url>
