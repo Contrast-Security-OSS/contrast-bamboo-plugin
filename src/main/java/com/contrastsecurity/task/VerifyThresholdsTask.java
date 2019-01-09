@@ -20,6 +20,7 @@ import com.contrastsecurity.models.*;
 import com.contrastsecurity.sdk.ContrastSDK;
 import com.contrastsecurity.util.KeyGenerator;
 import com.google.inject.Inject;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -85,9 +86,9 @@ public class VerifyThresholdsTask implements TaskType {
         try {
             //Get app and server id
             String applicationId = getApplicationId(contrast, profile.getUuid(), app_name);
-            Long serverId = null;
+            List<Long> serverIds = null;
             if (StringUtils.isNotBlank(server_name)) {
-                serverId = getServerId(contrast, profile.getUuid(), server_name, applicationId);
+                serverIds = getServerId(contrast, profile.getUuid(), server_name, applicationId);
             }
 
             for(Threshold condition: thresholds) {
@@ -124,11 +125,11 @@ public class VerifyThresholdsTask implements TaskType {
                 }
 
 
-                if (serverId == null) {
+                if (serverIds == null) {
                     buildLogger.addBuildLogEntry("Not filtering on server name");
                 } else {
-                    buildLogger.addBuildLogEntry("Server name " + server_name + " with id " + serverId);
-                    filterForm.setServerIds(Arrays.asList(serverId));
+                    buildLogger.addBuildLogEntry("Server name " + server_name + " with ids " + serverIds);
+                    filterForm.setServerIds(serverIds);
                 }
 
                 Traces traces;
@@ -175,13 +176,13 @@ public class VerifyThresholdsTask implements TaskType {
     }
 
 
-    private long getServerId(ContrastSDK sdk, String organizationUuid, String serverName, String applicationId) throws IOException {
+    private List<Long> getServerId(ContrastSDK sdk, String organizationUuid, String serverName, String applicationId) throws IOException {
         ServerFilterForm serverFilterForm = new ServerFilterForm();
         serverFilterForm.setApplicationIds(Arrays.asList(applicationId));
         serverFilterForm.setQ(URLEncoder.encode(serverName, "UTF-8"));
 
         Servers servers;
-        long serverId;
+        List<Long> serverIds;
 
         try {
             servers = sdk.getServersWithFilter(organizationUuid, serverFilterForm);
@@ -192,12 +193,12 @@ public class VerifyThresholdsTask implements TaskType {
         }
 
         if (!servers.getServers().isEmpty()) {
-            serverId = servers.getServers().get(0).getServerId();
+            serverIds = servers.getServers().stream().map(s -> s.getServerId()).collect(Collectors.toList());
         } else {
             throw new IOException("Server with name '" + serverName + "' not found.");
         }
 
-        return serverId;
+        return serverIds;
     }
     private String getApplicationId(ContrastSDK sdk, String organizationUuid, String applicationName) throws IOException{
 
