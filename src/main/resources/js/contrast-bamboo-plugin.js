@@ -149,7 +149,7 @@ window.onload  = function() {
 			AJS.$("#uuid").val(config.uuid);
 			AJS.$("#uuid").val(config.uuid);
 			AJS.$("#profilename").val(config.profilename);
-			AJS.$("#profilename-display").html(config.profilename);
+			AJS.$("#profilename-display").text(config.profilename);
 		}
 		AJS.$("#admin-form").show();
 	}
@@ -207,7 +207,8 @@ window.onload  = function() {
 	function initDropDown(profs){
 		var i = 0;
 		AJS.$.each(profs, function(name, profile) {
-			AJS.$("#profile-list").append("<li><a id='profile-item-"+(i)+"'>"+name+"</a></li>");
+			var li = AJS.$('<li>').append(AJS.$('<a>').attr('id', 'profile-item-' + i).text(name));
+			AJS.$("#profile-list").append(li);
 			AJS.$("#profile-item-"+i).click(function(){
 				populateForm(name);
 				AJS.$("#profile-delete").show();
