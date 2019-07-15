@@ -21,8 +21,18 @@
 			and the key to generate bundle. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>dev</id>
+            <name>Local repository</name>
+            <url>file://${user.home}/.m2/repository</url>
+        </repository>
+    </distributionManagement>
+
     <scm>
-        <connection>scm:git:https://github.com/Contrast-Security-OSS/contrast-bamboo-plugin.git</connection>
+        <connection>scm:git:git@github.com:Contrast-Security-OSS/contrast-bamboo-plugin.git</connection>
+        <url>scm:git:git@github.com:Contrast-Security-OSS/contrast-bamboo-plugin.git</url>
+        <developerConnection>scm:git:git@github.com:Contrast-Security-OSS/contrast-bamboo-plugin.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <repositories>
